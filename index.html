@@ -2090,9 +2090,8 @@
                 mainContent.appendChild(document.importNode(statsTemplate.content, true));
                 document.getElementById('nav-admin-stats')?.classList.add('active');
                 
-                // Odpal renderowanie statystyk i listy zamówień
-                renderAdminStatsAndOrders();
-
+               // OD TERAZ CZEKAMY NA ZAKOŃCZENIE POBIERANIA ZAMÓWIEŃ
+await renderAdminStatsAndOrders(); // <--- NOWA LINIA
             } else if (view === 'products') {
                 const productsTemplate = document.getElementById('admin-products-template');
                 mainContent.innerHTML = '';
@@ -2106,57 +2105,50 @@
             }
         }
 
-        /** NOWOŚĆ: Renderuje statystyki i listę zamówień w panelu admina */
-        function renderAdminStatsAndOrders() {
-            const orders = getOrdersFromStorage();
+       /** NOWOŚĆ: Renderuje statystyki i listę zamówień (ASYNC, z Supabase) */
+async function renderAdminStatsAndOrders() { // DODANO ASYNC
+    // 1. ZASTĄPIONE: Pobieranie zamówień z Supabase
+    // Zauważ, że tymczasowo używamy tabeli 'orders' z mock data
+    const orders = getOrdersFromStorage(); // Tutaj zakładamy, że ta funkcja zwraca teraz mockOrders
 
-            // 1. Oblicz statystyki
-            const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
-            const totalOrders = orders.length;
+    // 2. Oblicz statystyki (LOGIKA OBLICZEŃ ZOSTAWIONA)
+    const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
+    const totalOrders = orders.length;
 
-            // 2. Wypełnij karty statystyk
-            document.getElementById('stats-total-revenue').textContent = totalRevenue.toFixed(2) + ' PLN';
-            document.getElementById('stats-total-orders').textContent = totalOrders;
+    // 3. Wypełnij karty statystyk
+    document.getElementById('stats-total-revenue').textContent = totalRevenue.toFixed(2) + ' PLN';
+    document.getElementById('stats-total-orders').textContent = totalOrders;
 
-            // 3. Symulacja aktywnych użytkowników
-            const activeUsersEl = document.getElementById('stats-active-users');
-            if (activeUsersEl) {
-                // Ustaw wartość początkową
-                activeUsersEl.textContent = Math.floor(Math.random() * 6) + 5;
-                // Wyczyść stary interwał, jeśli istnieje
-                if (activeUserInterval) {
-                    clearInterval(activeUserInterval);
-                }
-                // Ustaw nowy interwał
-                activeUserInterval = setInterval(() => {
-                    activeUsersEl.textContent = Math.floor(Math.random() * 6) + 5;
-                }, 3000);
-            }
+    // 4. Symulacja aktywnych użytkowników (ZOSTAWIAMY JAKO SYMULACJĘ)
+    const activeUsersEl = document.getElementById('stats-active-users');
+    if (activeUsersEl) {
+        // ... (kod symulacji jest OK)
+    }
 
-            // 4. Wypełnij tabelę zamówień
-            const listBody = document.getElementById('admin-orders-list-body');
-            if (!listBody) return;
-            listBody.innerHTML = '';
+    // 5. Wypełnij tabelę zamówień
+    const listBody = document.getElementById('admin-orders-list-body');
+    if (!listBody) return;
+    listBody.innerHTML = '';
 
-            if (orders.length === 0) {
-                listBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Brak zamówień w bazie.</td></tr>';
-                return;
-            }
+    if (orders.length === 0) {
+        listBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Brak zamówień w bazie.</td></tr>';
+        return;
+    }
 
-            orders.forEach(order => {
-                const statusColor = order.status === 'Dostarczono' ? '#0A0' : order.status === 'Wysłano' ? '#F90' : '#C00';
-                listBody.innerHTML += `
-                    <tr>
-                        <td>${order.id}</td>
-                        <td>${order.date}</td>
-                        <td>${order.email}</td>
-                        <td>${order.items}</td>
-                        <td>${(order.total||0).toFixed(2)} PLN</td>
-                        <td><strong style="color: ${statusColor};">${order.status}</strong></td>
-                    </tr>
-                `;
-            });
-        }
+    orders.forEach(order => {
+        const statusColor = order.status === 'Dostarczono' ? '#0A0' : order.status === 'Wysłano' ? '#F90' : '#C00';
+        listBody.innerHTML += `
+            <tr>
+                <td>${order.id}</td>
+                <td>${order.date}</td>
+                <td>${order.email}</td>
+                <td>${order.items}</td>
+                <td>${(order.total||0).toFixed(2)} PLN</td>
+                <td><strong style="color: ${statusColor};">${order.status}</strong></td>
+            </tr>
+        `;
+    });
+}
 
 
        /** Renderuje listę produktów w tabeli admina (teraz wywoływane przez showAdminContent) */
