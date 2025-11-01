@@ -1591,7 +1591,7 @@
 
 
     <script>
-      <script>
+     <script>
         // ===============================================
         // === KROK 1: INICJALIZACJA KLIENTA SUPABASE ===
         // ===============================================
@@ -2195,7 +2195,7 @@
         function renderAdminStatsAndOrders() { /* MOCK */ }
         function renderCartPage() { /* MOCK */ }
         function updateCartCounters() { /* MOCK */ }
-        function addToCart(productId) { /* MOCK */ }
+        function addToCart(productId) { /* MOCK */ alert(`Dodano produkt ${productId} do koszyka (Mock)!`); }
         function updateCartQuantity(productId, newQuantity) { /* MOCK */ }
         function removeFromCart(productId) { /* MOCK */ }
         function showProductDetail(productId) { /* MOCK */ }
@@ -2261,11 +2261,12 @@
                 const botResponse = generateBotResponse(message);
                 addMessage(botResponse, 'bot');
                 
+                // ODblokowujemy pole i przycisk
                 inputElement.disabled = false;
                 sendButton.disabled = false;
                 inputElement.focus();
                 
-                // Resetujemy karuzelę, jeśli użytkownik wpisał własne pytanie
+                // Resetujemy karuzelę
                 startPlaceholderCarousel();
             }, 1000); 
         }
@@ -2318,17 +2319,6 @@
             return `Przepraszam, jestem zaawansowanym asystentem AI, ale nie mogę znaleźć konkretnej odpowiedzi na zapytanie: "${text}". Spróbuj zadać pytanie o: **cenę produktu**, **zasady zwrotów** lub **status zamówienia**!`;
         }
 
-        const popularQuestions = [
-            "Wpisz: 'Gwarancja oryginalności'...",
-            "Wpisz: 'Status zamówienia'...",
-            "Wpisz: 'Pytanie o zwroty'...",
-            "Wpisz: 'Cena Aventus'...",
-            "Wpisz: 'Czas dostawy'...",
-            "Wpisz: 'Kontakt z konsultantem'..."
-        ];
-        let placeholderIndex = 0;
-        let placeholderInterval;
-        
         function startPlaceholderCarousel() {
             const inputElement = document.getElementById('user-input');
             if (!inputElement) return;
@@ -2350,14 +2340,15 @@
             }, 3000); 
         }
 
-        // [MOCKI I FUNKCJE POMOCNICZE] - Nie są tu zmieniane, ale są wymagane
-        function renderKontoPage() { /* MOCK */ }
+        // [MOCKI I FUNKCJE POMOCNICZE] - Funkcje te są wymagane przez resztę kodu
+        function getCart() { return JSON.parse(localStorage.getItem(LS_CART_KEY) || '[]'); } 
+        function saveCart(cart) { localStorage.setItem(LS_CART_KEY, JSON.stringify(cart)); } 
         function showDashboardContent(view) { /* MOCK */ }
         function renderAdminPage() { /* MOCK */ }
         function renderAdminStatsAndOrders() { /* MOCK */ }
         function renderCartPage() { /* MOCK */ }
         function updateCartCounters() { /* MOCK */ }
-        function addToCart(productId) { /* MOCK */ alert(`Dodano produkt ${productId} do koszyka!`); }
+        function addToCart(productId) { /* MOCK */ alert(`Dodano produkt ${productId} do koszyka (Mock)!`); }
         function updateCartQuantity(productId, newQuantity) { /* MOCK */ }
         function removeFromCart(productId) { /* MOCK */ }
         function showProductDetail(productId) { /* MOCK */ }
@@ -2378,12 +2369,77 @@
 
 
         // [FUNKCJE SYSTEMOWE I NAWIGACJA]
-        function highlightNavLink(activePageId) { /* ... */ }
-        function scrollToElement(elementId) { /* ... */ }
-        function showPageAndScroll(pageId, elementId) { /* ... */ }
+        function highlightNavLink(activePageId) { 
+            const headerNav = document.querySelector('header nav');
+            if (!headerNav) return; 
+            const allNavLinks = headerNav.querySelectorAll('a');
+            allNavLinks.forEach(link => { link.classList.remove('active-nav-link'); });
+
+            let targetIdPrefix;
+            if (activePageId.includes('kolekcja')) { targetIdPrefix = 'link-kolekcja'; } 
+            else if (activePageId.includes('onas')) { targetIdPrefix = 'link-onas'; } 
+            else if (activePageId.includes('regulamin')) { targetIdPrefix = 'link-regulamin'; } 
+            else if (activePageId.includes('polityka')) { targetIdPrefix = 'link-polityka'; } 
+            else if (activePageId.includes('zwroty')) { targetIdPrefix = 'link-zwroty'; } 
+            else if (activePageId.includes('pomoc')) { targetIdPrefix = 'link-pomoc'; }
+            else if (activePageId.includes('konto')) { targetIdPrefix = 'link-konto'; }
+            else if (activePageId.includes('koszyk')) { targetIdPrefix = 'link-koszyk'; }
+
+            if (targetIdPrefix) {
+                document.querySelectorAll(`[id^="${targetIdPrefix}"]`).forEach(link => {
+                    if (link.id.includes(targetIdPrefix)) { link.classList.add('active-nav-link'); }
+                });
+            }
+        }
+
+        function scrollToElement(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) { setTimeout(() => { element.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100); }
+        }
+
+        function showPageAndScroll(pageId, elementId) {
+            showPage(pageId);
+            scrollToElement(elementId);
+            const targetPageId = pageId.split('-')[0];
+            highlightNavLink(targetPageId);
+        }
+
         function openNav() { document.getElementById("side-menu").classList.add("open"); }
         function closeNav() { document.getElementById("side-menu").classList.remove("open"); }
-        function showPage(pageId) { /* ... */ }
+
+        function showPage(pageId) { 
+            if (pageId === 'admin-page' && !isCurrentUserAdmin()) {
+                alert('Nie masz uprawnień do tej strony. Zaloguj się jako administrator.');
+                showPage(getIsLoggedIn() ? 'konto-page' : 'landing-page');
+                return;
+            }
+            if (pageId === 'konto-page' && isCurrentUserAdmin()) {
+                pageId = 'admin-page';
+            }
+            
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(section => { section.classList.remove('active'); });
+            
+            const activeSection = document.getElementById(pageId);
+            if (activeSection) {
+                activeSection.classList.add('active');
+                const event = new CustomEvent('pageShow', { detail: { pageId: pageId } });
+                document.dispatchEvent(event);
+            } else {
+                document.getElementById('landing-page').classList.add('active');
+                return;
+            }
+            
+            if (pageId !== 'landing-page') { highlightNavLink(pageId); } 
+            else { document.querySelectorAll('header nav a').forEach(link => { link.classList.remove('active-nav-link'); }); }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (pageId === 'kolekcja-page') { applyFilters(); }
+            if (pageId === 'konto-page') { renderKontoPage(); }
+            if (pageId === 'admin-page') { renderAdminPage(); }
+            if (pageId === 'koszyk-page') { renderCartPage(); }
+        }
 
 
         // === INICJALIZACJA ===
@@ -2427,15 +2483,25 @@
 
             document.addEventListener('pageShow', (e) => {
                 if (e.detail.pageId === 'pomoc-page') {
-                    // Po przejściu na stronę Pomoc, usuń przyciski opcji i aktywuj wprowadzanie tekstu
+                    // Po przejściu na stronę Pomoc, aktywuj wprowadzanie tekstu i karuzelę
                     document.getElementById('chat-options').innerHTML = '';
                     document.getElementById('chat-options').style.display = 'none';
                     document.getElementById('user-input').disabled = false;
                     document.querySelector('#chat-input-area button').disabled = false;
                     startPlaceholderCarousel();
+                    
+                    const userInputEl = document.getElementById('user-input');
+                    if (userInputEl) {
+                        userInputEl.addEventListener('keydown', function(event) {
+                            if (event.key === 'Enter') {
+                                event.preventDefault();
+                                sendChatMessage();
+                            }
+                        });
+                    }
                 }
                 if (e.detail.pageId === 'product-page') {
-                    // Renderowanie detali (mock)
+                    if (currentDetailProductId) renderProductDetail(currentDetailProductId);
                 }
             });
 
