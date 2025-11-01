@@ -244,6 +244,10 @@
             text-align: right;
             border-bottom-right-radius: 2px;
         }
+        /* UKRYWAMY PRZYCISKI OPCJI, ABY WPROWADZANIE TEKSTU DZIAŁAŁO DYNAMICZNIE */
+        .chat-options {
+             display: none !important; 
+        }
         .chat-options button {
             display: block;
             width: 100%;
@@ -2044,6 +2048,7 @@
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 
+                // Zapewnienie, że kolumna images jest tablicą i pobieramy pierwszy element
                 const imageUrl = Array.isArray(product.images) && product.images.length > 0 
                                  ? product.images[0] 
                                  : ''; 
@@ -2252,11 +2257,17 @@
 
             document.addEventListener('pageShow', (e) => {
                 if (e.detail.pageId === 'pomoc-page') {
-                    // Dodaj logikę chatbota
-                    displayOptions(defaultOptions);
+                    // Logic for Chabot start
+                    const history = document.getElementById('chat-history');
+                    if (history && history.children.length === 1) { // Tylko początkowa wiadomość
+                         // Ukrywamy opcje, żeby chatbot działał dynamicznie
+                        document.getElementById('chat-options').style.display = 'none';
+                    }
                     startPlaceholderCarousel();
+
                     const userInputEl = document.getElementById('user-input');
                     if (userInputEl) {
+                        userInputEl.disabled = false;
                         userInputEl.addEventListener('keydown', function(event) {
                             if (event.key === 'Enter') {
                                 event.preventDefault();
