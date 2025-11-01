@@ -2326,63 +2326,63 @@ async function deleteProduct(productId) { // DODANO ASYNC
         function openNav() { document.getElementById("side-menu").classList.add("open"); }
         function closeNav() { document.getElementById("side-menu").classList.remove("open"); }
         
-        /** Główna funkcja nawigacyjna - z kontrolą dostępu */
-        function showPage(pageId) {
-            // === KONTROLA DOSTĘPU ADMINA ===
-            if (pageId === 'admin-page' && !isCurrentUserAdmin()) {
-                alert('Nie masz uprawnień do tej strony. Zaloguj się jako administrator.');
-                showPage(getIsLoggedIn() ? 'konto-page' : 'landing-page');
-                return;
-            }
-            // === KONTROLA DOSTĘPU KLIENTA ===
-            if (pageId === 'konto-page' && isCurrentUserAdmin()) {
-                pageId = 'admin-page';
-            }
+       /** Główna funkcja nawigacyjna - z kontrolą dostępu */
+async function showPage(pageId) { // DODANO ASYNC
+    // === KONTROLA DOSTĘPU ADMINA ===
+    if (pageId === 'admin-page' && !isCurrentUserAdmin()) {
+        alert('Nie masz uprawnień do tej strony. Zaloguj się jako administrator.');
+        showPage(getIsLoggedIn() ? 'konto-page' : 'landing-page');
+        return;
+    }
+    // === KONTROLA DOSTĘPU KLIENTA ===
+    if (pageId === 'konto-page' && isCurrentUserAdmin()) {
+        pageId = 'admin-page';
+    }
 
-            // NOWOŚĆ: Wyczyszczenie interwału symulacji, jeśli opuszczamy panel admina
-            if (activeUserInterval && pageId !== 'admin-page') {
-                clearInterval(activeUserInterval);
-                activeUserInterval = null;
-            }
+    // NOWOŚĆ: Wyczyszczenie interwału symulacji, jeśli opuszczamy panel admina
+    if (activeUserInterval && pageId !== 'admin-page') {
+        clearInterval(activeUserInterval);
+        activeUserInterval = null;
+    }
 
 
-            const sections = document.querySelectorAll('.page-section');
-            sections.forEach(section => { section.classList.remove('active'); });
-            
-            const activeSection = document.getElementById(pageId);
-            if (activeSection) {
-                activeSection.classList.add('active');
-                const event = new CustomEvent('pageShow', { detail: { pageId: pageId } });
-                document.dispatchEvent(event);
-            } else {
-                document.getElementById('landing-page').classList.add('active');
-                return;
-            }
-            
-            if (pageId !== 'landing-page') { 
-                highlightNavLink(pageId); 
-            } else { 
-                document.querySelectorAll('header nav a').forEach(link => { link.classList.remove('active-nav-link'); }); 
-            }
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+    const sections = document.querySelectorAll('.page-section');
+    sections.forEach(section => { section.classList.remove('active'); });
+    
+    const activeSection = document.getElementById(pageId);
+    if (activeSection) {
+        activeSection.classList.add('active');
+        const event = new CustomEvent('pageShow', { detail: { pageId: pageId } });
+        document.dispatchEvent(event);
+    } else {
+        document.getElementById('landing-page').classList.add('active');
+        return;
+    }
+    
+    if (pageId !== 'landing-page') { 
+        highlightNavLink(pageId); 
+    } else { 
+        document.querySelectorAll('header nav a').forEach(link => { link.classList.remove('active-nav-link'); }); 
+    }
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // Inicjalizuj odpowiednie strony
-            if (pageId === 'kolekcja-page') {
-                applyFilters(); 
-            }
-            if (pageId === 'konto-page') {
-                renderKontoPage();
-            }
-            if (pageId === 'admin-page') {
-                renderAdminPage(); // ZMODYFIKOWANE: teraz renderuje nową strukturę
-            }
-            // ### KROK 3: DODANIE WYWOŁANIA RENDEROWANIA KOSZYKA ###
-            if (pageId === 'koszyk-page') {
-                renderCartPage();
-            }
-        }
-
+    // WŁĄCZNIE Z TĄ LINIĄ:
+    // Inicjalizuj odpowiednie strony
+    if (pageId === 'kolekcja-page') {
+        await applyFilters(); // DODANO AWAIT! To jest krytyczne dla Kolekcji.
+    }
+    if (pageId === 'konto-page') {
+        renderKontoPage();
+    }
+    if (pageId === 'admin-page') {
+        renderAdminPage(); // ZMODYFIKOWANE: teraz renderuje nową strukturę
+    }
+    // ### KROK 3: DODANIE WYWOŁANIA RENDEROWANIA KOSZYKA ###
+    if (pageId === 'koszyk-page') {
+        renderCartPage();
+    }
+}
         // --- LOGIKA KONT (PANEL KLIENTA) ---
         function renderKontoPage() {
             const kontoContent = document.getElementById('konto-content');
@@ -2520,32 +2520,34 @@ async function deleteProduct(productId) { // DODANO ASYNC
             });
         }
 
-        function applyFilters() {
-            let filteredProducts = getProductsFromStorage();
-            
-            const selectedBrands = Array.from(document.querySelectorAll('#filter-sidebar input[data-filter="brand"]:checked')).map(cb => cb.value);
-            const selectedCategories = Array.from(document.querySelectorAll('#filter-sidebar input[data-filter="category"]:checked')).map(cb => cb.value);
-            
-            if (selectedBrands.length > 0) {
-                filteredProducts = filteredProducts.filter(p => selectedBrands.includes(p.brand));
-            }
-            
-            if (selectedCategories.length > 0) {
-                filteredProducts = filteredProducts.filter(p => selectedCategories.includes(p.category));
-            }
-            
-            const sortByElement = document.getElementById('sort-by');
-            if(sortByElement) {
-                const sortBy = sortByElement.value;
-                if (sortBy === 'price-asc') {
-                    filteredProducts.sort((a, b) => a.price - b.price);
-                } else if (sortBy === 'price-desc') {
-                    filteredProducts.sort((a, b) => b.price - a.price);
-                }
-            }
-            
-            renderProducts(filteredProducts);
+       // ZNAJDŹ TĘ FUNKCJĘ I ZASTĄP JĄ TĄ WERSJĄ:
+
+async function applyFilters() { // DODANO ASYNC
+    let filteredProducts = await getProductsFromStorage(); // TUTAJ JEST JUŻ AWAIT
+    
+    const selectedBrands = Array.from(document.querySelectorAll('#filter-sidebar input[data-filter="brand"]:checked')).map(cb => cb.value);
+    const selectedCategories = Array.from(document.querySelectorAll('#filter-sidebar input[data-filter="category"]:checked')).map(cb => cb.value);
+    
+    if (selectedBrands.length > 0) {
+        filteredProducts = filteredProducts.filter(p => selectedBrands.includes(p.brand));
+    }
+    
+    if (selectedCategories.length > 0) {
+        filteredProducts = filteredProducts.filter(p => selectedCategories.includes(p.category));
+    }
+    
+    const sortByElement = document.getElementById('sort-by');
+    if(sortByElement) {
+        const sortBy = sortByElement.value;
+        if (sortBy === 'price-asc') {
+            filteredProducts.sort((a, b) => a.price - b.price);
+        } else if (sortBy === 'price-desc') {
+            filteredProducts.sort((a, b) => b.price - a.price);
         }
+    }
+    
+    renderProducts(filteredProducts);
+}
         
         // --- LOGIKA CHATBOTA (WPEŁNI PRZENIESIONA) ---
         const chatResponses = {
