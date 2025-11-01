@@ -1623,7 +1623,7 @@
         let adminImageData = [];
 
         // ===============================================
-        // === ZARZĄDZANIE BAZAMI (SUPABASE I LOCALSTORAGE) ===
+        // === ZMIENIONA LOGIKA: ODCZYT I PARSOWANIE DANYCH ===
         // ===============================================
 
         /** Funkcja pomocnicza do bezpiecznego parsowania tablic z PostGRES (TEXT[]) */
@@ -1651,7 +1651,7 @@
             
             // KONWERSJA DANYCH: Zapewnienie, że typy JSONB i TEXT[] są poprawne
             return data.map(p => ({
-                id: p.id.toString(),
+                id: p.id ? p.id.toString() : 'mock_id', // Upewnienie się, że ID jest stringiem
                 brand: p.brand || 'Brak marki',
                 name: p.name || 'Brak nazwy',
                 price: parseFloat(p.price) || 0,
@@ -2047,7 +2047,6 @@
                 card.className = 'product-card';
                 
                 // Zapewnienie, że kolumna images jest tablicą i pobieramy pierwszy element
-                // product.images to tablica dzięki parsePostgresArray
                 const imageUrl = Array.isArray(product.images) && product.images.length > 0 
                                  ? product.images[0] 
                                  : ''; 
@@ -2069,13 +2068,71 @@
             });
         }
 
-        function applyFilters() { /* ... */ }
+        function applyFilters() {
+            let filteredProducts = getProductsFromStorage();
+            
+            const selectedBrands = Array.from(document.querySelectorAll('#filter-sidebar input[data-filter="brand"]:checked')).map(cb => cb.value);
+            const selectedCategories = Array.from(document.querySelectorAll('#filter-sidebar input[data-filter="category"]:checked')).map(cb => cb.value);
+            
+            if (selectedBrands.length > 0) {
+                filteredProducts = filteredProducts.filter(p => selectedBrands.includes(p.brand));
+            }
+            
+            if (selectedCategories.length > 0) {
+                filteredProducts = filteredProducts.filter(p => selectedCategories.includes(p.category));
+            }
+            
+            const sortByElement = document.getElementById('sort-by');
+            if(sortByElement) {
+                const sortBy = sortByElement.value;
+                if (sortBy === 'price-asc') {
+                    filteredProducts.sort((a, b) => a.price - b.price);
+                } else if (sortBy === 'price-desc') {
+                    filteredProducts.sort((a, b) => b.price - a.price);
+                }
+            }
+            
+            renderProducts(filteredProducts);
+        }
         
-        function highlightNavLink(activePageId) { /* ... */ }
-        function scrollToElement(elementId) { /* ... */ }
-        function showPageAndScroll(pageId, elementId) { /* ... */ }
+        function highlightNavLink(activePageId) { 
+            const headerNav = document.querySelector('header nav');
+            if (!headerNav) return; 
+            const allNavLinks = headerNav.querySelectorAll('a');
+            allNavLinks.forEach(link => { link.classList.remove('active-nav-link'); });
+
+            let targetIdPrefix;
+            if (activePageId.includes('kolekcja')) { targetIdPrefix = 'link-kolekcja'; } 
+            else if (activePageId.includes('onas')) { targetIdPrefix = 'link-onas'; } 
+            else if (activePageId.includes('regulamin')) { targetIdPrefix = 'link-regulamin'; } 
+            else if (activePageId.includes('polityka')) { targetIdPrefix = 'link-polityka'; } 
+            else if (activePageId.includes('zwroty')) { targetIdPrefix = 'link-zwroty'; } 
+            else if (activePageId.includes('pomoc')) { targetIdPrefix = 'link-pomoc'; }
+            else if (activePageId.includes('konto')) { targetIdPrefix = 'link-konto'; }
+            else if (activePageId.includes('koszyk')) { targetIdPrefix = 'link-koszyk'; }
+
+            if (targetIdPrefix) {
+                document.querySelectorAll(`[id^="${targetIdPrefix}"]`).forEach(link => {
+                    if (link.id.includes(targetIdPrefix)) { link.classList.add('active-nav-link'); }
+                });
+            }
+        }
+
+        function scrollToElement(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) { setTimeout(() => { element.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100); }
+        }
+
+        function showPageAndScroll(pageId, elementId) {
+            showPage(pageId);
+            scrollToElement(elementId);
+            const targetPageId = pageId.split('-')[0];
+            highlightNavLink(targetPageId);
+        }
+
         function openNav() { document.getElementById("side-menu").classList.add("open"); }
         function closeNav() { document.getElementById("side-menu").classList.remove("open"); }
+
         function showPage(pageId) { 
             if (pageId === 'admin-page' && !isCurrentUserAdmin()) {
                 alert('Nie masz uprawnień do tej strony. Zaloguj się jako administrator.');
@@ -2110,7 +2167,25 @@
             if (pageId === 'koszyk-page') { renderCartPage(); }
         }
 
-        function renderKontoPage() { /* ... */ }
+        function renderKontoPage() { 
+            const kontoContent = document.getElementById('konto-content');
+            if (!kontoContent) return;
+
+            kontoContent.innerHTML = ''; 
+            
+            if (getIsLoggedIn() && !isCurrentUserAdmin()) {
+                const template = document.getElementById('dashboard-template');
+                const clone = document.importNode(template.content, true);
+                kontoContent.appendChild(clone);
+                
+                document.getElementById('user-name-display').textContent = getUserName();
+                showDashboardContent('orders');
+            } else {
+                const template = document.getElementById('auth-template');
+                const clone = document.importNode(template.content, true);
+                kontoContent.appendChild(clone);
+            }
+        }
         function showDashboardContent(view) { /* ... */ }
         
         const chatResponses = { /* ... */ };
@@ -2144,6 +2219,11 @@
         function updateCartQuantity(productId, newQuantity) { /* ... */ }
         function removeFromCart(productId) { /* ... */ }
         function renderAdminStatsAndOrders() { /* ... */ }
+        function renderAdminPage() { /* ... */ }
+        
+        // Funkcje pomocnicze dla Admina (mocki)
+        function clearAdminForm() { /* ... */ }
+        function populateAdminForm(productId) { /* ... */ }
 
 
         // === INICJALIZACJA ===
@@ -2187,17 +2267,7 @@
 
             document.addEventListener('pageShow', (e) => {
                 if (e.detail.pageId === 'pomoc-page') {
-                    displayOptions(defaultOptions);
-                    startPlaceholderCarousel();
-                    const userInputEl = document.getElementById('user-input');
-                    if (userInputEl) {
-                        userInputEl.addEventListener('keydown', function(event) {
-                            if (event.key === 'Enter') {
-                                event.preventDefault();
-                                sendChatMessage();
-                            }
-                        });
-                    }
+                    // Dodaj logikę chatbota
                 }
                 if (e.detail.pageId === 'product-page') {
                     if (currentDetailProductId) renderProductDetail(currentDetailProductId);
