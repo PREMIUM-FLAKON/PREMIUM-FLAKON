@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PREMIUM FLAKON - Perfumy Luksusowych Producentów</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght{300;400;700}&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
         /* === ZMIENNE KOLORÓW I FONTÓW === */
         :root {
@@ -17,6 +20,9 @@
             --font-sans: 'Lato', sans-serif;
         }
 
+        /* [POZOSTAŁE STYLE (NIEZMIENIONE)] */
+        /* ... Twoje rozbudowane style ... */
+        
         /* === GLOBALNE STYLE === */
         body {
             font-family: var(--font-sans);
@@ -56,7 +62,9 @@
             display: block;
         }
         
-        /* === Nagłówek i Aktywny Link (dla podstron) === */
+        /* [POZOSTAŁE STYLE HEADER, MENU, LANDING PAGE, FOOTER] */
+        /* ... Ominąłem większość styli, aby nie powtarzać całego kodu ... */
+        
         header {
             text-align: center;
             padding: 25px 0;
@@ -276,6 +284,7 @@
             flex-grow: 1;
             padding: 10px;
             border: 1px solid #CCC;
+            font-family: var(--font-sans); 
         }
         .bot-message a {
             color: var(--color-accent-gold);
@@ -388,10 +397,10 @@
             text-transform: uppercase;
             font-weight: 700;
             transition: background-color 0.3s;
-            cursor: pointer; /* NOWOŚĆ */
-            border: none; /* NOWOŚĆ */
-            font-family: var(--font-sans); /* NOWOŚĆ */
-            font-size: 1em; /* NOWOŚĆ */
+            cursor: pointer;
+            border: none;
+            font-family: var(--font-sans); 
+            font-size: 1em; 
         }
         .product-card .btn-add:hover {
             background-color: var(--color-accent-gold);
@@ -452,7 +461,7 @@
             font-size: 1em;
             box-sizing: border-box;
             transition: border-color 0.3s;
-            font-family: var(--font-sans); /* NOWOŚĆ */
+            font-family: var(--font-sans);
         }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { /* DODANO TEXTAREA */
             border-color: var(--color-accent-gold);
@@ -1014,7 +1023,7 @@
                     </div>
                     
                     <div id="product-grid">
-                        <p id="no-products" style="text-align: center; display: none;">Brak produktów spełniających kryteria.</p>
+                        <p id="no-products" style="text-align: center; display: block; padding: 40px; border: 1px solid #CCC; background-color: #EEE;">Ładowanie produktów z Supabase...</p>
                         </div>
                 </div>
             </div>
@@ -1047,13 +1056,12 @@
 
                     <h4 style="margin-top:20px; color:var(--color-accent-gold);">Specyfikacja</h4>
                     <table id="detail-specs" style="width:100%; border-collapse:collapse; margin-top:10px;">
-                      <!-- wypełniane dynamicznie -->
-                    </table>
+                     </table>
 
                     <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
-                      <button class="btn-main" onclick="addToCartFromDetail()">Dodaj do koszyka</button>
-                      <button class="btn-main" style="background:#333; color:#fff;" onclick="showPage('kolekcja-page')">Powrót</button>
-                      <button id="detail-edit-btn" class="btn-admin-edit" style="display:none; align-self:flex-start;" onclick="editProductFromDetail()">Edytuj (Admin)</button>
+                        <button class="btn-main" onclick="addToCartFromDetail()">Dodaj do koszyka</button>
+                        <button class="btn-main" style="background:#333; color:#fff;" onclick="showPage('kolekcja-page')">Powrót</button>
+                        <button id="detail-edit-btn" class="btn-admin-edit" style="display:none; align-self:flex-start;" onclick="editProductFromDetail()">Edytuj (Admin)</button>
                     </div>
                 </div>
             </div>
@@ -1606,13 +1614,68 @@
 
 
     <script>
+        // ===============================================
+        // === KROK 2: INICJALIZACJA KLIENTA SUPABASE ===
+        // ===============================================
+        const SUPABASE_URL = 'https://dtgwyrvbqpefrcjdnqqv.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0Z3d5cnZicXBlZnJjamRucXF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwMTU3MjIsImV4cCI6MjA3NzU5MTcyMn0.WObj9HRon0hYM9m9JC-ty1bE1DXxzwQ7RmkfValxJCs';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('Klient Supabase zainicjalizowany.');
+
+        // -------------------------------------------------------------
+        // === KROK 3: NOWA FUNKCJA POBIERAJĄCA DANE Z SUPABASE ===
+        // -------------------------------------------------------------
+        // Przechowujemy dane z bazy w globalnej zmiennej, aby móc je filtrować i sortować.
+        let productsFromSupabase = [];
+        
+        async function fetchProductsFromSupabase() {
+            console.log('Pobieranie produktów z tabeli "products" w Supabase...');
+            const { data, error } = await supabase
+                .from('products') // Zmień nazwę tabeli, jeśli jest inna
+                .select('*'); // Wybierz wszystkie kolumny
+
+            const noProductsEl = document.getElementById('no-products');
+            if (error) {
+                console.error('Błąd pobierania produktów z Supabase:', error);
+                if (noProductsEl) noProductsEl.textContent = 'Błąd połączenia z bazą Supabase. Sprawdź konsolę.';
+                return;
+            }
+
+            if (data && data.length > 0) {
+                // Konwertujemy dane z bazy do formatu używanego w aplikacji (nadpisując mock data)
+                productsFromSupabase = data.map(p => ({
+                    id: p.id.toString(), // Supabase ID jako string
+                    brand: p.brand || 'Brak marki',
+                    name: p.name || 'Brak nazwy',
+                    price: parseFloat(p.price) || 0,
+                    category: p.category || 'Unisex',
+                    description: p.description || 'Brak opisu produktu.',
+                    specs: p.specs || [], // Zakładamy, że to tablica obiektów {key, value}
+                    images: p.images || [] // Zakładamy, że to tablica URL-i
+                }));
+                // Zapisujemy pobrane dane do localStorage (aby symulacja działała)
+                saveProductsToStorage(productsFromSupabase);
+
+                if (noProductsEl) noProductsEl.style.display = 'none'; // Ukryj komunikat ładowania
+                console.log(`Pobrano ${productsFromSupabase.length} produktów z Supabase.`);
+            } else {
+                console.log('Brak produktów w tabeli "products" Supabase. Używam mock data.');
+                if (noProductsEl) noProductsEl.textContent = 'Brak produktów w bazie Supabase. Używam danych testowych.';
+                // Jeśli baza jest pusta lub jest błąd, pozostawimy domyślne dane z inicjalizacji localStorage
+            }
+
+            // Odśwież widok kolekcji po pobraniu danych
+            applyFilters();
+        }
+        
+        // ===============================================
         // === KLUCZ PRZECHOWYWANIA DANYCH W LOCALSTORAGE ===
+        // ===============================================
         const LS_PRODUCTS_KEY = 'pf_products';
         const LS_USERS_KEY = 'pf_users';
         const LS_SESSION_KEY = 'pf_currentUser';
         const LS_ORDERS_KEY = 'pf_orders'; 
-        
-        // ### KROK 3: DODANIE NOWEGO KLUCZA DLA KOSZYKA ###
         const LS_CART_KEY = 'pf_cart';
         
         // // --- POCZĄTKOWA BAZA PRODUKTÓW (TYLKO DLA INICJALIZACJI) ---
@@ -1835,6 +1898,7 @@
         /** Jednorazowa inicjalizacja bazy produktów w localStorage */
         function initializeProductStorage() {
             const products = localStorage.getItem(LS_PRODUCTS_KEY);
+            // Jeśli nie ma produktów w localStorage, użyj mock data
             if (!products) {
                 localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(initialProductsData));
             }
@@ -1993,8 +2057,8 @@
                                 <h4>${item.name}</h4>
                                 <p>Ilość: 
                                     <input type="number" value="${item.quantity}" min="1" 
-                                           onchange="updateCartQuantity('${item.id}', this.value)" 
-                                           class="koszyk-ilosc">
+                                        onchange="updateCartQuantity('${item.id}', this.value)" 
+                                        class="koszyk-ilosc">
                                 </p>
                             </div>
                             <span class="koszyk-item-cena">${itemTotal.toFixed(2)} PLN</span>
@@ -2345,7 +2409,7 @@
             else if (activePageId.includes('onas')) { targetIdPrefix = 'link-onas'; } 
             else if (activePageId.includes('regulamin')) { targetIdPrefix = 'link-regulamin'; } 
             else if (activePageId.includes('polityka')) { targetIdPrefix = 'link-polityka'; } 
-            else if (activePageId.includes('zwroty')) { targetIdPrefix = 'link-zwroty'; }  
+            else if (activePageId.includes('zwroty')) { targetIdPrefix = 'link-zwroty'; } 
             else if (activePageId.includes('pomoc')) { targetIdPrefix = 'link-pomoc'; }
             else if (activePageId.includes('konto')) { targetIdPrefix = 'link-konto'; }
             else if (activePageId.includes('koszyk')) { targetIdPrefix = 'link-koszyk'; } // NOWOŚĆ
@@ -2558,8 +2622,8 @@
                     <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category}</p>
                     <div class="price">${product.price} PLN</div>
                     <div style="display:flex; gap:8px; margin-top:10px;">
-                      <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
-                      <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:10px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
+                        <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
+                        <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:10px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -3059,7 +3123,8 @@
                 footer.innerHTML = fullFooterContent;
             });
             
-            applyFilters();
+            // === KROK 4: POBIERANIE PRODUKTÓW Z SUPABASE PRZY STARCIE ===
+            fetchProductsFromSupabase();
 
             document.addEventListener('pageShow', (e) => {
                 if (e.detail.pageId === 'pomoc-page') {
