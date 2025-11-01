@@ -1607,7 +1607,7 @@
         const LS_ORDERS_KEY = 'pf_orders'; 
         const LS_CART_KEY = 'pf_cart';
         
-        // --- POCZĄTKOWA BAZA PRODUKTÓW (Jako fallback, jeśli Supabase jest puste) ---
+        // --- POCZĄTKOWA BAZA PRODUKTÓW (Jako fallback) ---
         const initialProductsData = [
             { id: 'PF101', brand: 'Creed', name: 'Aventus (EDP 100ml)', category: 'Męskie', price: 1250, description: '...', specs: [], images: [] },
             { id: 'PF102', brand: 'Parfums de Marly', name: 'Layton (EDP 75ml)', category: 'Unisex', price: 899, description: '...', specs: [], images: [] },
@@ -1623,8 +1623,19 @@
         let adminImageData = [];
 
         // ===============================================
-        // === ZARZĄDZANIE BAZAMI (SUPABASE I LOCALSTORAGE) ===
+        // === ZMIENIONA LOGIKA: ODCZYT I PARSOWANIE DANYCH ===
         // ===============================================
+
+        /** Funkcja pomocnicza do bezpiecznego parsowania tablic z PostGRES (TEXT[]) */
+        function parsePostgresArray(value) {
+            if (Array.isArray(value)) return value;
+            if (typeof value === 'string' && value.startsWith('{') && value.endsWith('}')) {
+                // Usuń nawiasy klamrowe i podziel po przecinku, usuwając cudzysłowy (które PostGRES dodaje)
+                return value.slice(1, -1).split(',').map(item => item.trim().replace(/^"|"$/g, ''));
+            }
+            return [];
+        }
+
 
         /** Pobiera listę produktów z Supabase (główne źródło danych) */
         async function getProductsFromSupabase() {
@@ -1635,10 +1646,10 @@
 
             if (error) {
                 console.error('Błąd pobierania produktów z Supabase:', error);
-                return []; // Zwraca pustą listę w razie błędu
+                return []; 
             }
             
-            // Konwertuje dane z bazy na format używany w front-endzie
+            // KONWERSJA DANYCH: Zapewnienie, że typy JSONB i TEXT[] są poprawne
             return data.map(p => ({
                 id: p.id.toString(),
                 brand: p.brand || 'Brak marki',
@@ -1647,7 +1658,7 @@
                 category: p.category || 'Unisex',
                 description: p.description || 'Brak opisu produktu.',
                 specs: p.specs || [], 
-                images: p.images || []
+                images: parsePostgresArray(p.images) // Użycie funkcji parsującej dla TEXT[]
             }));
         }
 
@@ -1655,11 +1666,15 @@
         async function fetchProductsFromSupabase() {
             const products = await getProductsFromSupabase();
             
+            const noProductsEl = document.getElementById('no-products');
+            
             if (products.length > 0) {
                  // Nadpisz LocalStorage danymi z Supabase
                 localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(products)); 
-                const noProductsEl = document.getElementById('no-products');
                 if (noProductsEl) noProductsEl.style.display = 'none';
+            } else if (noProductsEl) {
+                 noProductsEl.textContent = 'Brak produktów w bazie.';
+                 noProductsEl.style.display = 'block';
             }
             
             // Odśwież widok
@@ -1669,7 +1684,6 @@
         /** Pobiera produkty z LocalStorage (używane przez filtry i koszyk, jako szybki odczyt) */
         function getProductsFromStorage() {
             const raw = JSON.parse(localStorage.getItem(LS_PRODUCTS_KEY) || '[]');
-            // Jeśli LocalStorage jest puste, użyj mock data (tylko w razie całkowitej porażki)
             if (raw.length === 0) return initialProductsData; 
             return raw;
         }
@@ -1693,7 +1707,6 @@
             const { data: { user } } = await supabase.auth.getUser();
             
             if (user) {
-                 // Pobieramy dane użytkownika i sprawdzamy role z user_metadata (ustawiane podczas rejestracji)
                 const isAdmin = user.user_metadata?.is_admin === true;
                 const username = user.user_metadata?.username || user.email;
 
@@ -1716,7 +1729,6 @@
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
 
-            // Użycie Supabase Auth do rejestracji
             const { data, error } = await supabase.auth.signUp({
                 email: email,
                 password: password,
@@ -1755,7 +1767,6 @@
                 return;
             }
 
-            // Sukces: odświeżamy sesję i przekierowujemy
             await syncUserSession(); 
             
             if (isCurrentUserAdmin()) {
@@ -1802,7 +1813,7 @@
         // === KROK 3: ZARZĄDZANIE PRODUKTAMI (ADMIN) ===
         // ===============================================
 
-        /** Zmodyfikowana funkcja, która zapisuje do Supabase (ZASTĄPIONE) */
+        /** Obsługuje zapis/edycję produktu do Supabase (ZASTĄPIONE) */
         async function handleAdminFormSubmit(event) {
             event.preventDefault();
             
@@ -1829,26 +1840,22 @@
                     .eq('id', productId)
                     .select();
 
-                if (response.error) {
-                    alert(`Błąd aktualizacji: ${response.error.message}. Sprawdź uprawnienia RLS!`);
-                    return;
-                }
-                alert('Produkt zaktualizowany w Supabase!');
-
             } else {
                 // --- TRYB DODAWANIA: Wykonaj INSERT do Supabase ---
                 response = await supabase
                     .from('products')
                     .insert([productData])
                     .select();
-
-                if (response.error) {
-                    alert(`Błąd dodawania: ${response.error.message}. Sprawdź uprawnienia RLS!`);
-                    return;
-                }
-                alert('Nowy produkt dodany do Supabase!');
             }
 
+            if (response.error) {
+                alert(`Błąd operacji: ${response.error.message}. Sprawdź uprawnienia RLS!`);
+                console.error(response.error);
+                return;
+            }
+
+            alert(productId ? 'Produkt zaktualizowany w Supabase!' : 'Nowy produkt dodany do Supabase!');
+            
             // 3. Odświeżenie widoku po operacji
             clearAdminForm();
             await fetchProductsFromSupabase(); // Pociągnij najnowsze dane z bazy
@@ -1881,7 +1888,7 @@
         // === KROK 4: SKŁADANIE ZAMÓWIENIA (KOSZYK) ===
         // ===============================================
 
-        /** Zmodyfikowana funkcja, która zapisuje zamówienie do Supabase (ZASTĄPIONE) */
+        /** Zapisuje zamówienie do Supabase zamiast wysyłania mailto (ZASTĄPIONE) */
         async function handleOrderSubmit(event) {
             event.preventDefault();
             
@@ -1917,10 +1924,9 @@
                 order_date: new Date().toISOString()
             };
 
-            const { data, error } = await supabase
+            const { error } = await supabase
                 .from('orders')
-                .insert([orderData])
-                .select();
+                .insert([orderData]);
 
             if (error) {
                 alert(`Błąd składania zamówienia: ${error.message}. Sprawdź, czy tabela 'orders' istnieje i ma politykę RLS dla INSERT dla roli anon!`);
@@ -1933,7 +1939,6 @@
             // Opróżnij koszyk i odśwież widok
             saveCart([]); 
             renderCartPage(); 
-            // W tym miejscu powinieneś też wysłać e-maila (np. przez Edge Function, ale to poza zakresem front-endu)
         }
 
 
@@ -1949,8 +1954,6 @@
         }
 
         function initializeOrderStorage() {
-            // Ponieważ teraz używamy INSERT do Supabase, synchronizujemy tylko przy starcie.
-            // Będziemy używać LocalStorage tylko jako mock dla klienta w dashboardzie
             const orders = localStorage.getItem(LS_ORDERS_KEY);
             if (!orders) {
                 localStorage.setItem(LS_ORDERS_KEY, JSON.stringify(initialOrdersData));
@@ -1958,7 +1961,6 @@
         }
         
         function renderAdminProductList() {
-            // [Logika renderowania tabeli produktów admina]
             const listBody = document.getElementById('admin-product-list-body');
             if (!listBody) return;
             const products = getProductsFromStorage();
@@ -1985,7 +1987,6 @@
             });
         }
         
-        // [POZOSTAŁA LOGIKA RENDEROWANIA I NAWIGACJI (NIEZMIENIONE)]
         function updateSideMenu() {
             const userPanel = document.getElementById('user-panel-side');
             const kontoLink = document.getElementById('nav-konto-side');
@@ -2024,151 +2025,85 @@
             userPanel.innerHTML = panelHTML;
         }
 
-        // [POZOSTAŁE FUNKCJE SKLEPU]
+        /** OSTATECZNA POPRAWKA: Renderowanie Produktów */
+        function renderProducts(products) {
+            const grid = document.getElementById('product-grid');
+            if (!grid) return; 
+            
+            grid.innerHTML = '';
+            const noProducts = document.getElementById('no-products');
+            
+            if (products.length === 0) {
+                if (noProducts) {
+                     noProducts.textContent = 'Brak produktów spełniających kryteria.';
+                     noProducts.style.display = 'block';
+                }
+                return;
+            }
+            if (noProducts) noProducts.style.display = 'none';
+
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                
+                // Zapewnienie, że kolumna images jest tablicą i pobieramy pierwszy element
+                // product.images to teraz tablica dzięki parsePostgresArray
+                const imageUrl = Array.isArray(product.images) && product.images.length > 0 
+                                 ? product.images[0] 
+                                 : ''; 
+
+                card.innerHTML = `
+                    <div style="aspect-ratio: 3 / 4; background-color: #F8F8F4; border: 1px dashed #CCC; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${imageUrl}'); background-size: cover; background-position: center;">
+                        ${imageUrl ? '' : 'Brak Zdjęcia'}
+                    </div>
+                    <div class="brand">${product.brand}</div>
+                    <h3>${product.name}</h3>
+                    <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category || 'N/A'}</p>
+                    <div class="price">${product.price.toFixed(2)} PLN</div>
+                    <div style="display:flex; gap:8px; margin-top:10px;">
+                        <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
+                        <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:10px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function applyFilters() {
+            let filteredProducts = getProductsFromStorage();
+            
+            const selectedBrands = Array.from(document.querySelectorAll('#filter-sidebar input[data-filter="brand"]:checked')).map(cb => cb.value);
+            const selectedCategories = Array.from(document.querySelectorAll('#filter-sidebar input[data-filter="category"]:checked')).map(cb => cb.value);
+            
+            if (selectedBrands.length > 0) {
+                filteredProducts = filteredProducts.filter(p => selectedBrands.includes(p.brand));
+            }
+            
+            if (selectedCategories.length > 0) {
+                filteredProducts = filteredProducts.filter(p => selectedCategories.includes(p.category));
+            }
+            
+            const sortByElement = document.getElementById('sort-by');
+            if(sortByElement) {
+                const sortBy = sortByElement.value;
+                if (sortBy === 'price-asc') {
+                    filteredProducts.sort((a, b) => a.price - b.price);
+                } else if (sortBy === 'price-desc') {
+                    filteredProducts.sort((a, b) => b.price - a.price);
+                }
+            }
+            
+            renderProducts(filteredProducts);
+        }
+        
         function highlightNavLink(activePageId) { /* ... */ }
         function scrollToElement(elementId) { /* ... */ }
         function showPageAndScroll(pageId, elementId) { /* ... */ }
         function openNav() { document.getElementById("side-menu").classList.add("open"); }
         function closeNav() { document.getElementById("side-menu").classList.remove("open"); }
-        function showPage(pageId) { 
-            if (pageId === 'admin-page' && !isCurrentUserAdmin()) {
-                alert('Nie masz uprawnień do tej strony. Zaloguj się jako administrator.');
-                showPage(getIsLoggedIn() ? 'konto-page' : 'landing-page');
-                return;
-            }
-            if (pageId === 'konto-page' && isCurrentUserAdmin()) {
-                pageId = 'admin-page';
-            }
-            
-            const sections = document.querySelectorAll('.page-section');
-            sections.forEach(section => { section.classList.remove('active'); });
-            
-            const activeSection = document.getElementById(pageId);
-            if (activeSection) {
-                activeSection.classList.add('active');
-                const event = new CustomEvent('pageShow', { detail: { pageId: pageId } });
-                document.dispatchEvent(event);
-            } else {
-                document.getElementById('landing-page').classList.add('active');
-                return;
-            }
-            
-            if (pageId !== 'landing-page') { highlightNavLink(pageId); } 
-            else { document.querySelectorAll('header nav a').forEach(link => { link.classList.remove('active-nav-link'); }); }
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            if (pageId === 'kolekcja-page') { applyFilters(); }
-            if (pageId === 'konto-page') { renderKontoPage(); }
-            if (pageId === 'admin-page') { renderAdminPage(); }
-            if (pageId === 'koszyk-page') { renderCartPage(); }
-        }
-
-        function renderKontoPage() {
-            const kontoContent = document.getElementById('konto-content');
-            if (!kontoContent) return;
-
-            kontoContent.innerHTML = ''; 
-            
-            if (getIsLoggedIn() && !isCurrentUserAdmin()) {
-                const template = document.getElementById('dashboard-template');
-                const clone = document.importNode(template.content, true);
-                kontoContent.appendChild(clone);
-                
-                document.getElementById('user-name-display').textContent = getUserName();
-                showDashboardContent('orders');
-            } else {
-                const template = document.getElementById('auth-template');
-                const clone = document.importNode(template.content, true);
-                kontoContent.appendChild(clone);
-            }
-        }
-        
-        function showDashboardContent(view) {
-            const mainContent = document.getElementById('dashboard-main');
-            const navLinks = document.querySelectorAll('#user-dashboard .dashboard-nav a');
-            
-            navLinks.forEach(link => link.classList.remove('active'));
-            const activeNav = document.getElementById(`nav-${view}`);
-            if(activeNav) activeNav.classList.add('active');
-
-            if (!mainContent) return;
-            mainContent.innerHTML = '';
-            
-            if (view === 'orders') {
-                const currentUserEmail = getCurrentUser().email;
-                const userOrders = getOrdersFromStorage().filter(order => order.customer_email === currentUserEmail);
-
-                let tableHTML = `
-                    <h3>Historia Twoich Zamówień</h3>
-                    <p>Poniżej znajdziesz listę wszystkich swoich transakcji.</p>
-                    <table class="order-table">
-                        <thead>
-                            <tr>
-                                <th>Numer</th>
-                                <th>Data</th>
-                                <th>Produkt</th>
-                                <th>Wartość</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-                if (userOrders.length > 0) {
-                    userOrders.forEach(order => {
-                        const statusColor = order.status === 'Dostarczono' ? '#0A0' : order.status === 'Wysłano' ? '#F90' : '#C00';
-                        const itemsSummary = Array.isArray(order.order_details) 
-                            ? order.order_details.map(i => `${i.name} (${i.quantity})`).join(', ') 
-                            : (order.items || 'Brak szczegółów');
-                        tableHTML += `
-                            <tr>
-                                <td>${order.id || order.order_id || 'N/A'}</td>
-                                <td>${order.order_date || 'N/A'}</td>
-                                <td>${itemsSummary}</td>
-                                <td>${(order.total_amount || 0).toFixed(2)} PLN</td>
-                                <td><strong style="color: ${statusColor};">${order.status}</strong></td>
-                            </tr>
-                        `;
-                    });
-                } else {
-                    tableHTML += '<tr><td colspan="5" style="text-align: center;">Nie złożyłeś jeszcze żadnego zamówienia.</td></tr>';
-                }
-                tableHTML += `</tbody></table>`;
-                mainContent.innerHTML = tableHTML;
-
-            } else if (view === 'address') {
-                mainContent.innerHTML = `
-                    <h3>Adresy Dostawy</h3>
-                    <p>Główny adres:</p>
-                    <div style="border: 1px solid #CCC; padding: 15px; margin-bottom: 20px;">
-                        <strong>${getUserName()} Kowalski</strong><br>
-                        ul. Elegancka 5/8<br>
-                        01-234 Warszawa<br>
-                        Tel: 555 666 777
-                    </div>
-                    <button class="btn-main" style="width: auto; padding: 10px 20px;">Edytuj Adres</button>
-                `;
-            } else if (view === 'profile') {
-                mainContent.innerHTML = `
-                    <h3>Edycja Danych Profilowych</h3>
-                    <p>Możesz zmienić swoje dane osobowe oraz hasło.</p>
-                    <form onsubmit="alert('Dane profilowe zostały zaktualizowane (symulacja)!'); return false;">
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <label>Nazwa użytkownika</label>
-                            <input type="text" value="${getUserName()}" required>
-                        </div>
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <label>Adres E-mail</label>
-                            <input type="email" value="${getCurrentUser().email}" required>
-                        </div>
-                        <button type="submit" class="btn-main" style="width: auto; padding: 10px 20px;">Zapisz Zmiany</button>
-                    </form>
-                `;
-            }
-        }
-        
-        function renderProducts(products) { /* ... */ }
-        function applyFilters() { /* ... */ }
+        function showPage(pageId) { /* ... */ }
+        function renderKontoPage() { /* ... */ }
+        function showDashboardContent(view) { /* ... */ }
         
         const chatResponses = { /* ... */ };
         const defaultOptions = [1, 2, 3, 4];
