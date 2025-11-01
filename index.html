@@ -874,14 +874,16 @@
             .mini-footer { flex-direction: column; text-align: center; }
             .mini-footer p { margin-bottom: 10px; }
             .mini-footer .social-icons { margin: 10px 0; }
-            #side-menu.open { width: 100%; }
-            #side-menu a { font-size: 16px; }
-        }
-    </style>
-</head>
+            #side-menu.open { width: 100%; }
+            #side-menu a { font-size: 16px; }
+        }
+   }
+    </style>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    </head>
 <body>
-
-    <div id="side-menu">
+    <div id="side-menu">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         
         <div id="user-panel-side">
@@ -1605,69 +1607,31 @@
     </template>
 
 
+        
+       // ZAAKTUALIZOWANY I POPRAWIONY KOD JAVASCRIPT
     <script>
-        // === KLUCZ PRZECHOWYWANIA DANYCH W LOCALSTORAGE ===
-        const LS_PRODUCTS_KEY = 'pf_products';
+        // === KROK 4: POŁĄCZENIE Z SUPABASE (KLUCZE API UZUPEŁNIONE) ===
+        const SUPABASE_URL = 'https://lkuzzyvdtolmrkarcwck.supabase.co'; 
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxrdXp5dmR0b2xtcnhrYXJ3Y2NrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwMDQ5NDYsImV4cCI6MjA3NzU4MDk0Nn0.GAEa5n8Mk7u7EKiphUUU9G-Et53daIqPWazf44y9Pvw'; 
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // =================================================================
+
+        // === KLUCZE PRZECHOWYWANIA DANYCH (MOCK) ===
+        // Zmienne te są teraz zdefiniowane tylko raz i poprawnie.
         const LS_USERS_KEY = 'pf_users';
         const LS_SESSION_KEY = 'pf_currentUser';
-        const LS_ORDERS_KEY = 'pf_orders'; 
-        
-        // ### KROK 3: DODANIE NOWEGO KLUCZA DLA KOSZYKA ###
+        const LS_ORDERS_KEY = 'pf_orders';
         const LS_CART_KEY = 'pf_cart';
         
-        // // --- POCZĄTKOWA BAZA PRODUKTÓW (TYLKO DLA INICJALIZACJI) ---
-        const initialProductsData = [
-            { id: 'PF101', brand: 'Creed', name: 'Aventus (EDP 100ml)', category: 'Męskie', price: 1250,
-              description: 'Klasyczny Aventus — nuty ananasa, brzozy i ambry. Ikona męskiej elegancji.',
-              specs: [{ key: 'Pojemność', value: '100 ml' }, { key: 'Typ', value: 'EDP' }, { key: 'Trwałość', value: '8-10 h' }],
-              images: ['https://picsum.photos/seed/pf101/800/600']
-            },
-            { id: 'PF102', brand: 'Parfums de Marly', name: 'Layton (EDP 75ml)', category: 'Unisex', price: 899,
-              description: 'Layton — bogata, orientalno-aromatyczna kompozycja, intensywna i elegancka.',
-              specs: [{ key: 'Pojemność', value: '75 ml' }, { key: 'Typ', value: 'EDP' }, { key: 'Nuty', value: 'Drzewne, kwiatowe' }],
-              images: ['https://picsum.photos/seed/pf102/800/600']
-            },
-            { id: 'PF103', brand: 'Tom Ford', name: 'Tuscan Leather (EDP 50ml)', category: 'Unisex', price: 720,
-              description: 'Tuscan Leather — skórzana, intensywna i głęboka kompozycja od Tom Ford.',
-              specs: [{ key: 'Pojemność', value: '50 ml' }, { key: 'Typ', value: 'EDP' }, { key: 'Styl', value: 'Wieczorowy' }],
-              images: ['https://picsum.photos/seed/pf103/800/600']
-            },
-            { id: 'PF104', brand: 'Frederic Malle', name: 'Portrait of a Lady (EDP 50ml)', category: 'Damskie', price: 1100,
-              description: 'Portret damy — szyprowo-kwiatowa kompozycja o wyrafinowanym charakterze.',
-              specs: [{ key: 'Pojemność', value: '50 ml' }, { key: 'Typ', value: 'EDP' }, { key: 'Dominanta', value: 'Róża, paczula' }],
-              images: ['https://picsum.photos/seed/pf104/800/600']
-            },
-            { id: 'PF105', brand: 'Kilian', name: 'Love, Don\'t Be Shy (EDP 50ml)', category: 'Damskie', price: 980,
-              description: 'Kilian — słodka, waniliowo-karmelowa kompozycja dla miłośników gourmand.',
-              specs: [{ key: 'Pojemność', value: '50 ml' }, { key: 'Typ', value: 'EDP' }, { key: 'Nuty', value: 'Karmel, wanilia' }],
-              images: ['https://picsum.photos/seed/pf105/800/600']
-            },
-            { id: 'PF106', brand: 'Creed', name: 'Silver Mountain Water (EDP 100ml)', category: 'Unisex', price: 950,
-              description: 'Świeża, czysta kompozycja Creed — inspiracja górskimi strumieniami.',
-              specs: [{ key: 'Pojemność', value: '100 ml' }, { key: 'Typ', value: 'EDP' }, { key: 'Charakter', value: 'Świeży' }],
-              images: ['https://picsum.photos/seed/pf106/800/600']
-            },
-            { id: 'PF107', brand: 'Tom Ford', name: 'Oud Wood (EDP 50ml)', category: 'Unisex', price: 780,
-              description: 'Oud Wood — elegancka i egzotyczna kompozycja z dominującym oud.',
-              specs: [{ key: 'Pojemność', value: '50 ml' }, { key: 'Typ', value: 'EDP' }, { key: 'Główne nuty', value: 'Oud, drzewa' }],
-              images: ['https://picsum.photos/seed/pf107/800/600']
-            },
-            { id: 'PF108', brand: 'Parfums de Marly', name: 'Delina Exclusif (EDP 75ml)', category: 'Damskie', price: 1050,
-              description: 'Delina Exclusif — kwiatowa, luksusowa i pełna charakteru kompozycja.',
-              specs: [{ key: 'Pojemność', value: '75 ml' }, { key: 'Typ', value: 'EDP' }, { key: 'Styl', value: 'Elegancki' }],
-              images: ['https://picsum.photos/seed/pf108/800/600']
-            }
-        ];
-
-        /* NOWOŚĆ: Baza przykładowych zamówień */
+        /* Baza przykładowych zamówień (MOCK DATA) */
         const initialOrdersData = [
-            { id: '2025/08/01', date: '20.08.2025', email: 'michal@premium.pl', items: 'Aventus (100ml)', total: 1250, status: 'Dostarczono' },
-            { id: '2025/09/15', date: '15.09.2025', email: 'ania@test.pl', items: 'Layton (75ml)', total: 899, status: 'Wysłano' },
+            { id: '2025/08/01', date: '20.08.2025', email: 'michal@premium.pl', items: 'Dior Sauvage (100ml)', total: 599, status: 'Dostarczono' },
+            { id: '2025/09/15', date: '15.09.2025', email: 'ania@test.pl', items: 'Dior Sauvage (75ml)', total: 899, status: 'Wysłano' },
             { id: '2025/10/29', date: '29.10.2025', email: 'klient@domena.com', items: 'Tuscan Leather (50ml)', total: 720, status: 'Oczekuje' },
             { id: '2025/10/30', date: '30.10.2025', email: 'michal@premium.pl', items: 'Delina Exclusif (75ml)', total: 1050, status: 'Wysłano' }
         ];
 
-        /* NOWOŚĆ: Zmienna do przechowywania interwału symulacji */
+        /* Zmienna do przechowywania interwału symulacji */
         let activeUserInterval = null;
 
         // ===============================================
@@ -1832,12 +1796,10 @@
         // === ZARZĄDZANIE BAZAMI (Produkty i Zamówienia) ===
         // ===============================================
 
-        /** Jednorazowa inicjalizacja bazy produktów w localStorage */
+        /** Jednorazowa inicjalizacja bazy produktów w localStorage (MOCK) */
+        // Ta funkcja jest teraz pusta, ponieważ Supabase będzie dostarczać dane
         function initializeProductStorage() {
-            const products = localStorage.getItem(LS_PRODUCTS_KEY);
-            if (!products) {
-                localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(initialProductsData));
-            }
+            // Usunięto starą logikę localStorage.
         }
 
         /** NOWOŚĆ: Jednorazowa inicjalizacja bazy zamówień w localStorage */
@@ -1848,19 +1810,18 @@
             }
         }
 
-        /** Pobiera wszystkie produkty z bazy localStorage i zapewnia domyślne pola */
-        function getProductsFromStorage() {
-            const raw = JSON.parse(localStorage.getItem(LS_PRODUCTS_KEY) || '[]');
-            return raw.map(p => ({
-                id: p.id,
-                brand: p.brand || '',
-                name: p.name || '',
-                price: typeof p.price === 'number' ? p.price : parseFloat(p.price) || 0,
-                category: p.category || '',
-                description: p.description || 'Brak opisu produktu.',
-                specs: Array.isArray(p.specs) ? p.specs : [],
-                images: Array.isArray(p.images) ? p.images : []
-            }));
+        /** POBIERANIE PRODUKTÓW Z SUPABASE (ASYNC) */
+        async function getProductsFromStorage() {
+            const { data, error } = await supabase
+                .from('products') // Pytamy bazę danych Supabase o dane z tabeli 'products'
+                .select('*'); 
+
+            if (error) {
+                console.error('Błąd Supabase przy pobieraniu produktów:', error.message);
+                return []; 
+            }
+            
+            return data;
         }
 
         /** NOWOŚĆ: Pobiera wszystkie zamówienia z bazy localStorage */
@@ -1868,9 +1829,10 @@
             return JSON.parse(localStorage.getItem(LS_ORDERS_KEY) || '[]');
         }
 
-        /** Zapisuje całą tablicę produktów do bazy localStorage */
+        /** Zapisuje całą tablicę produktów do bazy (teraz pusta funkcja) */
         function saveProductsToStorage(products) {
-            localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(products));
+            // Opcjonalnie: Tutaj będzie logika zapisu do Supabase (Krok 5)
+            // Na razie zostawiamy pustą, by nie łamać logiki
         }
 
 
@@ -1901,8 +1863,8 @@
         }
 
         /** Dodaje produkt do koszyka */
-        function addToCart(productId) {
-            const products = getProductsFromStorage();
+        async function addToCart(productId) {
+            const products = await getProductsFromStorage(); // Dodano await
             const productToAdd = products.find(p => p.id === productId);
             if (!productToAdd) {
                 console.error('Nie znaleziono produktu o ID:', productId);
@@ -2197,81 +2159,74 @@
         }
 
 
-        /** Renderuje listę produktów w tabeli admina (teraz wywoływane przez showAdminContent) */
-        function renderAdminProductList() {
-            const listBody = document.getElementById('admin-product-list-body');
-            if (!listBody) return;
-            
-            const products = getProductsFromStorage();
-            listBody.innerHTML = ''; 
+       /** Renderuje listę produktów w tabeli admina (teraz wywoływane przez showAdminContent) */
+async function renderAdminProductList() { // DODANO ASYNC
+    const listBody = document.getElementById('admin-product-list-body');
+    if (!listBody) return;
+    
+    const products = await getProductsFromStorage(); // DODANO AWAIT
+    listBody.innerHTML = ''; 
 
-            if (products.length === 0) {
-                listBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Brak produktów w bazie.</td></tr>';
-                return;
-            }
+    if (products.length === 0) {
+        listBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Brak produktów w bazie.</td></tr>';
+        return;
+    }
 
-            products.forEach(p => {
-                listBody.innerHTML += `
-                    <tr>
-                        <td>${p.id}</td>
-                        <td>${p.brand}</td>
-                        <td>${p.name}</td>
-                        <td>${p.price} PLN</td>
-                        <td>${p.category}</td>
-                        <td>
-                            <button class="btn-admin-edit" onclick="populateAdminForm('${p.id}')">Edytuj</button>
-                            <button class="btn-admin-delete" onclick="deleteProduct('${p.id}')">Usuń</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
+    products.forEach(p => {
+        listBody.innerHTML += `
+            <tr>
+                <td>${p.id}</td>
+                <td>${p.brand}</td>
+                <td>${p.name}</td>
+                <td>${p.price} PLN</td>
+                <td>${p.category}</td>
+                <td>
+                    <button class="btn-admin-edit" onclick="populateAdminForm('${p.id}')">Edytuj</button>
+                    <button class="btn-admin-delete" onclick="deleteProduct('${p.id}')">Usuń</button>
+                </td>
+            </tr>
+        `;
+    });
+}
 
-        /** Obsługuje wysłanie formularza admina (Dodawanie lub Edycja) */
-        function handleAdminFormSubmit(event) {
-            event.preventDefault();
-            
-            const productId = document.getElementById('admin-product-id').value;
-            
-            const productData = {
-                brand: document.getElementById('admin-brand').value,
-                name: document.getElementById('admin-name').value,
-                price: parseInt(document.getElementById('admin-price').value, 10),
-                category: document.getElementById('admin-category').value,
-                description: document.getElementById('admin-description').value,
-                specs: readSpecsFromForm(),
-                images: adminImageData.slice()
-            };
+       /** Obsługuje wysłanie formularza admina (Dodawanie lub Edycja) */
+async function handleAdminFormSubmit(event) { // DODANO ASYNC
+    event.preventDefault();
+    
+    const productId = document.getElementById('admin-product-id').value;
+    
+    const productData = {
+        // ID jest pomijane przy INSERT, ale potrzebne przy UPDATE
+        brand: document.getElementById('admin-brand').value,
+        name: document.getElementById('admin-name').value,
+        price: parseInt(document.getElementById('admin-price').value, 10),
+        category: document.getElementById('admin-category').value,
+        description: document.getElementById('admin-description').value,
+        specs: readSpecsFromForm(),
+        images: adminImageData.slice(),
+        // Jeśli edytujemy, ID jest potrzebne do identyfikacji w Supabase
+        ...(productId && { id: productId }) 
+    };
 
-            if (productId) {
-                // === TRYB EDYCJI ===
-                let products = getProductsFromStorage();
-                const updatedProducts = products.map(p => {
-                    if (p.id === productId) {
-                        return { ...p, ...productData };
-                    }
-                    return p;
-                });
-                saveProductsToStorage(updatedProducts);
-                alert('Produkt zaktualizowany!');
+    // UŻYCIE SUPABASE DO ZAPISU/AKTUALIZACJI (UPSERT)
+    const { error } = await supabase.from('products').upsert(productData);
 
-            } else {
-                // === TRYB DODAWANIA ===
-                let products = getProductsFromStorage();
-                const newProduct = {
-                    id: 'PF' + Date.now(), 
-                    ...productData
-                };
-                products.push(newProduct);
-                saveProductsToStorage(products);
-                alert('Nowy produkt dodany!');
-            }
+    if (error) {
+        alert('BŁĄD ZAPISU: ' + error.message);
+        console.error(error);
+        return;
+    }
 
-            clearAdminForm();
-            renderAdminProductList();
-            applyFilters(); // NOWOŚĆ: Odśwież też widok sklepu
-        }
+    if (productId) {
+        alert('Produkt zaktualizowany w Supabase!');
+    } else {
+        alert('Nowy produkt dodany do Supabase!');
+    }
 
+    clearAdminForm();
+    await renderAdminProductList(); // Czekamy na odświeżenie listy
+    applyFilters(); // Odśwież też widok sklepu (teraz jest już async)
+}
         /** Wypełnia formularz admina danymi do edycji */
         function populateAdminForm(productId) {
             const products = getProductsFromStorage();
@@ -2317,21 +2272,28 @@
             if (preview) preview.innerHTML = '';
         }
 
-        /** Usuwa produkt z bazy */
-        function deleteProduct(productId) {
-            if (!confirm('Czy na pewno chcesz trwale usunąć ten produkt? Tej akcji nie można cofnąć.')) {
-                return;
-            }
+       /** Usuwa produkt z bazy (Teraz przez Supabase) */
+async function deleteProduct(productId) { // DODANO ASYNC
+    if (!confirm('Czy na pewno chcesz trwale usunąć ten produkt? Tej akcji nie można cofnąć.')) {
+        return;
+    }
 
-            let products = getProductsFromStorage();
-            const filteredProducts = products.filter(p => p.id !== productId);
-            saveProductsToStorage(filteredProducts);
-            
-            alert('Produkt usunięty.');
-            renderAdminProductList(); 
-            applyFilters(); // NOWOŚĆ: Odśwież też widok sklepu
-        }
+    // UŻYCIE SUPABASE DO USUNIĘCIA
+    const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', productId); // Usuń wiersz, gdzie kolumna 'id' równa się productId
 
+    if (error) {
+        alert('BŁĄD USUNIĘCIA: ' + error.message);
+        console.error(error);
+        return;
+    }
+
+    alert('Produkt usunięty z Supabase.');
+    await renderAdminProductList(); // Czekamy na odświeżenie listy admina
+    applyFilters(); // Odśwież też widok sklepu
+}
 
         // --- FUNKCJE NAWIGACJI ---
         function highlightNavLink(activePageId) {
@@ -3094,6 +3056,10 @@
             // ### KROK 3: INICJALIZACJA LICZNIKA PRZY STARCIE ###
             updateCartCounters();
         });
+        
+    </script>
+</body>
+</html>
         
     </script>
 </body>
