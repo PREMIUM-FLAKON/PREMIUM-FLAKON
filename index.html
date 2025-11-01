@@ -826,7 +826,6 @@
             .dashboard-content { flex-direction: column; }
             .dashboard-nav { flex: 1 1 100%; }
             .admin-layout { flex-direction: column; } 
-            .admin-form-container { position: static; } 
             #koszyk-formularz { position: static; } 
         }
 
@@ -843,7 +842,6 @@
              .footer-links, .footer-contact { flex-basis: 100%; text-align: center; }
             .footer-links a { display: inline-block; margin: 0 10px 5px 10px; }
             .auth-container { flex-direction: column; gap: 30px; }
-            .auth-form { width: 100%; box-sizing: border-box; }
              #pomoc-page .container > div { flex-direction: column; }
              .chatbot-container { max-width: 100%; }
              .advantage-list { flex-direction: column; gap: 20px; }
@@ -2025,7 +2023,7 @@
             userPanel.innerHTML = panelHTML;
         }
 
-        /** OSTATECZNA POPRAWKA: Renderowanie Produktów */
+        /** Renderowanie Produktów */
         function renderProducts(products) {
             const grid = document.getElementById('product-grid');
             if (!grid) return; 
@@ -2046,7 +2044,6 @@
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 
-                // Zapewnienie, że kolumna images jest tablicą i pobieramy pierwszy element
                 const imageUrl = Array.isArray(product.images) && product.images.length > 0 
                                  ? product.images[0] 
                                  : ''; 
@@ -2187,274 +2184,15 @@
             }
         }
         
-        function showDashboardContent(view) {
-            const mainContent = document.getElementById('dashboard-main');
-            const navLinks = document.querySelectorAll('#user-dashboard .dashboard-nav a');
-            
-            navLinks.forEach(link => link.classList.remove('active'));
-            const activeNav = document.getElementById(`nav-${view}`);
-            if(activeNav) activeNav.classList.add('active');
-
-            if (!mainContent) return;
-            mainContent.innerHTML = '';
-            
-            if (view === 'orders') {
-                const currentUserEmail = getCurrentUser().email;
-                const userOrders = getOrdersFromStorage().filter(order => order.customer_email === currentUserEmail);
-
-                let tableHTML = `
-                    <h3>Historia Twoich Zamówień</h3>
-                    <p>Poniżej znajdziesz listę wszystkich swoich transakcji.</p>
-                    <table class="order-table">
-                        <thead>
-                            <tr>
-                                <th>Numer</th>
-                                <th>Data</th>
-                                <th>Produkt</th>
-                                <th>Wartość</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-                if (userOrders.length > 0) {
-                    userOrders.forEach(order => {
-                        const statusColor = order.status === 'Dostarczono' ? '#0A0' : order.status === 'Wysłano' ? '#F90' : '#C00';
-                        const itemsSummary = Array.isArray(order.order_details) 
-                            ? order.order_details.map(i => `${i.name} (${i.quantity})`).join(', ') 
-                            : (order.items || 'Brak szczegółów');
-                        tableHTML += `
-                            <tr>
-                                <td>${order.id || order.order_id || 'N/A'}</td>
-                                <td>${order.order_date || 'N/A'}</td>
-                                <td>${itemsSummary}</td>
-                                <td>${(order.total_amount || 0).toFixed(2)} PLN</td>
-                                <td><strong style="color: ${statusColor};">${order.status}</strong></td>
-                            </tr>
-                        `;
-                    });
-                } else {
-                    tableHTML += '<tr><td colspan="5" style="text-align: center;">Nie złożyłeś jeszcze żadnego zamówienia.</td></tr>';
-                }
-                tableHTML += `</tbody></table>`;
-                mainContent.innerHTML = tableHTML;
-
-            } else if (view === 'address') {
-                mainContent.innerHTML = `
-                    <h3>Adresy Dostawy</h3>
-                    <p>Główny adres:</p>
-                    <div style="border: 1px solid #CCC; padding: 15px; margin-bottom: 20px;">
-                        <strong>${getUserName()} Kowalski</strong><br>
-                        ul. Elegancka 5/8<br>
-                        01-234 Warszawa<br>
-                        Tel: 555 666 777
-                    </div>
-                    <button class="btn-main" style="width: auto; padding: 10px 20px;">Edytuj Adres</button>
-                `;
-            } else if (view === 'profile') {
-                mainContent.innerHTML = `
-                    <h3>Edycja Danych Profilowych</h3>
-                    <p>Możesz zmienić swoje dane osobowe oraz hasło.</p>
-                    <form onsubmit="alert('Dane profilowe zostały zaktualizowane (symulacja)!'); return false;">
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <label>Nazwa użytkownika</label>
-                            <input type="text" value="${getUserName()}" required>
-                        </div>
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <label>Adres E-mail</label>
-                            <input type="email" value="${getCurrentUser().email}" required>
-                        </div>
-                        <button type="submit" class="btn-main" style="width: auto; padding: 10px 20px;">Zapisz Zmiany</button>
-                    </form>
-                `;
-            }
-        }
-        
-        function renderProducts(products) { /* ... */ }
-        function applyFilters() { /* ... */ }
-        
-        // ===============================================
-        // === ZMIENIONA LOGIKA: CHATBOT (SEKCJA POMOC) ===
-        // ===============================================
-
-        const chatResponses = {
-            1: { client: 'Chcę sprawdzić status zamówienia.', bot: 'Podaj numer swojego zamówienia, aby je śledzić. Realizacja wysyłki trwa do 24h. Numer do śledzenia przesyłki otrzymasz e-mailem.', options: [4] },
-            2: { client: 'Pytanie o zwroty i reklamacje.', bot: 'Masz 14 dni na zwrot nieużywanego towaru. Szczegółowy regulamin znajdziesz w sekcji Informacje > Zwroty i Reklamacje. Czy chcesz teraz skontaktować się z Działem Obsługi?', options: [4] },
-            3: { client: 'Pytanie o gwarancję oryginalności.', bot: 'Gwarantujemy 100% oryginalności! Wszystkie produkty pochodzą od autoryzowanych dystrybutorów. Więcej przeczytasz na stronie "O Nas".', options: [4] },
-            4: { client: 'Chcę skontaktować się z konsultantem.', bot: 'Rozumiem. W celu kontaktu z konsultantem prosimy o kontakt telefoniczny (532 116 720) lub e-mail (kontakt@premiumflakon.pl). Wrócisz do menu głównego?', options: [99] },
-            99: { client: 'Wróć do menu głównego.', bot: 'Witaj! Jestem Bot Wsparcia. Jak mogę Ci pomóc?', options: [1, 2, 3, 4] }
-        };
-        const defaultOptions = [1, 2, 3, 4];
-        let placeholderIndex = 0;
-        let placeholderInterval;
-
-        function addMessage(text, type) {
-            const history = document.getElementById('chat-history');
-            if (!history) return;
-            const msgDiv = document.createElement('div');
-            msgDiv.className = type + '-message';
-            msgDiv.innerHTML = text; 
-            history.appendChild(msgDiv);
-            history.scrollTop = history.scrollHeight;
-        }
-
-        function displayOptions(optionIds) {
-            const optionsDiv = document.getElementById('chat-options');
-            if (!optionsDiv) return;
-            optionsDiv.innerHTML = ''; 
-            optionsDiv.style.display = 'block'; 
-            
-            optionIds.forEach(id => {
-                const optionData = chatResponses[id];
-                if (optionData) {
-                    const btn = document.createElement('button');
-                    btn.textContent = optionData.client.replace('Wróć do menu głównego.', 'Wróć do Menu Głównego'); 
-                    btn.onclick = () => handleOption(id);
-                    optionsDiv.appendChild(btn);
-                }
-            });
-        }
-
-        function handleOption(optionId) {
-            const response = chatResponses[optionId];
-            if (!response) return;
-
-            document.getElementById('user-input').disabled = true;
-            addMessage(response.client, 'client');
-            
-            if (placeholderInterval) {
-                clearInterval(placeholderInterval);
-            }
-            
-            setTimeout(() => {
-                addMessage(response.bot, 'bot');
-                const nextOptions = response.options || defaultOptions;
-                displayOptions(nextOptions);
-                document.getElementById('user-input').disabled = false;
-                document.getElementById('user-input').focus();
-                
-                if (optionId === 99) { // Po powrocie do głównego menu wznów karuzelę
-                    startPlaceholderCarousel();
-                }
-            }, 500); 
-        }
-
-        function generateBotResponse(text) {
-            const lowerText = text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); 
-            const intents = {
-                ORDER_STATUS: ['zamowienie', 'status', 'sledzenie', 'gdzie jest'],
-                DELIVERY_INFO: ['dostawa', 'wysylka', 'czas', 'kurier'],
-                ORIGINALITY_GUARANTEE: ['oryginalnosc', 'podrobka', 'gwarancja', 'autentycznosc', 'pewnosc'],
-                RETURNS_COMPLAINTS: ['zwrot', 'reklamacja', 'uszkodzony', 'opakowanie', 'zepsuty'],
-                PRODUCT_INFO: ['cena', 'kosztuje', 'jaki', 'zapach', 'dostępny', 'kupic'],
-                CONTACT: ['kontakt', 'telefon', 'email', 'rozmowa', 'konsultant']
-            };
-            
-            let detectedIntent = 'DEFAULT';
-            for (const [intent, keywords] of Object.entries(intents)) {
-                if (keywords.some(keyword => lowerText.includes(keyword))) {
-                    detectedIntent = intent;
-                    break;
-                }
-            }
-            
-            let productMatch = getProductsFromStorage().find(p => lowerText.includes(p.brand.toLowerCase()) || lowerText.includes(p.name.toLowerCase().split('(')[0].trim().toLowerCase()));
-
-            switch (detectedIntent) {
-                case 'ORDER_STATUS':
-                    return `Rozumiem, że interesuje Cię status Twojego zamówienia. Proszę, podaj **numer zamówienia**. Pamiętaj, że wysyłka następuje w ciągu <b>24 godzin</b> od zaksięgowania płatności, a link do śledzenia jest wysyłany osobnym e-mailem.`;
-                case 'DELIVERY_INFO':
-                    return `Wysyłka w **PREMIUM FLAKON** jest realizowana zazwyczaj w ciągu <b>24 godzin</b>. Korzystamy z zaufanych kurierów (DPD/Inpost). Czas dostawy to standardowo 1-2 dni robocze. Chcesz dowiedzieć się więcej o <a onclick="showPage('regulamin-page');" style="color: var(--color-accent-gold); cursor: pointer;">warunkach dostawy</a>?`;
-                case 'ORIGINALITY_GUARANTEE':
-                    return `Wszystkie produkty są <b>100% oryginalne</b> i pochodzą bezpośrednio od autoryzowanych dystrybutorów. Jesteśmy butikiem luksusowym, a nie hurtownią. Gwarantujemy to naszą <a onclick="showPage('onas-page');" style="color: var(--color-accent-gold); cursor: pointer;">Misją i Filozofią</a>.`;
-                case 'RETURNS_COMPLAINTS':
-                    return `Pytanie o zwroty jest ważne. Pamiętaj, że ze względu na higienę, przyjmujemy zwroty w ciągu 14 dni tylko dla flakonów <b>z nienaruszoną plombą/folią fabryczną</b>. Szczegóły znajdziesz na stronie <a onclick="showPage('zwroty-page');" style="color: var(--color-accent-gold); cursor: pointer;">Zwroty i Reklamacje</a>.`;
-                    
-                case 'PRODUCT_INFO':
-                    if (productMatch) {
-                        return `Perfuma <b>${productMatch.brand} ${productMatch.name}</b> jest aktualnie dostępna w cenie **${productMatch.price} PLN**. Aby zobaczyć pełny opis i kupić, przejdź do <a onclick="showPage('kolekcja-page');" style="color: var(--color-accent-gold); cursor: pointer;">Kolekcji</a> i użyj filtrów.`;
-                    }
-                    return `Informacje o cenie i dostępności danego produktu (np. Tom Ford, Creed) znajdziesz w naszym <a onclick="showPage('kolekcja-page');" style="color: var(--color-accent-gold); cursor: pointer;">katalogu Kolekcji</a>. Wpisz konkretną nazwę, jeśli jej szukasz!`;
-                case 'CONTACT':
-                    return `Jeśli potrzebujesz bezpośredniego kontaktu z żywym konsultantem, zadzwoń pod numer **532 116 720** (Pon-Pt, 9:00-17:00) lub napisz na <b>kontakt@premiumflakon.pl</b>.`;
-                default:
-                    if (lowerText.includes('dziekuje') || lowerText.includes('dzieki') || lowerText.includes('super')) {
-                        return 'Cieszę się, że mogłem pomóc! Czy masz jeszcze jakieś pytania odnośnie naszych produktów lub zamówienia?';
-                    }
-                    return `Przepraszam, nie jestem pewien, jak Ci pomóc w tej kwestii. Jako AI, najlepiej radzę sobie z pytaniami o: <b>status zamówienia</b>, <b>wysyłkę</b>, <b>oryginalność</b> i <b>zwroty</b>. Czy możesz przeformułować swoje pytanie?`;
-            }
-        }
-
-        function sendChatMessage() {
-            const inputElement = document.getElementById('user-input');
-            const message = inputElement.value.trim();
-            if (message === '') return;
-
-            addMessage(message, 'client');
-            inputElement.value = ''; 
-            document.getElementById('chat-options').style.display = 'none';
-            inputElement.disabled = true;
-
-            if (placeholderInterval) {
-                clearInterval(placeholderInterval);
-            }
-
-            setTimeout(() => {
-                const botResponse = generateBotResponse(message);
-                addMessage(botResponse, 'bot');
-                
-                inputElement.disabled = false;
-                inputElement.focus();
-                
-                const optionsDiv = document.getElementById('chat-options');
-                if (optionsDiv) {
-                    optionsDiv.style.display = 'block';
-                    optionsDiv.innerHTML = ''; 
-                    
-                    const backToMenuId = 99;
-                    const backBtn = document.createElement('button');
-                    backBtn.textContent = chatResponses[backToMenuId].client.replace('Wróć do menu głównego.', 'Wróć do Menu Głównego'); 
-                    backBtn.onclick = () => { 
-                        handleOption(backToMenuId); 
-                        startPlaceholderCarousel();
-                    };
-                    optionsDiv.appendChild(backBtn);
-                }
-            }, 1000); 
-        }
-        
-        const popularQuestions = [
-            "Wpisz: 'Gwarancja oryginalności'...",
-            "Wpisz: 'Status zamówienia'...",
-            "Wpisz: 'Pytanie o zwroty'...",
-            "Wpisz: 'Cena Aventus'...",
-            "Wpisz: 'Czas dostawy'...",
-            "Wpisz: 'Kontakt z konsultantem'..."
-        ];
-
-        function startPlaceholderCarousel() {
-            const inputElement = document.getElementById('user-input');
-            if (!inputElement) return;
-
-            if (placeholderInterval) {
-                clearInterval(placeholderInterval);
-            }
-            
-            placeholderInterval = setInterval(() => {
-                placeholderIndex = (placeholderIndex + 1) % popularQuestions.length;
-                
-                inputElement.style.transition = 'opacity 0.5s';
-                inputElement.style.opacity = '0.5';
-
-                setTimeout(() => {
-                    inputElement.placeholder = popularQuestions[placeholderIndex];
-                    inputElement.style.opacity = '1';
-                }, 500); 
-            }, 3000); 
-        }
-
-        let currentDetailProductId = null;
-        function showProductDetail(productId) { /* MOCK */ currentDetailProductId = productId; showPage('product-page'); }
+        function showDashboardContent(view) { /* MOCK */ }
+        function renderAdminPage() { /* MOCK */ }
+        function renderAdminStatsAndOrders() { /* MOCK */ }
+        function renderCartPage() { /* MOCK */ }
+        function updateCartCounters() { /* MOCK */ }
+        function addToCart(productId) { /* MOCK */ }
+        function updateCartQuantity(productId, newQuantity) { /* MOCK */ }
+        function removeFromCart(productId) { /* MOCK */ }
+        function showProductDetail(productId) { /* MOCK */ }
         function renderProductDetail(productId) { /* MOCK */ }
         function addToCartFromDetail() { /* MOCK */ }
         function editProductFromDetail() { /* MOCK */ }
@@ -2467,13 +2205,6 @@
         function handleAdminImagesChange(event) { /* MOCK */ }
         function renderAdminImagePreviews() { /* MOCK */ }
         function removeAdminImage(index) { /* MOCK */ }
-        function renderCartPage() { /* MOCK */ }
-        function updateCartCounters() { /* MOCK */ }
-        function addToCart(productId) { /* MOCK */ }
-        function updateCartQuantity(productId, newQuantity) { /* MOCK */ }
-        function removeFromCart(productId) { /* MOCK */ }
-        function renderAdminStatsAndOrders() { /* MOCK */ }
-        function renderAdminPage() { /* MOCK */ }
         
         // Funkcje pomocnicze dla Admina (mocki)
         function clearAdminForm() { /* MOCK */ }
@@ -2521,6 +2252,7 @@
 
             document.addEventListener('pageShow', (e) => {
                 if (e.detail.pageId === 'pomoc-page') {
+                    // Dodaj logikę chatbota
                     displayOptions(defaultOptions);
                     startPlaceholderCarousel();
                     const userInputEl = document.getElementById('user-input');
