@@ -1591,6 +1591,7 @@
 
 
     <script>
+      <script>
         // ===============================================
         // === KROK 1: INICJALIZACJA KLIENTA SUPABASE ===
         // ===============================================
@@ -2215,6 +2216,175 @@
         function clearAdminForm() { /* MOCK */ }
         function populateAdminForm(productId) { /* MOCK */ }
 
+        // ===============================================
+        // === POPRAWIONY I ULEPSZONY CHATBOT (AI) ===
+        // ===============================================
+
+        const popularQuestions = [
+            "Wpisz: 'Gwarancja oryginalności'...",
+            "Wpisz: 'Status zamówienia'...",
+            "Wpisz: 'Pytanie o zwroty'...",
+            "Wpisz: 'Cena Aventus'...",
+            "Wpisz: 'Czas dostawy'...",
+            "Wpisz: 'Kontakt z konsultantem'..."
+        ];
+        let placeholderIndex = 0;
+        let placeholderInterval;
+        
+        function addMessage(text, type) {
+            const history = document.getElementById('chat-history');
+            if (!history) return;
+            const msgDiv = document.createElement('div');
+            msgDiv.className = type + '-message';
+            msgDiv.innerHTML = text; 
+            history.appendChild(msgDiv);
+            history.scrollTop = history.scrollHeight;
+        }
+
+        // NAPRAWIONA FUNKCJA WYSYŁANIA WIADOMOŚCI
+        function sendChatMessage() {
+            const inputElement = document.getElementById('user-input');
+            const sendButton = document.querySelector('#chat-input-area button');
+            const message = inputElement.value.trim();
+            if (message === '') return;
+
+            addMessage(message, 'client');
+            inputElement.value = ''; 
+            inputElement.disabled = true;
+            sendButton.disabled = true;
+
+            if (placeholderInterval) {
+                clearInterval(placeholderInterval);
+            }
+
+            setTimeout(() => {
+                const botResponse = generateBotResponse(message);
+                addMessage(botResponse, 'bot');
+                
+                inputElement.disabled = false;
+                sendButton.disabled = false;
+                inputElement.focus();
+                
+                // Resetujemy karuzelę, jeśli użytkownik wpisał własne pytanie
+                startPlaceholderCarousel();
+            }, 1000); 
+        }
+        
+        // NOWA FUNKCJA: Generowanie dynamicznej odpowiedzi AI
+        function generateBotResponse(text) {
+            const lowerText = text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); 
+            const products = getProductsFromStorage();
+            
+            // 1. INTENCJE REGULAMINOWE/INFORMACYJNE
+            if (lowerText.includes('gwarancja') || lowerText.includes('oryginalnosc') || lowerText.includes('podrobka')) {
+                return `W **PREMIUM FLAKON** gwarantujemy **100% oryginalności**. Wszystkie nasze produkty pochodzą wyłącznie od autoryzowanych, niszowych dystrybutorów. Jesteśmy butikiem, nie hurtownią. Nasza reputacja opiera się na autentyczności.`;
+            }
+            if (lowerText.includes('zwrot') || lowerText.includes('reklamacja') || lowerText.includes('otwarte')) {
+                return `Zgodnie z naszym regulaminem, masz 14 dni na zwrot. Pamiętaj jednak, że perfumy są produktem higienicznym. Zwroty są akceptowane tylko, jeśli **fabryczna plomba lub folia nie została naruszona** (patrz §5 Regulaminu). Chcesz poznać więcej szczegółów?`;
+            }
+            if (lowerText.includes('dostawa') || lowerText.includes('wysylka') || lowerText.includes('czas') || lowerText.includes('kurier')) {
+                return `Wysyłka realizowana jest w ciągu <b>24 godzin</b> od zaksięgowania płatności. Korzystamy z zaufanych przewoźników (DPD/Inpost). Po wysyłce otrzymasz link do śledzenia przesyłki.`;
+            }
+            if (lowerText.includes('kontakt') || lowerText.includes('telefon') || lowerText.includes('email') || lowerText.includes('konsultant')) {
+                 return `Jeśli Bot nie udzielił satysfakcjonującej odpowiedzi, prosimy o kontakt: 📞 **532 116 720** lub 📧 **kontakt@premiumflakon.pl**.`;
+            }
+            if (lowerText.includes('dziekuj') || lowerText.includes('dzieki') || lowerText.includes('super') || lowerText.includes('dobrze')) {
+                return `Bardzo się cieszę, że mogłem pomóc! Zapraszam do zapoznania się z naszą <a onclick="showPage('kolekcja-page');">pełną kolekcją</a>.`;
+            }
+            
+            // 2. INTENCJE PRODUKTOWE (Szukanie konkretnej nazwy/marki)
+            let productMatch = products.find(p => 
+                lowerText.includes(p.brand.toLowerCase()) || lowerText.includes(p.name.toLowerCase().split('(')[0].trim().toLowerCase())
+            );
+
+            if (productMatch) {
+                if (lowerText.includes('cena') || lowerText.includes('kosztuje')) {
+                    return `Perfuma <b>${productMatch.brand} ${productMatch.name}</b> jest obecnie dostępna w cenie **${productMatch.price.toFixed(2)} PLN**. Aby zobaczyć szczegóły, kliknij <a onclick="showProductDetail('${productMatch.id}')">TUTAJ</a>.`;
+                }
+                if (lowerText.includes('gdzie jest') || lowerText.includes('kupic')) {
+                    return `Oczywiście! Produkt <b>${productMatch.name}</b> jest dostępny w naszym katalogu. Wystarczy przejść do strony kolekcji i dodać go do koszyka.`;
+                }
+            }
+
+            // 3. ODPOWIEDZI ZAAWANSOWANE/OGÓLNE
+            if (lowerText.includes('najdrozszy') || lowerText.includes('luksus')) {
+                 const mostExpensive = products.sort((a, b) => b.price - a.price)[0];
+                 if (mostExpensive) {
+                    return `Naszym najbardziej luksusowym i kosztownym zapachem jest obecnie **${mostExpensive.brand} ${mostExpensive.name}** w cenie ${mostExpensive.price.toFixed(2)} PLN. To prawdziwa esencja niszowej perfumerii.`;
+                 }
+            }
+
+            // 4. DEFAULT
+            return `Przepraszam, jestem zaawansowanym asystentem AI, ale nie mogę znaleźć konkretnej odpowiedzi na zapytanie: "${text}". Spróbuj zadać pytanie o: **cenę produktu**, **zasady zwrotów** lub **status zamówienia**!`;
+        }
+
+        const popularQuestions = [
+            "Wpisz: 'Gwarancja oryginalności'...",
+            "Wpisz: 'Status zamówienia'...",
+            "Wpisz: 'Pytanie o zwroty'...",
+            "Wpisz: 'Cena Aventus'...",
+            "Wpisz: 'Czas dostawy'...",
+            "Wpisz: 'Kontakt z konsultantem'..."
+        ];
+        let placeholderIndex = 0;
+        let placeholderInterval;
+        
+        function startPlaceholderCarousel() {
+            const inputElement = document.getElementById('user-input');
+            if (!inputElement) return;
+
+            if (placeholderInterval) {
+                clearInterval(placeholderInterval);
+            }
+            
+            placeholderInterval = setInterval(() => {
+                placeholderIndex = (placeholderIndex + 1) % popularQuestions.length;
+                
+                inputElement.style.transition = 'opacity 0.5s';
+                inputElement.style.opacity = '0.5';
+
+                setTimeout(() => {
+                    inputElement.placeholder = popularQuestions[placeholderIndex];
+                    inputElement.style.opacity = '1';
+                }, 500); 
+            }, 3000); 
+        }
+
+        // [MOCKI I FUNKCJE POMOCNICZE] - Nie są tu zmieniane, ale są wymagane
+        function renderKontoPage() { /* MOCK */ }
+        function showDashboardContent(view) { /* MOCK */ }
+        function renderAdminPage() { /* MOCK */ }
+        function renderAdminStatsAndOrders() { /* MOCK */ }
+        function renderCartPage() { /* MOCK */ }
+        function updateCartCounters() { /* MOCK */ }
+        function addToCart(productId) { /* MOCK */ alert(`Dodano produkt ${productId} do koszyka!`); }
+        function updateCartQuantity(productId, newQuantity) { /* MOCK */ }
+        function removeFromCart(productId) { /* MOCK */ }
+        function showProductDetail(productId) { /* MOCK */ }
+        function renderProductDetail(productId) { /* MOCK */ }
+        function addToCartFromDetail() { /* MOCK */ }
+        function editProductFromDetail() { /* MOCK */ }
+        function addSpecField(key='', value='') { /* MOCK */ }
+        function removeSpecField(rowId) { /* MOCK */ }
+        function readSpecsFromForm() { return []; /* MOCK */ }
+        function setSpecsToForm(specs) { /* MOCK */ }
+        function escapeHtmlAttr(s) { return s; /* MOCK */ }
+        function setupAdminImageInput() { /* MOCK */ }
+        function handleAdminImagesChange(event) { /* MOCK */ }
+        function renderAdminImagePreviews() { /* MOCK */ }
+        function removeAdminImage(index) { /* MOCK */ }
+        function clearAdminForm() { /* MOCK */ }
+        function populateAdminForm(productId) { /* MOCK */ }
+
+
+        // [FUNKCJE SYSTEMOWE I NAWIGACJA]
+        function highlightNavLink(activePageId) { /* ... */ }
+        function scrollToElement(elementId) { /* ... */ }
+        function showPageAndScroll(pageId, elementId) { /* ... */ }
+        function openNav() { document.getElementById("side-menu").classList.add("open"); }
+        function closeNav() { document.getElementById("side-menu").classList.remove("open"); }
+        function showPage(pageId) { /* ... */ }
+
 
         // === INICJALIZACJA ===
         document.addEventListener('DOMContentLoaded', async () => {
@@ -2257,27 +2427,15 @@
 
             document.addEventListener('pageShow', (e) => {
                 if (e.detail.pageId === 'pomoc-page') {
-                    // Logic for Chabot start
-                    const history = document.getElementById('chat-history');
-                    if (history && history.children.length === 1) { // Tylko początkowa wiadomość
-                         // Ukrywamy opcje, żeby chatbot działał dynamicznie
-                        document.getElementById('chat-options').style.display = 'none';
-                    }
+                    // Po przejściu na stronę Pomoc, usuń przyciski opcji i aktywuj wprowadzanie tekstu
+                    document.getElementById('chat-options').innerHTML = '';
+                    document.getElementById('chat-options').style.display = 'none';
+                    document.getElementById('user-input').disabled = false;
+                    document.querySelector('#chat-input-area button').disabled = false;
                     startPlaceholderCarousel();
-
-                    const userInputEl = document.getElementById('user-input');
-                    if (userInputEl) {
-                        userInputEl.disabled = false;
-                        userInputEl.addEventListener('keydown', function(event) {
-                            if (event.key === 'Enter') {
-                                event.preventDefault();
-                                sendChatMessage();
-                            }
-                        });
-                    }
                 }
                 if (e.detail.pageId === 'product-page') {
-                    if (currentDetailProductId) renderProductDetail(currentDetailProductId);
+                    // Renderowanie detali (mock)
                 }
             });
 
