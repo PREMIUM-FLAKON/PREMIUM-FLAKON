@@ -960,10 +960,11 @@
             <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">EKSKLUZYWNY</span> KATALOG ZAPACHÓW</h2>
             
             <div class="collection-layout">
-                <div id="filter-sidebar">
-                    <h4>FILTRUJ WYNIKI</h4>
-                    
-                   <div class="filter-group">
+                
+                                <div id="filter-sidebar">
+                    <h4>FILTRUJ WYNIKI</h4>
+                    
+                    <div class="filter-group">
                         <h4>Marka</h4>
                         <label><input type="checkbox" data-filter="brand" value="Creed" onchange="applyFilters()"> Creed</label>
                         <label><input type="checkbox" data-filter="brand" value="Parfums de Marly" onchange="applyFilters()"> Parfums de Marly</label>
@@ -978,23 +979,21 @@
                         <label><input type="checkbox" data-filter="category" value="Damskie" onchange="applyFilters()"> Damskie</label>
                         <label><input type="checkbox" data-filter="category" value="Unisex" onchange="applyFilters()"> Unisex</label>
                     </div>
-                    
-                
-                <div id="product-list-wrapper">
-                    <div id="sort-options">
-                        <label for="sort-by">Sortuj według:</label>
-                        <select id="sort-by" onchange="applyFilters()">
-                            <option value="default">Domyślne</option>
-                            <option value="price-asc">Cena rosnąco</option>
-                            <option value="price-desc">Cena malejąco</option>
-                        </select>
-                    </div>
-                    
-                    <div id="product-grid">
-                        <p id="no-products" style="text-align: center; display: block; padding: 40px; border: 1px solid #CCC; background-color: #EEE;">Ładowanie produktów z Supabase...</p>
-                        </div>
-                </div>
-            </div>
+                </div>                                 <div id="product-list-wrapper">
+                    <div id="sort-options">
+                        <label for="sort-by">Sortuj według:</label>
+                        <select id="sort-by" onchange="applyFilters()">
+                            <option value="default">Domyślne</option>
+                            <option value="price-asc">Cena rosnąco</option>
+                            <option value="price-desc">Cena malejąco</option>
+                        </select>
+                    </div>
+                    
+                    <div id="product-grid">
+                        <p id="no-products" style="text-align: center; display: block; padding: 40px; border: 1px solid #CCC; background-color: #EEE;">Ładowanie produktów z Supabase...</p>
+                    </div>
+                </div>                 
+            </div>
         </section>
         <footer id="kolekcja-stopka"></footer>
     </div>
