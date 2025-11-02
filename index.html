@@ -868,7 +868,7 @@
             .stats-card-container { flex-direction: column; } /* NOWOŚĆ */
         }
 
-        @media (max-width: 480px) {
+     @media (max-width: 480px) {
             .hero-content h1 { font-size: 2em; }
             .btn-main { padding: 12px 40px; font-size: 0.9em; }
             .mini-footer { flex-direction: column; text-align: center; }
@@ -878,7 +878,22 @@
             #side-menu a { font-size: 16px; }
         }
     </style>
-</head>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Dodatkowa animacja pisania */
+        .bot-message.typing::after {
+            content: '...';
+            display: inline-block;
+            animation: typing-blink 1s infinite;
+        }
+        @keyframes typing-blink {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+    </head>
 <body>
 
     <div id="side-menu">
@@ -1603,17 +1618,36 @@
             </div>
         </div>
     </template>
+   <script>
+    // === KONFIGURACJA SUPABASE (TWOJE KLUCZE SĄ JUŻ W ŚRODKU) ===
+    // UWAGA: Klucz anon jest widoczny publicznie. Upewnij się, że masz włączone RLS (Row Level Security) w tabelach!
+    const SUPABASE_URL = 'https://dtgwyrvbqpefrcjdnqqv.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0Z3d5cnZicXBlZnJjamRucXF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwMTU3MjIsImV4cCI6MjA3NzU5MTcyMn0.WObj9HRon0hYM9m9JC-ty1bE1DXxzwQ7RmkfValxJCs';
 
+    // Inicjaluj klienta
+    let supabase = null;
+    if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+        try {
+            // Poprawka: Usunięto 'supabase.' przed 'createClient' - odwołujemy się do globalnej biblioteki
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (e) {
+            console.error("Błąd inicjalizacji Supabase:", e);
+        }
+    } else {
+        console.warn("Chatbot: Nie skonfigurowano Supabase. Funkcje bazy danych nie będą działać.");
+    }
 
-    <script>
-        // === KLUCZ PRZECHOWYWANIA DANYCH W LOCALSTORAGE ===
-        const LS_PRODUCTS_KEY = 'pf_products';
-        const LS_USERS_KEY = 'pf_users';
-        const LS_SESSION_KEY = 'pf_currentUser';
-        const LS_ORDERS_KEY = 'pf_orders'; 
-        
-        // ### KROK 3: DODANIE NOWEGO KLUCZA DLA KOSZYKA ###
-        const LS_CART_KEY = 'pf_cart';
+    // === STAN CHATBOTA ===
+    let chatState = 'IDLE'; // Stan rozmowy: IDLE, AWAITING_ORDER_NUMBER
+
+    // === KLUCZ PRZECHOWYWANIA DANYCH W LOCALSTORAGE ===
+    const LS_PRODUCTS_KEY = 'pf_products';
+    const LS_USERS_KEY = 'pf_users';
+    const LS_SESSION_KEY = 'pf_currentUser';
+    const LS_ORDERS_KEY = 'pf_orders'; 
+
+    // ### KROK 3: DODANIE NOWEGO KLUCZA DLA KOSZYKA ###
+    const LS_CART_KEY = 'pf_cart';
         
         // // --- POCZĄTKOWA BAZA PRODUKTÓW (TYLKO DLA INICJALIZACJI) ---
         const initialProductsData = [
@@ -2593,154 +2627,262 @@
             renderProducts(filteredProducts);
         }
         
-        // --- LOGIKA CHATBOTA (WPEŁNI PRZENIESIONA) ---
-        const chatResponses = {
-            1: { client: 'Chcę sprawdzić status zamówienia.', bot: 'Podaj numer swojego zamówienia, aby je śledzić. Realizacja wysyłki trwa do 24h. Numer do śledzenia przesyłki otrzymasz e-mailem.', options: [4] },
-            2: { client: 'Pytanie o zwroty i reklamacje.', bot: 'Masz 14 dni na zwrot nieużywanego towaru. Szczegółowy regulamin znajdziesz w sekcji Informacje > Zwroty i Reklamacje. Czy chcesz teraz skontaktować się z Działem Obsługi?', options: [4] },
-            3: { client: 'Pytanie o gwarancję oryginalności.', bot: 'Gwarantujemy 100% oryginalności! Wszystkie produkty pochodzą od autoryzowanych dystrybutorów. Więcej przeczytasz na stronie "O Nas".', options: [4] },
-            4: { client: 'Chcę skontaktować się z konsultantem.', bot: 'Rozumiem. W celu kontaktu z konsultantem prosimy o kontakt telefoniczny (532 116 720) lub e-mail (kontakt@premiumflakon.pl). Wrócisz do menu głównego?', options: [99] },
-            99: { client: 'Wróć do menu głównego.', bot: 'Witaj! Jestem Bot Wsparcia. Jak mogę Ci pomóc?', options: [1, 2, 3, 4] }
-        };
-        const defaultOptions = [1, 2, 3, 4];
+        // --- NOWA LOGIKA CHATBOTA (v2 - Stanowa, Multi-intent, Supabase) ---
 
-        function addMessage(text, type) {
+        // Definicje intencji i słów kluczowych
+        const chatIntents = {
+            GREETING: ['czesc', 'witaj', 'dzien dobry', 'hej', 'siema'],
+            ORDER_STATUS: ['zamowienie', 'status', 'sledzenie', 'gdzie jest', 'paczka'],
+            DELIVERY_INFO: ['dostawa', 'wysylka', 'czas', 'kurier', 'ile trwa'],
+            ORIGINALITY_GUARANTEE: ['oryginalnosc', 'podrobka', 'gwarancja', 'autentycznosc', 'pewnosc'],
+            RETURNS_COMPLAINTS: ['zwrot', 'reklamacja', 'uszkodzony', 'opakowanie', 'zepsuty'],
+            PRODUCT_INFO: ['cena', 'kosztuje', 'jaki', 'zapach', 'dostepny', 'kupic'],
+            CHANGE_ADDRESS: ['zmienic miejsce', 'zmienic adres', 'inny adres', 'miejsce odbioru'],
+            CONTACT: ['kontakt', 'telefon', 'email', 'rozmowa', 'konsultant']
+        };
+
+        // Baza odpowiedzi
+        const chatResponses = {
+            GREETING: 'Cześć! W czym mogę Ci pomóc? Możesz zapytać o status zamówienia, gwarancję oryginalności lub zwroty.',
+            ORDER_STATUS: 'Rozumiem, że chcesz sprawdzić status zamówienia. Proszę, podaj mi jego numer (np. 2025/10/29).',
+            DELIVERY_INFO: 'Wysyłka w **PREMIUM FLAKON** jest realizowana zazwyczaj w ciągu <b>24 godzin</b>. Korzystamy z zaufanych kurierów (DPD/Inpost). Czas dostawy to standardowo 1-2 dni robocze. Chcesz dowiedzieć się więcej o <a onclick="showPage(\'regulamin-page\');">warunkach dostawy</a>?',
+            ORIGINALITY_GUARANTEE: 'Wszystkie produkty są <b>100% oryginalne</b> i pochodzą bezpośrednio od autoryzowanych dystrybutorów. Gwarantujemy to naszą <a onclick="showPage(\'onas-page\');">Misją i Filozofią</a>.',
+            RETURNS_COMPLAINTS: 'Pamiętaj, że ze względu na higienę, przyjmujemy zwroty w ciągu 14 dni tylko dla flakonów <b>z nienaruszoną plombą/folią fabryczną</b>. Szczegóły znajdziesz na stronie <a onclick="showPage(\'zwroty-page\');">Zwroty i Reklamacje</a>.',
+            CHANGE_ADDRESS: 'Jeśli chodzi o zmianę miejsca odbioru lub adresu dostawy, jest to możliwe tylko <b>przed nadaniem paczki</b>. Proszę o pilny, bezpośredni kontakt z Biurem Obsługi Klienta pod numerem **532 116 720**.',
+            CONTACT: 'Jeśli potrzebujesz bezpośredniego kontaktu z konsultantem, zadzwoń pod numer **532 116 720** (Pon-Pt, 9:00-17:00) lub napisz na <b>kontakt@premiumflakon.pl</b>.',
+            PRODUCT_INFO_GENERIC: 'Informacje o cenie i dostępności danego produktu (np. Tom Ford, Creed) znajdziesz w naszym <a onclick="showPage(\'kolekcja-page\');">katalogu Kolekcji</a>. Użyj filtrów, aby znaleźć to, czego szukasz.',
+            DEFAULT: 'Przepraszam, nie jestem pewien, jak Ci pomóc w tej kwestii. Jako AI, najlepiej radzę sobie z pytaniami o: <b>status zamówienia</b>, <b>wysyłkę</b>, <b>oryginalność</b> i <b>zwroty</b>. Czy możesz przeformułować swoje pytanie?',
+            THANKS: 'Cieszę się, że mogłem pomóc! Czy masz jeszcze jakieś pytania?'
+        };
+        
+        /** Dodaje wiadomość do historii czatu */
+        function addMessage(text, type, id = null) {
             const history = document.getElementById('chat-history');
             if (!history) return;
             const msgDiv = document.createElement('div');
             msgDiv.className = type + '-message';
-            msgDiv.innerHTML = text; 
+            msgDiv.innerHTML = text;
+            if (id) {
+                msgDiv.id = id;
+            }
             history.appendChild(msgDiv);
             history.scrollTop = history.scrollHeight;
+            return msgDiv; // Zwróć element, aby móc go edytować (np. "pisze...")
         }
-
-        function displayOptions(optionIds) {
+        
+        /** Aktualizuje istniejącą wiadomość bota (np. usuwa "pisze...") */
+        function updateMessage(element, newText) {
+            if (element) {
+                element.innerHTML = newText;
+                element.classList.remove('typing');
+            }
+        }
+        
+        /** Wyświetla domyślne opcje na przyciskach */
+        function displayDefaultOptions() {
             const optionsDiv = document.getElementById('chat-options');
             if (!optionsDiv) return;
-            optionsDiv.innerHTML = ''; 
-            
-            if (optionIds.length < 4) {
-                optionsDiv.style.display = 'block'; 
-            } else {
-                optionsDiv.style.display = 'block'; 
-            }
-
-            optionIds.forEach(id => {
-                const optionData = chatResponses[id];
-                if (optionData) {
-                    const btn = document.createElement('button');
-                    btn.textContent = optionData.client.replace('Wróć do menu głównego.', 'Wróć do Menu Głównego'); 
-                    btn.onclick = () => handleOption(id);
-                    optionsDiv.appendChild(btn);
-                }
-            });
+            optionsDiv.innerHTML = `
+                <button onclick="handleOptionClick('Jaki jest status zamówienia?')">Status zamówienia</button>
+                <button onclick="handleOptionClick('Jak mogę zwrócić produkt?')">Zwroty i Reklamacje</button>
+                <button onclick="handleOptionClick('Czy perfumy są oryginalne?')">Gwarancja oryginalności</button>
+                <button onclick="handleOptionClick('Kontakt z konsultantem')">Kontakt</button>
+            `;
+            optionsDiv.style.display = 'block';
+        }
+        
+        /** Obsługuje kliknięcie na przycisk opcji */
+        function handleOptionClick(message) {
+            const inputElement = document.getElementById('user-input');
+            inputElement.value = message;
+            sendChatMessage();
         }
 
-        function handleOption(optionId) {
-            const response = chatResponses[optionId];
-            if (!response) return;
-
-            document.getElementById('user-input').disabled = true;
-            addMessage(response.client, 'client');
-            
-            setTimeout(() => {
-                addMessage(response.bot, 'bot');
-                const nextOptions = response.options || defaultOptions;
-                displayOptions(nextOptions);
-                document.getElementById('user-input').disabled = false;
-                document.getElementById('user-input').focus();
-            }, 500); 
-        }
-
-        function sendChatMessage() {
+        /** Główna funkcja wysyłająca wiadomość (teraz asynchroniczna) */
+        async function sendChatMessage() {
             const inputElement = document.getElementById('user-input');
             const message = inputElement.value.trim();
             if (message === '') return;
 
             addMessage(message, 'client');
-            inputElement.value = ''; 
+            inputElement.value = '';
             document.getElementById('chat-options').style.display = 'none';
-            inputElement.disabled = true;
+            toggleChatInput(false); // Zablokuj input
 
-            if (placeholderInterval) {
-                clearInterval(placeholderInterval);
+            // Pokaż "Bot pisze..."
+            const typingMsg = addMessage("...", 'bot typing');
+            await new Promise(r => setTimeout(r, 800)); // Symulacja namysłu
+
+            let response;
+            
+            // SPRAWDZENIE STANU ROZMOWY
+            if (chatState === 'AWAITING_ORDER_NUMBER') {
+                response = await fetchOrderStatus(message);
+            } else {
+                response = generateBotResponse(message);
+            }
+            
+            // Aktualizuj wiadomość "pisze..." na pełną odpowiedź
+            updateMessage(typingMsg, response.text);
+            chatState = response.newState; // Ustaw nowy stan
+
+            // Jeśli wracamy do stanu IDLE, pokaż opcje
+            if (chatState === 'IDLE') {
+                displayDefaultOptions();
             }
 
-            setTimeout(() => {
-                const botResponse = generateBotResponse(message);
-                addMessage(botResponse, 'bot');
-                
-                inputElement.disabled = false;
-                inputElement.focus();
-                
-                const optionsDiv = document.getElementById('chat-options');
-                if (optionsDiv) {
-                    optionsDiv.style.display = 'block';
-                    optionsDiv.innerHTML = ''; 
-                    
-                    const backToMenuId = 99;
-                    const backBtn = document.createElement('button');
-                    backBtn.textContent = chatResponses[backToMenuId].client.replace('Wróć do menu głównego.', 'Wróć do Menu Głównego'); 
-                    backBtn.onclick = () => { 
-                        handleOption(backToMenuId); 
-                        startPlaceholderCarousel();
-                    };
-                    optionsDiv.appendChild(backBtn);
-                }
-            }, 1000); 
+            toggleChatInput(true); // Odblokuj input
         }
 
-        function generateBotResponse(text) {
-            const lowerText = text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); 
-            const intents = {
-                ORDER_STATUS: ['zamowienie', 'status', 'sledzenie', 'gdzie jest'],
-                DELIVERY_INFO: ['dostawa', 'wysylka', 'czas', 'kurier'],
-                ORIGINALITY_GUARANTEE: ['oryginalnosc', 'podrobka', 'gwarancja', 'autentycznosc', 'pewnosc'],
-                RETURNS_COMPLAINTS: ['zwrot', 'reklamacja', 'uszkodzony', 'opakowanie', 'zepsuty'],
-                PRODUCT_INFO: ['cena', 'kosztuje', 'jaki', 'zapach', 'dostępny', 'kupic'],
-                CONTACT: ['kontakt', 'telefon', 'email', 'rozmowa', 'konsultant']
-            };
+        /** Blokuje lub odblokowuje pole input */
+        function toggleChatInput(enabled) {
+            const inputElement = document.getElementById('user-input');
+            const sendButton = document.querySelector('#chat-input-area button');
+            if (!inputElement || !sendButton) return;
             
-            let detectedIntent = 'DEFAULT';
-            for (const [intent, keywords] of Object.entries(intents)) {
+            inputElement.disabled = !enabled;
+            sendButton.disabled = !enabled;
+            
+            if (enabled) {
+                inputElement.focus();
+                startPlaceholderCarousel();
+            } else {
+                if (placeholderInterval) clearInterval(placeholderInterval);
+            }
+        }
+
+        /** Analizuje tekst użytkownika i generuje odpowiedź */
+        function generateBotResponse(text) {
+            const lowerText = text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            
+            let detectedIntents = [];
+            for (const [intent, keywords] of Object.entries(chatIntents)) {
                 if (keywords.some(keyword => lowerText.includes(keyword))) {
-                    detectedIntent = intent;
-                    break;
+                    detectedIntents.push(intent);
                 }
             }
             
-            let productMatch = getProductsFromStorage().find(p => lowerText.includes(p.brand.toLowerCase()) || lowerText.includes(p.name.toLowerCase().split('(')[0].trim().toLowerCase()));
+            // Obsługa podziękowań
+            if (['dziekuje', 'dzieki', 'super'].some(k => lowerText.includes(k))) {
+                return { text: chatResponses.THANKS, newState: 'IDLE' };
+            }
 
-            switch (detectedIntent) {
-                case 'ORDER_STATUS':
-                    return `Rozumiem, że interesuje Cię status Twojego zamówienia. Proszę, podaj **numer zamówienia**. Pamiętaj, że wysyłka następuje w ciągu <b>24 godzin</b> od zaksięgowania płatności, a link do śledzenia jest wysyłany osobnym e-mailem.`;
-                case 'DELIVERY_INFO':
-                    return `Wysyłka w **PREMIUM FLAKON** jest realizowana zazwyczaj w ciągu <b>24 godzin</b>. Korzystamy z zaufanych kurierów (DPD/Inpost). Czas dostawy to standardowo 1-2 dni robocze. Chcesz dowiedzieć się więcej o <a onclick="showPage('regulamin-page');" style="color: var(--color-accent-gold); cursor: pointer;">warunkach dostawy</a>?`;
-                case 'ORIGINALITY_GUARANTEE':
-                    return `Wszystkie produkty są <b>100% oryginalne</b> i pochodzą bezpośrednio od autoryzowanych dystrybutorów. Jesteśmy butikiem luksusowym, a nie hurtownią. Gwarantujemy to naszą <a onclick="showPage('onas-page');" style="color: var(--color-accent-gold); cursor: pointer;">Misją i Filozofią</a>.`;
-                case 'RETURNS_COMPLAINTS':
-                    return `Pytanie o zwroty jest ważne. Pamiętaj, że ze względu na higienę, przyjmujemy zwroty w ciągu 14 dni tylko dla flakonów <b>z nienaruszoną plombą/folią fabryczną</b>. Szczegóły znajdziesz na stronie <a onclick="showPage('zwroty-page');" style="color: var(--color-accent-gold); cursor: pointer;">Zwroty i Reklamacje</a>.`;
-                    
-                case 'PRODUCT_INFO':
-                    if (productMatch) {
-                        return `Perfuma <b>${productMatch.brand} ${productMatch.name}</b> jest aktualnie dostępna w cenie **${productMatch.price} PLN**. Aby zobaczyć pełny opis i kupić, przejdź do <a onclick="showPage('kolekcja-page');" style="color: var(--color-accent-gold); cursor: pointer;">Kolekcji</a> i użyj filtrów.`;
-                    }
-                    return `Informacje o cenie i dostępności danego produktu (np. Tom Ford, Creed) znajdziesz w naszym <a onclick="showPage('kolekcja-page');" style="color: var(--color-accent-gold); cursor: pointer;">katalogu Kolekcji</a>. Wpisz konkretną nazwę, jeśli jej szukasz!`;
-                case 'CONTACT':
-                    return `Jeśli potrzebujesz bezpośredniego kontaktu z żywym konsultantem, zadzwoń pod numer **532 116 720** (Pon-Pt, 9:00-17:00) lub napisz na <b>kontakt@premiumflakon.pl</b>.`;
-                default:
-                    if (lowerText.includes('dziekuje') || lowerText.includes('dzieki') || lowerText.includes('super')) {
-                        return 'Cieszę się, że mogłem pomóc! Czy masz jeszcze jakieś pytania odnośnie naszych produktów lub zamówienia?';
-                    }
-                    return `Przepraszam, nie jestem pewien, jak Ci pomóc w tej kwestii. Jako AI, najlepiej radzę sobie z pytaniami o: <b>status zamówienia</b>, <b>wysyłkę</b>, <b>oryginalność</b> i <b>zwroty</b>. Czy możesz przeformułować swoje pytanie?`;
+            // Jeśli nic nie wykryto
+            if (detectedIntents.length === 0) {
+                // Jeśli stan był IDLE i nic nie wykryto
+                if (chatState === 'IDLE') {
+                    return { text: chatResponses.DEFAULT, newState: 'IDLE' };
+                }
+                // Jeśli był inny stan (np. AWAITING_...), ale nie pasuje, wróć do IDLE
+                return { text: chatResponses.DEFAULT, newState: 'IDLE' };
+            }
+            
+            // --- Logika Multi-Intent ---
+            // Budujemy jedną odpowiedź z wielu intencji
+            
+            let responseMessages = [];
+            let nextState = 'IDLE';
+
+            // Priorytet dla powitania
+            if (detectedIntents.includes('GREETING') && detectedIntents.length === 1) {
+                 return { text: chatResponses.GREETING, newState: 'IDLE' };
+            }
+            
+            // Usuwamy powitanie, jeśli występuje z innymi intencjami
+            detectedIntents = detectedIntents.filter(i => i !== 'GREETING');
+
+            // Sprawdź, czy produkt jest w pytaniu
+            const productMatch = getProductsFromStorage().find(p => lowerText.includes(p.brand.toLowerCase()) || lowerText.includes(p.name.toLowerCase().split('(')[0].trim().toLowerCase()));
+
+            for (const intent of detectedIntents) {
+                switch (intent) {
+                    case 'ORDER_STATUS':
+                        responseMessages.push(chatResponses.ORDER_STATUS);
+                        nextState = 'AWAITING_ORDER_NUMBER'; // Ustaw stan oczekiwania
+                        break;
+                    case 'PRODUCT_INFO':
+                        if (productMatch) {
+                            responseMessages.push(`Perfuma <b>${productMatch.brand} ${productMatch.name}</b> jest dostępna w cenie **${productMatch.price} PLN**. Możesz ją znaleźć w <a onclick="showPage('kolekcja-page');">Kolekcji</a>.`);
+                        } else {
+                            responseMessages.push(chatResponses.PRODUCT_INFO_GENERIC);
+                        }
+                        break;
+                    default:
+                        // Dodaj inne standardowe odpowiedzi
+                        if (chatResponses[intent] && !responseMessages.includes(chatResponses[intent])) {
+                            responseMessages.push(chatResponses[intent]);
+                        }
+                }
+            }
+
+            // Jeśli jedyną intencją było ORDER_STATUS, stan jest już ustawiony
+            // Jeśli było ich więcej (np. status I zmiana adresu), bot zapyta o numer,
+            // ale też udzieli odpowiedzi na drugie pytanie.
+            
+            return {
+                text: responseMessages.join('<br><br>'), // Łączy odpowiedzi
+                newState: nextState
+            };
+        }
+
+        /** NOWA FUNKCJA: Pobiera status zamówienia z Supabase */
+        async function fetchOrderStatus(orderId) {
+            // Walidacja, czy Supabase jest skonfigurowane
+            if (!supabase) {
+                return { 
+                    text: 'Funkcja sprawdzania statusu jest chwilowo niedostępna. (Brak konfiguracji Supabase). Proszę o kontakt telefoniczny.', 
+                    newState: 'IDLE' 
+                };
+            }
+            
+            // Walidacja formatu ID (dostosuj do swoich potrzeb)
+            const orderIdFormatted = orderId.trim();
+            if (orderIdFormatted.length < 5) {
+                return { 
+                    text: 'Podany numer zamówienia wydaje się niepoprawny. Spróbuj ponownie (np. 2025/10/29).', 
+                    newState: 'AWAITING_ORDER_NUMBER' // Pozostań w stanie oczekiwania
+                };
+            }
+            
+            try {
+                // Załóżmy, że Twoja tabela w Supabase nazywa się 'zamowienia' (użyj nazwy swojej tabeli)
+                // i ma kolumny 'id', 'date' oraz 'status'.
+                // WAŻNE: W Supabase nazwy tabel i kolumn są wrażliwe na wielkość liter.
+                const { data, error } = await supabase
+                    .from('zamowienia') // <-- ZMIEŃ NA NAZWĘ SWOJEJ TABELI
+                    .select('date, status') // <-- ZMIEŃ NA NAZWY SWOICH KOLUMN
+                    .eq('id', orderIdFormatted) // Szukaj po ID
+                    .single(); // Oczekujemy jednego wyniku
+
+                if (error || !data) {
+                    console.error('Błąd Supabase:', error);
+                    return { 
+                        text: `Niestety, nie znalazłem w systemie zamówienia o numerze <b>${orderIdFormatted}</b>. Upewnij się, że numer jest poprawny i spróbuj ponownie.`, 
+                        newState: 'IDLE' 
+                    };
+                }
+
+                // Sukces!
+                return { 
+                    text: `Mam! Zamówienie <b>${orderIdFormatted}</b> (złożone ${data.date}) ma obecnie status: <strong style="color:var(--color-accent-gold);">${data.status}</strong>.<br><br>Czy mogę pomóc w czymś jeszcze?`, 
+                    newState: 'IDLE' 
+                };
+
+            } catch (err) {
+                console.error('Błąd połączenia z Supabase:', err);
+                return { 
+                    text: 'Wystąpił błąd podczas łączenia z bazą danych. Proszę, spróbuj ponownie za chwilę lub skontaktuj się z nami telefonicznie.', 
+                    newState: 'IDLE' 
+                };
             }
         }
         
+        // --- Karuzela placeholderów ---
         const popularQuestions = [
-            "Wpisz: 'Gwarancja oryginalności'...",
-            "Wpisz: 'Status zamówienia'...",
-            "Wpisz: 'Pytanie o zwroty'...",
-            "Wpisz: 'Cena Aventus'...",
-            "Wpisz: 'Czas dostawy'...",
+            "Wpisz: 'Cześć'",
+            "Wpisz: 'Jaki jest status zamówienia?'",
+            "Wpisz: 'Chcę zmienić miejsce odbioru'",
+            "Wpisz: 'Cena Aventus'",
             "Wpisz: 'Kontakt z konsultantem'..."
         ];
         let placeholderIndex = 0;
@@ -2748,11 +2890,14 @@
 
         function startPlaceholderCarousel() {
             const inputElement = document.getElementById('user-input');
-            if (!inputElement) return;
+            if (!inputElement || inputElement.disabled) return;
 
             if (placeholderInterval) {
                 clearInterval(placeholderInterval);
             }
+            
+            // Ustaw pierwszy od razu
+            inputElement.placeholder = popularQuestions[placeholderIndex];
             
             placeholderInterval = setInterval(() => {
                 placeholderIndex = (placeholderIndex + 1) % popularQuestions.length;
@@ -3062,20 +3207,24 @@
             applyFilters();
 
             document.addEventListener('pageShow', (e) => {
-                if (e.detail.pageId === 'pomoc-page') {
-                    displayOptions(defaultOptions);
-                    startPlaceholderCarousel();
-                    const userInputEl = document.getElementById('user-input');
-                    if (userInputEl) {
-                        userInputEl.addEventListener('keydown', function(event) {
-                            if (event.key === 'Enter') {
-                                event.preventDefault();
-                                sendChatMessage();
-                            }
-                        });
-                    }
-                }
-                if (e.detail.pageId === 'product-page') {
+             if (e.detail.pageId === 'pomoc-page') {
+    // NOWA INICJALIZACJA CHATA
+    chatState = 'IDLE'; // Resetuj stan przy każdym otwarciu
+    document.getElementById('chat-history').innerHTML = '<div class="bot-message">Witaj! Jestem Bot Wsparcia. Jak mogę Ci pomóc?</div>'; // Wiadomość powitalna
+    displayDefaultOptions(); // Pokaż przyciski
+    toggleChatInput(true); // Odblokuj input
+
+    const userInputEl = document.getElementById('user-input');
+    if (userInputEl && !userInputEl.dataset.listenerAttached) { // Zapobiegaj wielokrotnemu dodaniu listenera
+        userInputEl.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        });
+        userInputEl.dataset.listenerAttached = 'true';
+    }
+}
                     // ensure details render if navigated directly
                     if (currentDetailProductId) renderProductDetail(currentDetailProductId);
                 }
