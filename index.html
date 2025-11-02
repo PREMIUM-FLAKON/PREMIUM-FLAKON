@@ -626,14 +626,6 @@
             margin-bottom: 40px;
             flex-wrap: wrap;
         }
-        .stats-card {
-            flex: 1;
-            min-width: 200px;
-            background-color: #ECECE4;
-            padding: 25px;
-            border-bottom: 3px solid var(--color-accent-gold);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
         .stats-card h4 {
             margin: 0 0 10px 0;
             font-size: 1.1em;
@@ -1032,7 +1024,7 @@
 
                     <h4 style="margin-top:20px; color:var(--color-accent-gold);">Specyfikacja</h4>
                     <table id="detail-specs" style="width:100%; border-collapse:collapse; margin-top:10px;">
-                     </table>
+                   </table>
 
                     <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
                         <button class="btn-main" onclick="addToCartFromDetail()">Dodaj do koszyka</button>
@@ -1624,15 +1616,138 @@
     let activeUserInterval = null;
     let adminImageData = [];
     let currentDetailProductId = null; 
+    let activeUser = null; // ZMIANA: Globalny obiekt użytkownika
     
     // ===============================================
-    // === LOGIKA POBIERANIA DANYCH Z SUPABASE ===
+    // === NOWA LOGIKA AUTORYZACJI UŻYTKOWNIKA/ADMINA (Supabase Auth) ===
+    // ===============================================
+
+    /** * Sprawdza sesję w Supabase i synchronizuje ją z LocalStorage/globalną zmienną.
+     * Zmienia 'activeUser' i aktualizuje widok konta.
+     */
+    async function syncUserSession() {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+            console.error('Błąd pobierania sesji:', error);
+            activeUser = null;
+        } else if (session) {
+            const user = session.user;
+            // Sprawdzenie, czy user_metadata.is_admin jest ustawione na true
+            const isAdmin = user.user_metadata && user.user_metadata.is_admin === true; 
+            
+            activeUser = {
+                email: user.email,
+                id: user.id,
+                username: user.user_metadata.username || user.email.split('@')[0],
+                isAdmin: isAdmin,
+                token: session.access_token
+            };
+            localStorage.setItem(LS_SESSION_KEY, JSON.stringify(activeUser));
+            console.log('Sesja zalogowana. Admin:', isAdmin);
+        } else {
+            activeUser = null;
+            localStorage.removeItem(LS_SESSION_KEY);
+            console.log('Użytkownik wylogowany.');
+        }
+        updateSideMenu(); // Odświeżenie widoku w menu
+    }
+    
+    /** Funkcja logowania użytkownika/admina */
+    async function loginUser() {
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+
+        const { error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password,
+        });
+
+        if (error) {
+            alert(`Błąd logowania: ${error.message}`);
+            return;
+        }
+
+        await syncUserSession(); 
+        
+        if (activeUser && activeUser.isAdmin) {
+            alert(`Witaj, Administratorze ${activeUser.username}! Przekierowuję do panelu.`);
+            showPage('admin-page');
+        } else if (activeUser) {
+            alert(`Witaj, ${activeUser.username}! Zalogowano pomyślnie.`);
+            showPage('konto-page');
+        } else {
+             // W rzadkich przypadkach, gdy logowanie się powiodło, ale activeUser jest nullem
+             alert('Zalogowano pomyślnie. Proszę odświeżyć stronę lub spróbować ponownie, jeśli panel się nie załadował.'); 
+        }
+    }
+
+    /** Funkcja wylogowania (w tym admina) */
+    async function logoutUser() {
+        const { error } = await supabase.auth.signOut();
+        
+        if (error) {
+            console.error('Błąd wylogowania:', error);
+            alert('Wystąpił błąd podczas wylogowywania.');
+        } else {
+            alert('Wylogowano pomyślnie.');
+            activeUser = null;
+            localStorage.removeItem(LS_SESSION_KEY);
+            updateSideMenu();
+            showPage('landing-page');
+        }
+    }
+
+    /** Rejestracja nowego użytkownika */
+    async function registerUser() {
+        const username = document.getElementById('register-username').value;
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        
+        const { error } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+                data: { username: username, is_admin: false } // Domyślnie: is_admin: false
+            }
+        });
+
+        if (error) {
+            alert(`Błąd rejestracji: ${error.message}`);
+            return;
+        }
+        
+        alert('Konto utworzone! Sprawdź swoją skrzynkę mailową, aby potwierdzić rejestrację i się zalogować.');
+        // Wyczyść formularz
+        document.getElementById('register-username').value = '';
+        document.getElementById('register-email').value = '';
+        document.getElementById('register-password').value = '';
+        
+        // Przełącz na widok logowania
+        document.getElementById('login-email').value = email;
+    }
+    
+    function getIsLoggedIn() { return activeUser !== null; }
+    function getCurrentUser() { return activeUser; }
+    function isCurrentUserAdmin() { return activeUser && activeUser.isAdmin === true; }
+    function getUserName() { return activeUser ? activeUser.username : 'Kliencie'; }
+    
+    // Nasłuchiwacz zmian stanu autoryzacji (automatyczna synchronizacja)
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
+            syncUserSession();
+        }
+    });
+    
+    // ===============================================
+    // === LOGIKA POBIERANIA DANYCH Z SUPABASE (NAPRAWIONA) ===
     // ===============================================
     
     /** Funkcja pomocnicza do parsowania tablic z Supabase */
     function parsePostgresArray(value) {
         if (Array.isArray(value)) return value;
         if (typeof value === 'string' && value.startsWith('{') && value.endsWith('}')) {
+            // Usuwa nawiasy klamrowe, dzieli, usuwa cudzysłowy
             return value.slice(1, -1).split(',').map(item => item.trim().replace(/^"|"$/g, ''));
         }
         return [];
@@ -1642,27 +1757,28 @@
     async function getProductsFromSupabase() {
         const { data, error } = await supabase
             .from('products')
-            .select('*')
+            .select('id, brand, name, price, category, description, specs, images') // Wymieniamy kolumny jawnie
             .order('id', { ascending: true });
 
         if (error) {
-            console.error('Błąd pobierania produktów z Supabase:', error);
+            console.error('Błąd pobierania produktów z Supabase (fallback do mocków):', error);
             return getProductsFromStorage().length > 0 ? getProductsFromStorage() : initialProductsData;
         }
         
         return data.map(p => ({
-            id: p.id ? p.id.toString() : 'mock_id',
+            // ZMIANA: id musi być stringiem, jeśli jest liczbowe w bazie, konwertujemy
+            id: p.id ? p.id.toString() : `prod_${Math.random().toString(36).substring(2, 9)}`, 
             brand: p.brand || 'Brak marki',
             name: p.name || 'Brak nazwy',
             price: parseFloat(p.price) || 0,
             category: p.category || 'Unisex',
             description: p.description || 'Brak opisu produktu.',
-            specs: p.specs || [], 
-            images: parsePostgresArray(p.images)
+            specs: p.specs || [], // Powinno być tablicą obiektów JSONB w bazie
+            images: parsePostgresArray(p.images) // Array of Data URLs/URLs
         }));
     }
 
-    /** Funkcja ładowana przy starcie: Pobiera z Supabase i synchronizuje z LocalStorage */
+    /** ZMODYFIKOWANA: Funkcja ładowana przy starcie: Pobiera z Supabase i synchronizuje z LocalStorage */
     async function fetchProductsFromSupabase() {
         const products = await getProductsFromSupabase();
         
@@ -1676,7 +1792,8 @@
             noProductsEl.style.display = 'block';
         }
         
-        applyFilters();
+        // KLUCZOWA NAPRAWA: Wywołanie applyFilters, aby wyrenderować produkty po ich pobraniu
+        applyFilters(); 
     }
 
     /** Prawdziwe pobieranie zamówień z Supabase. */
@@ -1698,7 +1815,8 @@
             id: o.id || o.order_date.substring(0, 10), 
             date: new Date(o.order_date).toLocaleDateString(),
             email: o.customer_email,
-            items: o.order_details.map(d => `${d.name} (x${d.quantity})`).join(', '),
+            // Zakładamy, że order_details to JSONB zawierający listę produktów z name i quantity
+            items: o.order_details.map(d => `${d.name} (x${d.quantity})`).join(', '), 
             total: o.total_amount,
             status: o.status
         }));
@@ -1706,7 +1824,7 @@
 
 
     // ===============================================
-    // === LOGIKA ADMINISTRACYJNA (NAPRAWIONA) ===
+    // === LOGIKA ADMINISTRACYJNA (SUPABASE CRUD) ===
     // ===============================================
 
     function getProductsFromStorage() {
@@ -1731,8 +1849,8 @@
             price: parseFloat(document.getElementById('admin-price').value), // Używamy float dla ceny
             category: document.getElementById('admin-category').value,
             description: document.getElementById('admin-description').value,
-            specs: readSpecsFromForm(),
-            images: adminImageData.slice() 
+            specs: readSpecsFromForm(), // JSONB object array
+            images: adminImageData.slice() // Array of Data URLs/URLs
         };
 
         let response;
@@ -1764,7 +1882,7 @@
         
         clearAdminForm();
         await fetchProductsFromSupabase(); // Odśwież dane
-        renderAdminProductList();       
+        renderAdminProductList();        
     }
 
     /** UZUPELNIONA: Usuwa produkt z Supabase */
@@ -1786,7 +1904,7 @@
         alert('Produkt usunięty z bazy.');
         
         await fetchProductsFromSupabase();
-        renderAdminProductList(); 
+        renderAdminProductList();    
     }
 
     /** UZUPELNIONA: Renderuje listę produktów w panelu admina */
@@ -2011,9 +2129,8 @@
         renderAdminImagePreviews();
     }
     
-
     // ===============================================
-    // === KROK 5: MAKSYMALNIE ULEPSZONA LOGIKA CHATBOTA (Wieloetapowa) ===
+    // === LOGIKA CHATBOTA I WIDOKÓW (ZACHOWANA) ===
     // ===============================================
 
     /**
@@ -2183,15 +2300,7 @@
     }
 
 
-    // ===============================================
-    // === POZOSTAŁE FUNKCJE OBSŁUGI WIDOKÓW I DANYCH ===
-    // ===============================================
-
-    function getProductsFromStorage() {
-        const raw = JSON.parse(localStorage.getItem(LS_PRODUCTS_KEY) || '[]');
-        if (raw.length === 0) return initialProductsData; 
-        return raw;
-    }
+    // === POZOSTAŁE FUNKCJE WIDOKÓW I KOSZYKA (ZACHOWANE) ===
     
     function initializeProductStorage() {
         const products = localStorage.getItem(LS_PRODUCTS_KEY);
@@ -2205,33 +2314,6 @@
         if (!orders) {
             localStorage.setItem(LS_ORDERS_KEY, JSON.stringify(initialOrdersData));
         }
-    }
-    
-    function renderAdminProductList() {
-        const listBody = document.getElementById('admin-product-list-body');
-        if (!listBody) return;
-        const products = getProductsFromStorage();
-        listBody.innerHTML = '';
-        
-        if (products.length === 0) {
-            listBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Brak produktów.</td></tr>';
-            return;
-        }
-        products.forEach(p => {
-            listBody.innerHTML += `
-                <tr>
-                    <td>${p.id}</td>
-                    <td>${p.brand}</td>
-                    <td>${p.name}</td>
-                    <td>${p.price.toFixed(2)} PLN</td>
-                    <td>${p.category}</td>
-                    <td>
-                        <button class="btn-admin-edit" onclick="populateAdminForm('${p.id}')">Edytuj</button>
-                        <button class="btn-admin-delete" onclick="deleteProduct('${p.id}')">Usuń</button>
-                    </td>
-                </tr>
-            `;
-        });
     }
     
     function updateSideMenu() {
@@ -2487,34 +2569,6 @@
         }
     }
 
-    async function renderAdminStatsAndOrders() {
-        // UZUPELNIONA: renderowanie statystyk z Supabase i mocków
-        document.getElementById('stats-active-users').textContent = Math.floor(Math.random() * 50) + 10;
-        
-        const orders = await fetchOrdersFromSupabase();
-        
-        const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
-        document.getElementById('stats-total-revenue').textContent = totalRevenue.toFixed(2) + ' PLN';
-        document.getElementById('stats-total-orders').textContent = orders.length;
-
-        const ordersBody = document.getElementById('admin-orders-list-body');
-        ordersBody.innerHTML = '';
-
-        orders.forEach(order => {
-            const itemsSummary = order.items;
-            ordersBody.innerHTML += `
-                <tr>
-                    <td>#${order.id}</td>
-                    <td>${order.date}</td>
-                    <td>${order.email}</td>
-                    <td>${itemsSummary}</td>
-                    <td>${order.total.toFixed(2)} PLN</td>
-                    <td><span style="color:${order.status === 'Oczekuje' ? 'orange' : 'green'}; font-weight:700;">${order.status}</span></td>
-                </tr>
-            `;
-        });
-    }
-
     function getCart() {
         return JSON.parse(localStorage.getItem(LS_CART_KEY) || '[]');
     }
@@ -2731,278 +2785,64 @@
         }
     }
     
-    function clearAdminForm() {
-        document.getElementById('admin-product-id').value = '';
-        document.getElementById('admin-brand').value = '';
-        document.getElementById('admin-name').value = '';
-        document.getElementById('admin-price').value = '';
-        document.getElementById('admin-category').value = 'Męskie';
-        document.getElementById('admin-description').value = '';
-        document.getElementById('admin-form-title').textContent = 'Dodaj Nowy Produkt';
+    /** Złożenie zamówienia do Supabase (mock) */
+    async function handleOrderSubmit(event) {
+        event.preventDefault();
         
-        const imageInput = document.getElementById('admin-images');
-        if (imageInput) imageInput.value = ''; 
-        adminImageData = []; 
-        renderAdminImagePreviews();
-        
-        const specsList = document.getElementById('admin-specs-list');
-        if(specsList) specsList.innerHTML = '';
-        addSpecField();
-    }
-
-    function populateAdminForm(productId) {
-        const product = getProductsFromStorage().find(p => p.id === productId);
-        if (!product) return;
-
-        document.getElementById('admin-product-id').value = product.id;
-        document.getElementById('admin-brand').value = product.brand;
-        document.getElementById('admin-name').value = product.name;
-        document.getElementById('admin-price').value = product.price;
-        document.getElementById('admin-category').value = product.category;
-        document.getElementById('admin-description').value = product.description;
-        document.getElementById('admin-form-title').textContent = `Edytuj Produkt: ${product.name}`;
-        
-        setSpecsToForm(product.specs);
-
-        adminImageData = product.images.slice();
-        renderAdminImagePreviews();
-    }
-    
-    function addSpecField(key = '', value = '') {
-        const container = document.getElementById('admin-specs-list');
-        if (!container) return;
-        const rowId = 'spec-' + Date.now();
-        const row = document.createElement('div');
-        row.id = rowId;
-        row.style.display = 'flex';
-        row.style.gap = '10px';
-        row.style.marginBottom = '10px';
-        row.innerHTML = `
-            <input type="text" class="spec-key" value="${escapeHtmlAttr(key)}" placeholder="Klucz (np. Nuta Głowy)" style="flex:1;">
-            <input type="text" class="spec-value" value="${escapeHtmlAttr(value)}" placeholder="Wartość (np. Bergamotka)" style="flex:1;">
-            <button type="button" onclick="removeSpecField('${rowId}')" style="background: none; border: none; color: #C00; cursor: pointer;">&times;</button>
-        `;
-        container.appendChild(row);
-    }
-
-    function removeSpecField(rowId) {
-        const row = document.getElementById(rowId);
-        if (row) row.remove();
-    }
-
-    function readSpecsFromForm() {
-        const specs = [];
-        const container = document.getElementById('admin-specs-list');
-        if (!container) return specs;
-        
-        container.querySelectorAll('.spec-key').forEach((keyInput, index) => {
-            const valueInput = container.querySelectorAll('.spec-value')[index];
-            if (keyInput.value.trim() && valueInput.value.trim()) {
-                specs.push({
-                    key: keyInput.value.trim(),
-                    value: valueInput.value.trim()
-                });
-            }
-        });
-        return specs;
-    }
-
-    function setSpecsToForm(specs) {
-        const container = document.getElementById('admin-specs-list');
-        if (!container) return;
-        container.innerHTML = '';
-        if (specs && specs.length > 0) {
-            specs.forEach(spec => {
-                addSpecField(spec.key, spec.value);
-            });
-        }
-        if (container.children.length === 0) {
-             addSpecField();
-        }
-    }
-    
-    function escapeHtmlAttr(s) {
-        return s ? s.toString().replace(/"/g, '&quot;') : '';
-    }
-    
-    function setupAdminImageInput() {
-        const input = document.getElementById('admin-images');
-        if (input) {
-            input.removeEventListener('change', handleAdminImagesChange);
-            input.addEventListener('change', handleAdminImagesChange);
-        }
-    }
-
-    function handleAdminImagesChange(event) {
-        const files = event.target.files;
-        if (files.length > 5) {
-            alert('Możesz dodać maksymalnie 5 zdjęć.');
-            event.target.value = '';
+        const cart = getCart();
+        if (cart.length === 0) {
+            alert('Koszyk jest pusty!');
             return;
         }
 
-        adminImageData = [];
-        const promises = [];
+        const customerName = document.getElementById('order-imie').value;
+        const customerEmail = document.getElementById('order-email').value;
+        const deliveryAddress = document.getElementById('order-adres').value;
+        const orderNotes = document.getElementById('order-uwagi').value;
+        const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-        for (let i = 0; i < files.length; i++) {
-            promises.push(new Promise(resolve => {
-                const reader = new FileReader();
-                reader.onload = (e) => resolve(e.target.result);
-                reader.readAsDataURL(files[i]);
-            }));
+        const orderDetails = cart.map(item => ({
+            product_id: item.id,
+            name: item.name,
+            quantity: item.quantity,
+            unit_price: item.price
+        }));
+
+        const newOrder = {
+            customer_name: customerName,
+            customer_email: customerEmail,
+            delivery_address: deliveryAddress,
+            total_amount: totalAmount,
+            order_details: orderDetails, // Zapiszemy to jako JSONB
+            notes: orderNotes,
+            status: 'Oczekuje' // Domyślny status
+        };
+
+        const { data, error } = await supabase
+            .from('orders')
+            .insert([newOrder])
+            .select();
+
+        if (error) {
+            alert(`Błąd składania zamówienia: ${error.message}. Spróbuj ponownie.`);
+            console.error(error);
+            return;
         }
 
-        Promise.all(promises).then(results => {
-            adminImageData = results;
-            renderAdminImagePreviews();
-        });
-    }
-
-    function renderAdminImagePreviews() {
-        const previewContainer = document.getElementById('admin-image-previews');
-        if (!previewContainer) return;
-
-        previewContainer.innerHTML = '';
-        adminImageData.forEach((dataUrl, index) => {
-            const img = document.createElement('div');
-            img.style.width = '80px';
-            img.style.height = '80px';
-            img.style.backgroundImage = `url('${dataUrl}')`;
-            img.style.backgroundSize = 'cover';
-            img.style.backgroundPosition = 'center';
-            img.style.border = '2px solid var(--color-accent-gold)';
-            img.style.position = 'relative';
-
-            const removeBtn = document.createElement('button');
-            removeBtn.textContent = 'x';
-            removeBtn.style.position = 'absolute';
-            removeBtn.style.top = '0';
-            removeBtn.style.right = '0';
-            removeBtn.style.background = 'red';
-            removeBtn.style.color = 'white';
-            removeBtn.style.border = 'none';
-            removeBtn.style.cursor = 'pointer';
-            removeBtn.onclick = () => removeAdminImage(index);
-            
-            img.appendChild(removeBtn);
-            previewContainer.appendChild(img);
-        });
-    }
-
-    function removeAdminImage(index) {
-        adminImageData.splice(index, 1);
-        renderAdminImagePreviews();
-    }
-    
-
-    // Obsługa widoków (renderKontoPage, showDashboardContent, itp. zostają bez zmian, bo są poprawne)
-
-    function renderKontoPage() { 
-        const kontoContent = document.getElementById('konto-content');
-        if (!kontoContent) return;
-
-        kontoContent.innerHTML = ''; 
+        // Sukces
+        const orderId = data[0].id || 'nieznany';
+        alert(`Zamówienie #${orderId} złożone pomyślnie! Otrzymasz potwierdzenie e-mail. Przekierowuję na stronę główną.`);
         
-        if (getIsLoggedIn() && !isCurrentUserAdmin()) {
-            const template = document.getElementById('dashboard-template');
-            const clone = document.importNode(template.content, true);
-            kontoContent.appendChild(clone);
-            
-            document.getElementById('user-name-display').textContent = getUserName();
-            showDashboardContent('orders');
-        } else {
-            const template = document.getElementById('auth-template');
-            const clone = document.importNode(template.content, true);
-            kontoContent.appendChild(clone);
-        }
-    }
-    
-    function renderAdminPage() { 
-        const adminContent = document.getElementById('admin-content');
-        if (!adminContent) return;
-
-        adminContent.innerHTML = '';
-        const template = document.getElementById('admin-template');
-        const clone = document.importNode(template.content, true);
-        adminContent.appendChild(clone);
-
-        // Pokaż domyślnie statystyki i produkty
-        showAdminContent('stats');
-    }
-
-    function showDashboardContent(view) {
-        // MOCK: renderowanie treści w panelu użytkownika
-        const main = document.getElementById('dashboard-main');
-        document.querySelectorAll('.dashboard-nav a').forEach(a => a.classList.remove('active'));
-        document.getElementById('nav-' + view).classList.add('active');
-
-        if (view === 'orders') {
-            main.innerHTML = `<h3>Historia zamówień</h3><p>Lista Twoich ostatnich zamówień.</p>
-                <table class="order-table">
-                    <thead><tr><th>ID</th><th>Data</th><th>Suma</th><th>Status</th></tr></thead>
-                    <tbody><tr><td>#4567</td><td>01.10.2025</td><td>899.00 PLN</td><td>Wysłane</td></tr></tbody>
-                </table>`;
-        } else if (view === 'address') {
-             main.innerHTML = `<h3>Adresy dostawy</h3><p>Zarządzaj swoimi adresami.</p>`;
-        } else if (view === 'profile') {
-             main.innerHTML = `<h3>Edytuj profil</h3><p>Zmień swoją nazwę użytkownika lub hasło.</p>`;
-        }
-    }
-    
-    function showAdminContent(view) {
-         // UZUPELNIONA: Ładowanie widoków admina
-        const main = document.getElementById('admin-main');
-        document.querySelectorAll('.dashboard-nav a').forEach(a => a.classList.remove('active'));
-        document.getElementById('nav-admin-' + view).classList.add('active');
-
-        if (view === 'stats') {
-            const template = document.getElementById('admin-stats-template');
-            main.innerHTML = '';
-            main.appendChild(document.importNode(template.content, true));
-            renderAdminStatsAndOrders();
-        } else if (view === 'products') {
-            const template = document.getElementById('admin-products-template');
-            main.innerHTML = '';
-            main.appendChild(document.importNode(template.content, true));
-            renderAdminProductList();
-            setupAdminImageInput(); // Uruchomienie obsługi obrazów
-            addSpecField(); // Domyślne pole specyfikacji
-        }
-    }
-
-
-    function getOrdersFromStorage() {
-        const raw = JSON.parse(localStorage.getItem(LS_ORDERS_KEY) || '[]');
-        if (raw.length === 0) return initialOrdersData; 
-        return raw;
-    }
-
-    // Uproszczone funkcje koszyka i logowania
-    function getIsLoggedIn() { return getCurrentUser() !== null; }
-    function getCurrentUser() {
-        const user = localStorage.getItem(LS_SESSION_KEY);
-        return user ? JSON.parse(user) : null;
-    }
-    function isCurrentUserAdmin() {
-        const user = getCurrentUser();
-        return user && user.isAdmin === true;
-    }
-    function addToCart() {} // Mock
-    function renderCartPage() {} // Mock
-    function updateCartCounters() {} // Mock
-    function getUserName() { return 'Kliencie'; } // Mock
-    async function logoutUser() {
-        await supabase.auth.signOut();
-        localStorage.removeItem(LS_SESSION_KEY);
-        updateSideMenu();
+        saveCart([]); // Wyczyść koszyk
         showPage('landing-page');
     }
-
+    
     // === INICJALIZACJA ===
     document.addEventListener('DOMContentLoaded', async () => {
         initializeProductStorage();
         initializeOrderStorage();
         
+        // ZMIANA: Synchronizacja sesji przed ładowaniem produktów
         await syncUserSession(); 
         
         // Uzupełnienie stopki (bez zmian, OK)
@@ -3035,7 +2875,8 @@
             footer.innerHTML = fullFooterContent;
         });
         
-        fetchProductsFromSupabase();
+        // KLUCZOWE WYWOŁANIE: Ładuje produkty z Supabase, a następnie wywołuje applyFilters()
+        fetchProductsFromSupabase(); 
 
         document.addEventListener('pageShow', (e) => {
             if (e.detail.pageId === 'pomoc-page') {
@@ -3063,3 +2904,5 @@
     });
     
 </script>
+</body>
+</html>
