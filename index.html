@@ -963,14 +963,21 @@
                 <div id="filter-sidebar">
                     <h4>FILTRUJ WYNIKI</h4>
                     
-                    <div class="filter-group">
-                        <h4>Marka</h4>
-                        <label><input type="checkbox" data-filter="brand" value="Creed" > Creed</label>
-                        <label><input type="checkbox" data-filter="brand" value="Parfums de Marly" > Parfums de Marly</label>
-                        <label><input type="checkbox" data-filter="brand" value="Tom Ford" > Tom Ford</label>
-                        <label><input type="checkbox" data-filter="brand" value="Frederic Malle" > Frederic Malle</label>
-                        <label><input type="checkbox" data-filter="brand" value="Kilian" > Kilian</label>
-                    </div>
+                   <div class="filter-group">
+                        <h4>Marka</h4>
+                        <label><input type="checkbox" data-filter="brand" value="Creed" onchange="applyFilters()"> Creed</label>
+                        <label><input type="checkbox" data-filter="brand" value="Parfums de Marly" onchange="applyFilters()"> Parfums de Marly</label>
+                        <label><input type="checkbox" data-filter="brand" value="Tom Ford" onchange="applyFilters()"> Tom Ford</label>
+                        <label><input type="checkbox" data-filter="brand" value="Frederic Malle" onchange="applyFilters()"> Frederic Malle</label>
+                        <label><input type="checkbox" data-filter="brand" value="Kilian" onchange="applyFilters()"> Kilian</label>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <h4>Kategoria</h4>
+                        <label><input type="checkbox" data-filter="category" value="Męskie" onchange="applyFilters()"> Męskie</label>
+                        <label><input type="checkbox" data-filter="category" value="Damskie" onchange="applyFilters()"> Damskie</label>
+                        <label><input type="checkbox" data-filter="category" value="Unisex" onchange="applyFilters()"> Unisex</label>
+                    </div>
                     
                     <div class="filter-group">
                         <h4>Kategoria</h4>
@@ -1400,18 +1407,18 @@
         <div class="auth-container">
             <div class="auth-form">
                 <h2>Logowanie</h2>
-                <form onsubmit="loginUser(); return false;">
-                    <div class="form-group">
-                        <label for="login-email">Adres E-mail</label>
-                        <input type="email" id="login-email" value="michal@premium.pl" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="login-password">Hasło</label>
-                        <input type="password" id="login-password" value="haslo" required>
-                    </div>
-                    <button type="submit" class="btn-auth">ZALOGUJ SIĘ</button>
-                    <div class="forgot-password"><a href="#">Nie pamiętasz hasła?</a></div>
-                </form>
+               <form onsubmit="loginUser(); return false;">
+                    <div class="form-group">
+                        <label for="login-email">Adres E-mail</label>
+                        <input type="email" id="login-email" placeholder="Wpisz e-mail..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Hasło</label>
+                        <input type="password" id="login-password" placeholder="Wpisz hasło..." required>
+                    </div>
+                    <button type="submit" class="btn-auth">ZALOGUJ SIĘ</button>
+                    <div class="forgot-password"><a href="#">Nie pamiętasz hasła?</a></div>
+                </form>
             </div>
             
             <div class="auth-form">
