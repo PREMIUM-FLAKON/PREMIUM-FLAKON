@@ -322,9 +322,11 @@
             cursor: pointer;
             font-size: 0.95em;
         }
-        #product-list-wrapper {
-            flex-grow: 1;
-        }
+       #product-list-wrapper {
+            flex-grow: 1;
+            /* NOWY KOD: Oblicza szerokość: 100% minus 250px paska bocznego i 30px odstępu */
+            width: calc(100% - 280px); 
+        }
         #sort-options {
             margin-bottom: 20px;
             text-align: right;
@@ -822,43 +824,7 @@
             .admin-layout { flex-direction: column; } 
             #koszyk-formularz { position: static; } 
         }
-      /* === NOWY KOD: POPRAWKI STYLU DLA 2 KOLUMN NA TELEFONIE === */
-            /* Zapewnienie 2 kolumn i mniejszych odstępów */
-            #product-grid {
-                grid-template-columns: repeat(2, 1fr) !important; /* Wymuszenie 2 kolumn */
-                gap: 10px; /* Mniejszy odstęp między produktami */
-            }
-
-            /* Zmniejszenie elementów na karcie, aby się zmieściły */
-            .product-card {
-                padding: 10px; /* Mniejszy padding wewnętrzny */
-            }
-            .product-card .brand {
-                font-size: 1.1em; /* Mniejsza czcionka marki */
-                margin-bottom: 5px;
-            }
-            .product-card h3 {
-                font-size: 0.9em; /* Mniejsza nazwa produktu */
-                margin-bottom: 5px;
-            }
-            .product-card .price {
-                font-size: 1.2em; /* Mniejsza cena */
-                margin: 5px 0;
-            }
-            /* Poprawka dla przycisków, aby się zmieściły */
-            .product-card .btn-add {
-                font-size: 0.8em;
-                padding: 8px 5px;
-            }
-            /* Ukrycie przycisku "Szczegóły" na mobilnej siatce (oszczędza miejsce) */
-            .product-card button[onclick*="showProductDetail"] {
-                display: none;
-            }
-            /* Przycisk "Do koszyka" zajmuje wtedy 100% szerokości */
-            .product-card div[style*="display:flex"] button[onclick*="addToCart"] {
-                width: 100%;
-            }
-
+     
         @media (max-width: 480px) {
             .hero-content h1 { font-size: 2em; }
             .btn-main { padding: 12px 40px; font-size: 0.9em; }
@@ -867,6 +833,35 @@
             .mini-footer .social-icons { margin: 10px 0; }
             #side-menu.open { width: 100%; }
             #side-menu a { font-size: 16px; }
+       /* === POPRAWKA KARTY PRODUKTU DLA TELEFONU === */
+           /* Resetuje szerokość kontenera na mobilce */
+            #product-list-wrapper {
+            	width: 100% !important;
+            }
+            /* Zmniejszamy odstępy siatki */
+            #product-grid {
+            	gap: 10px !important;
+            }
+            /* Zmniejszamy "prostokąt" (kartę) */
+            .product-card {
+            	padding: 10px !important;
+            }
+            /* Zmniejszamy czcionki w karcie */
+            .product-card .brand { font-size: 1em; }
+            .product-card h3 { font-size: 0.85em; line-height: 1.2; }
+            .product-card .price { font-size: 1.1em; margin: 5px 0; }
+           
+            /* Zmniejszamy odstęp między przyciskami */
+            .product-card div[style*="display:flex"] {
+            	gap: 5px !important; /* Mniejszy odstęp między przyciskami */
+            }
+            /* Drastycznie zmniejszamy OBA przyciski, by się zmieściły obok siebie */
+            .product-card .btn-add {
+            	font-size: 0.75em !important; /* Bardzo mała czcionka */
+            	padding: 8px 5px !important; /* Bardzo mały padding */
+                flex-grow: 1;
+                flex-basis: 50%;
+            }
         }
     </style>
 </head>
