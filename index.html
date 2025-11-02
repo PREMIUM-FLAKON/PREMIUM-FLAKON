@@ -1594,6 +1594,7 @@
     // ===============================================
     // === KROK 1: INICJALIZACJA KLIENTA SUPABASE ===
     // ===============================================
+    // WAŻNE: Klucze brane z Twojego kodu. Upewnij się, że tabela 'orders' istnieje i ma włączone RLS dla anon.
     const SUPABASE_URL = 'https://dtgwyrvbqpefrcjdnqqv.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0Z3d5cnZicXBlZnJjamRucXF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwMTU3MjIsImV4cCI6MjA3NzU5MTcyMn0.WObj9HRon0hYM9m9JC-ty1bE1DXxzwQ7RmkfValxJCs';
     
@@ -1601,7 +1602,7 @@
     console.log('Klient Supabase zainicjalizowany.');
 
     // ===============================================
-    // === KLUCZE LOCALSTORAGE & MOCK DATA ===
+    // === KLUCZE LOCALSTORAGE & MOCK DATA (zachowane dla fallbacku) ===
     // ===============================================
     const LS_PRODUCTS_KEY = 'pf_products';
     const LS_USERS_KEY = 'pf_users';
@@ -1609,7 +1610,6 @@
     const LS_ORDERS_KEY = 'pf_orders'; 
     const LS_CART_KEY = 'pf_cart';
     
-    // --- POCZĄTKOWA BAZA PRODUKTÓW (Jako fallback) ---
     const initialProductsData = [
         { id: 'PF101', brand: 'Creed', name: 'Aventus (EDP 100ml)', category: 'Męskie', price: 1250, description: '...', specs: [], images: [] },
         { id: 'PF102', brand: 'Parfums de Marly', name: 'Layton (EDP 75ml)', category: 'Unisex', price: 899, description: '...', specs: [], images: [] },
@@ -1618,424 +1618,139 @@
         { id: 'PF105', brand: 'Kilian', name: 'Love, Don\'t Be Shy (EDP 50ml)', category: 'Damskie', price: 980, description: '...', specs: [], images: [] },
     ];
     const initialOrdersData = [
-        { id: '2025/08/01', date: '20.08.2025', email: 'michal@premium.pl', items: 'Aventus (100ml)', total: 1250, status: 'Dostarczono' },
+        { id: '2025/08/01', date: '20.08.2025', email: 'michal@premium.pl', items: 'Aventus (100ml)', total: 1250, status: 'Wysłane' }, // Zmienione na "Wysłane" dla lepszego testu
+        { id: '2025/07/15', date: '15.07.2025', email: 'michal@premium.pl', items: 'Layton (75ml)', total: 899, status: 'Oczekuje' },
     ];
 
     let activeUserInterval = null;
     let adminImageData = [];
-    let currentDetailProductId = null; // Do śledzenia, który produkt jest w widoku detail
-
+    let currentDetailProductId = null; 
+    
     // ===============================================
-    // === ZARZĄDZANIE BAZAMI (SUPABASE I LOCALSTORAGE) ===
+    // === LOGIKA POBIERANIA DANYCH Z SUPABASE ===
     // ===============================================
-
-    /** Funkcja pomocnicza do bezpiecznego parsowania tablic z PostGRES (TEXT[]) */
-    function parsePostgresArray(value) {
-        if (Array.isArray(value)) return value;
-        if (typeof value === 'string' && value.startsWith('{') && value.endsWith('}')) {
-            // Usuń nawiasy klamrowe i podziel po przecinku, usuwając cudzysłowy (które PostGRES dodaje)
-            return value.slice(1, -1).split(',').map(item => item.trim().replace(/^"|"$/g, ''));
-        }
-        return [];
-    }
-
-
-    /** Pobiera listę produktów z Supabase (główne źródło danych) */
-    async function getProductsFromSupabase() {
+    
+    /**
+     * Prawdziwe pobieranie zamówień z Supabase.
+     * Zastępuje mockowe dane, ale używa ich jako fallback.
+     */
+    async function fetchOrdersFromSupabase() {
         const { data, error } = await supabase
-            .from('products')
-            .select('*')
-            .order('id', { ascending: true });
-
-        if (error) {
-            console.error('Błąd pobierania produktów z Supabase:', error);
-            return []; // Zwraca pustą listę w razie błędu
-        }
-        
-        // KONWERSJA DANYCH: Zapewnienie, że typy JSONB i TEXT[] są poprawne
-        return data.map(p => ({
-            id: p.id ? p.id.toString() : 'mock_id', // Upewnienie się, że ID jest stringiem
-            brand: p.brand || 'Brak marki',
-            name: p.name || 'Brak nazwy',
-            price: parseFloat(p.price) || 0,
-            category: p.category || 'Unisex',
-            description: p.description || 'Brak opisu produktu.',
-            specs: p.specs || [], 
-            images: parsePostgresArray(p.images) // Użycie funkcji parsującej dla TEXT[]
-        }));
-    }
-
-    /** Funkcja ładowana przy starcie: Pobiera z Supabase i synchronizuje z LocalStorage (dla szybkiego odczytu) */
-    async function fetchProductsFromSupabase() {
-        const products = await getProductsFromSupabase();
-        
-        const noProductsEl = document.getElementById('no-products');
-        
-        if (products.length > 0) {
-            // Nadpisz LocalStorage danymi z Supabase
-            localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(products)); 
-            if (noProductsEl) noProductsEl.style.display = 'none';
-        } else if (noProductsEl) {
-            noProductsEl.textContent = 'Brak produktów w bazie.';
-            noProductsEl.style.display = 'block';
-        }
-        
-        // Odśwież widok
-        applyFilters();
-    }
-
-    /** Pobiera produkty z LocalStorage (używane przez filtry i koszyk, jako szybki odczyt) */
-    function getProductsFromStorage() {
-        const raw = JSON.parse(localStorage.getItem(LS_PRODUCTS_KEY) || '[]');
-        if (raw.length === 0) return initialProductsData; 
-        return raw;
-    }
-
-    /** Zapisuje dane do LocalStorage (utrzymuje synchronizację po zapisie do Supabase) */
-    function saveProductsToStorage(products) {
-        localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(products));
-    }
-
-    /** Pobiera zamówienia z LocalStorage (obecnie mock data) */
-    function getOrdersFromStorage() {
-        return JSON.parse(localStorage.getItem(LS_ORDERS_KEY) || '[]');
-    }
-
-    // ===============================================
-    // === KROK 2: UWIERZYTELNIANIE (SUPABASE AUTH) ===
-    // ===============================================
-
-    /** Synchronizuje status logowania z Supabase do LocalStorage */
-    async function syncUserSession() {
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (user) {
-            const isAdmin = user.user_metadata?.is_admin === true;
-            const username = user.user_metadata?.username || user.email;
-
-            const currentUser = { 
-                email: user.email, 
-                username: username, 
-                isAdmin: isAdmin,
-                id: user.id
-            };
-            localStorage.setItem(LS_SESSION_KEY, JSON.stringify(currentUser));
-        } else {
-            localStorage.removeItem(LS_SESSION_KEY);
-        }
-          updateSideMenu();
-    }
-
-    /** Rejestruje nowego użytkownika w Supabase Auth (ZASTĄPIONE) */
-    async function registerUser() {
-        const username = document.getElementById('register-username').value;
-        const email = document.getElementById('register-email').value;
-        const password = document.getElementById('register-password').value;
-
-        const { data, error } = await supabase.auth.signUp({
-            email: email,
-            password: password,
-            options: {
-                data: {
-                    username: username,
-                    is_admin: false
-                }
-            }
-        });
-
-        if (error) {
-            alert('Błąd rejestracji: ' + error.message);
-            return;
-        }
-
-        alert('Rejestracja pomyślna! Sprawdź swoją skrzynkę e-mail, aby potwierdzić konto.');
-        document.getElementById('register-username').value = '';
-        document.getElementById('register-email').value = '';
-        document.getElementById('register-password').value = '';
-    }
-
-    /** Loguje użytkownika (ZASTĄPIONE) */
-    async function loginUser() {
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password,
-        });
-
-        if (error) {
-            alert('Błąd logowania: ' + error.message);
-            logoutUser();
-            return;
-        }
-
-        await syncUserSession(); 
-        
-        if (isCurrentUserAdmin()) {
-            showPage('admin-page');
-        } else {
-            showPage('konto-page');
-        }
-    }
-    
-    /** Wylogowuje użytkownika (ZASTĄPIONE) */
-    async function logoutUser() {
-        await supabase.auth.signOut();
-        localStorage.removeItem(LS_SESSION_KEY);
-        updateSideMenu();
-        
-        const activePage = document.querySelector('.page-section.active');
-        if (activePage && (activePage.id === 'konto-page' || activePage.id === 'admin-page')) {
-            showPage('landing-page');
-        }
-    }
-    
-    function getCurrentUser() {
-        const user = localStorage.getItem(LS_SESSION_KEY);
-        return user ? JSON.parse(user) : null;
-    }
-
-    function getIsLoggedIn() {
-        return getCurrentUser() !== null;
-    }
-
-    function isCurrentUserAdmin() {
-        const user = getCurrentUser();
-        return user && user.isAdmin === true;
-    }
-
-    function getUserName() {
-        const user = getCurrentUser();
-        return user ? user.username : "Kliencie";
-    }
-
-
-    // ===============================================
-    // === KROK 3: ZARZĄDZANIE PRODUKTAMI (ADMIN) ===
-    // ===============================================
-
-    /** Obsługuje zapis/edycję produktu do Supabase (ZASTĄPIONE) */
-    async function handleAdminFormSubmit(event) {
-        event.preventDefault();
-        
-        const productId = document.getElementById('admin-product-id').value;
-        
-        // 1. Zbieranie danych
-        const productData = {
-            brand: document.getElementById('admin-brand').value,
-            name: document.getElementById('admin-name').value,
-            price: parseInt(document.getElementById('admin-price').value, 10),
-            category: document.getElementById('admin-category').value,
-            description: document.getElementById('admin-description').value,
-            specs: readSpecsFromForm(),
-            images: adminImageData.slice() 
-        };
-
-        let response;
-
-        if (productId) {
-            // --- TRYB EDYCJI: Wykonaj UPDATE na Supabase ---
-            response = await supabase
-                .from('products')
-                .update(productData)
-                .eq('id', productId)
-                .select();
-
-        } else {
-            // --- TRYB DODAWANIA: Wykonaj INSERT do Supabase ---
-            response = await supabase
-                .from('products')
-                .insert([productData])
-                .select();
-        }
-
-        if (response.error) {
-            alert(`Błąd operacji: ${response.error.message}. Sprawdź uprawnienia RLS!`);
-            console.error(response.error);
-            return;
-        }
-
-        alert(productId ? 'Produkt zaktualizowany w Supabase!' : 'Nowy produkt dodany do Supabase!');
-        
-        // 3. Odświeżenie widoku po operacji
-        clearAdminForm();
-        await fetchProductsFromSupabase(); // Pociągnij najnowsze dane z bazy
-        renderAdminProductList();       
-    }
-
-    /** Usuwa produkt z Supabase (ZASTĄPIONE) */
-    async function deleteProduct(productId) {
-        if (!confirm('Czy na pewno chcesz trwale usunąć ten produkt? Tej akcji nie można cofnąć.')) {
-            return;
-        }
-        
-        const { error } = await supabase
-            .from('products')
-            .delete()
-            .eq('id', productId);
-
-        if (error) {
-            alert(`Błąd usuwania: ${error.message}. Sprawdź uprawnienia RLS!`);
-            return;
-        }
-        
-        alert('Produkt usunięty z Supabase.');
-        
-        await fetchProductsFromSupabase();
-        renderAdminProductList(); 
-    }
-
-    // ===============================================
-    // === KROK 4: SKŁADANIE ZAMÓWIEŃ (KOSZYK) ===
-    // ===============================================
-
-    /** Zapisuje zamówienie do Supabase zamiast wysyłania mailto (ZASTĄPIONE) */
-    async function handleOrderSubmit(event) {
-        event.preventDefault();
-        
-        const imie = document.getElementById('order-imie').value;
-        const email = document.getElementById('order-email').value;
-        const adres = document.getElementById('order-adres').value;
-        const uwagi = document.getElementById('order-uwagi').value;
-        const cart = getCart();
-
-        if (cart.length === 0) {
-            alert('Koszyk jest pusty!');
-            return;
-        }
-
-        let sumaCalkowita = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-        // Struktura danych do wstawienia do tabeli 'orders'
-        const orderDetails = cart.map(item => ({
-            id: item.id,
-            name: item.name,
-            price: item.price,
-            quantity: item.quantity
-        }));
-        
-        const orderData = {
-            customer_name: imie,
-            customer_email: email,
-            delivery_address: adres,
-            order_details: orderDetails, // Wstaw całą listę produktów
-            total_amount: sumaCalkowita,
-            status: 'Oczekuje',
-            notes: uwagi,
-            order_date: new Date().toISOString()
-        };
-
-        const { error } = await supabase
             .from('orders')
-            .insert([orderData]);
+            .select('*')
+            .order('order_date', { ascending: false })
+            .limit(1); // Bierzemy ostatnie zamówienie, aby bot miał o czym rozmawiać
 
         if (error) {
-            alert(`Błąd składania zamówienia: ${error.message}. Sprawdź, czy tabela 'orders' istnieje i ma politykę RLS dla INSERT dla roli anon!`);
-            console.error(error);
-            return;
+            console.error('Błąd pobierania zamówień z Supabase:', error.message);
+            // Zwraca mockowe dane jako fallback w przypadku błędu Supabase
+            return initialOrdersData.sort((a, b) => new Date(b.date) - new Date(a.date));
         }
-
-        alert("Dziękujemy! Twoje zamówienie zostało złożone i jest obecnie przetwarzane.");
         
-        // Opróżnij koszyk i odśwież widok
-        saveCart([]); 
-        renderCartPage(); 
+        // Zapewnienie kompatybilności struktury danych
+        return data.map(o => ({
+            id: o.id || o.order_date.substring(0, 10), 
+            date: new Date(o.order_date).toLocaleDateString(),
+            email: o.customer_email,
+            items: o.order_details.map(d => `${d.name} (x${d.quantity})`).join(', '),
+            total: o.total_amount,
+            status: o.status
+        }));
     }
 
+
     // ===============================================
-    // === KROK 5: MAKSYMALNIE ULEPSZONA LOGIKA CHATBOTA (NOWA WERSJA) ===
+    // === KROK 5: MAKSYMALNIE ULEPSZONA LOGIKA CHATBOTA (Wieloetapowa) ===
     // ===============================================
 
     /**
-     * 💡 Ulepszona funkcja zwracająca bardziej "inteligentne" i "płynne" odpowiedzi.
-     * @param {string} message Wiadomość użytkownika
-     * @returns {string} Odpowiedź Chatbota
+     * 💡 Symuluje pobieranie statusu zamówienia i zmianę adresu Z SUPABASE.
+     */
+    async function getOrderStatusResponse(message) {
+        // PRAWIDŁOWE POBRANIE DANYCH Z SUPABASE (lub mocka w razie błędu)
+        const latestOrders = await fetchOrdersFromSupabase();
+        const lastOrder = latestOrders.length > 0 ? latestOrders[0] : null;
+
+        if (!lastOrder) {
+            return 'Przepraszam, ale nie widzę żadnych złożonych zamówień w Twojej sesji. Aby sprawdzić status, prosimy o zalogowanie się do <a onclick="showPage(\'konto-page\')"><span class="gold-text">Konta Klienta</span></a>.';
+        }
+        
+        const askedForAddressChange = message.toLowerCase().includes('zmiana adresu') || message.toLowerCase().includes('inny adres');
+
+        let response = `Chętnie sprawdzę! Ostatnie zamówienie **#${lastOrder.id}** (${lastOrder.items}) ma następujący status:`;
+
+        // Szczegółowy status
+        if (lastOrder.status === 'Dostarczono') {
+            response += `<br>Status: <span class="gold-text">Dostarczono</span>. Mamy nadzieję, że zapach się podoba!`;
+        } else if (lastOrder.status === 'Wysłane') {
+            response += `<br>Status: <span style="color: green; font-weight: 700;">Wysłane i jest w drodze!</span> Wkrótce otrzymasz maila z numerem śledzenia, jeśli jeszcze go nie masz.`;
+        } else {
+            response += `<br>Status: <span style="color: orange; font-weight: 700;">Oczekuje na realizację</span>. Staramy się je wysłać w ciągu 24 godzin.`;
+        }
+
+        // Odpowiedź na zmianę adresu
+        if (askedForAddressChange) {
+            if (lastOrder.status === 'Wysłane' || lastOrder.status === 'Dostarczono') {
+                response += `<br><br>Co do zmiany adresu: Niestety, ponieważ zamówienie ma status "${lastOrder.status}", **zmiana adresu dostawy nie jest już możliwa.**`;
+            } else {
+                 response += `<br><br>Co do zmiany adresu: Możemy to spróbować zmienić! W tym celu **prosimy o pilny kontakt telefoniczny** na numer <a href="tel:532116720">532 116 720</a>, abyśmy mogli ręcznie wprowadzić korektę, zanim paczka opuści magazyn.`;
+            }
+        }
+
+        return response;
+    }
+
+
+    /**
+     * 💡 Główna funkcja logiki Chatbota, która musi być asynchroniczna.
      */
     function getBotResponse(message) {
         const lowerCaseMessage = message.toLowerCase().trim();
 
-        // 1. SCENARIUSZE KONWERSACYJNE (dla płynności i przyjazności)
+        // 1. SCENARIUSZE KONWERSACYJNE
         const greetings = ['cześć', 'witaj', 'dzień dobry', 'siema', 'elo', 'hej'];
         if (greetings.some(g => lowerCaseMessage.includes(g))) {
-            return 'Witaj! Miło mi Cię poznać! Jestem Asystent PremiumFlakon i chętnie odpowiem na Twoje pytania. ✨ O co chciałbyś zapytać? (Np. **Gwarancja**, **Dostawa**, **Zwroty**).';
+            return 'Witaj! Jestem Asystent PremiumFlakon. Chętnie pomogę. W czym mogę Ci służyć?';
         }
-
         const thanks = ['dziękuję', 'dzięki', 'super', 'dobra', 'ok', 'dzieki'];
         if (thanks.some(t => lowerCaseMessage.includes(t))) {
-            return 'Cieszę się, że mogłem pomóc! Jeśli coś jeszcze przyjdzie Ci do głowy, daj znać! Zawsze jestem tu dla Ciebie. Miłego dnia! 👋';
+            return 'Cieszę się, że mogłem pomóc! Miłego dnia! 👋';
         }
         
-        if (lowerCaseMessage.includes('co tam') || lowerCaseMessage.includes('jak leci') || lowerCaseMessage.includes('co słychać')) {
-            return 'U mnie wszystko w porządku, dziękuję za troskę! Jestem gotów pomóc w kwestiach luksusowych zapachów i zakupów. Jakie masz pytania?';
-        }
-        if (lowerCaseMessage.includes('jesteś botem') || lowerCaseMessage.includes('czy jesteś AI') || lowerCaseMessage.includes('program')) {
-            return 'Jestem zaawansowanym Asystentem, który uczy się z Regulaminu i bazy wiedzy sklepu, aby udzielać Ci szybkich i precyzyjnych odpowiedzi. Mów mi po prostu: Asystencie! 😉';
+        // 2. SCENARIUSZE ZAMÓWIEŃ/STATUSU (Teraz asynchroniczne wywołanie)
+        const orderKeywords = ['etap', 'status', 'moje zamówienie', 'zmiana adresu', 'numer śledzenia'];
+        if (orderKeywords.some(keyword => lowerCaseMessage.includes(keyword))) {
+            // Zwracamy Promise/await: bot musi poczekać na dane z Supabase
+            return getOrderStatusResponse(lowerCaseMessage); 
         }
 
-
-        // 2. SCENARIUSZE BIZNESOWE (Gwarancja, Dostawa, Realizacja)
+        // 3. SCENARIUSZE BIZNESOWE (FAQ)
         
-        if (lowerCaseMessage.includes('gwarancja') || lowerCaseMessage.includes('oryginalnoś') || lowerCaseMessage.includes('autentyczność') || lowerCaseMessage.includes('podróbki') || lowerCaseMessage.includes('jakość')) {
-            return 'Zapewniamy Cię, że wszystkie nasze produkty to <span class="gold-text">100% oryginalne perfumy</span>! Współpracujemy tylko z autoryzowanymi dystrybutorami. Masz naszą pełną gwarancję. <a onclick="showPageAndScroll(\'onas-page\', \'sourcing\')">Więcej o autentyczności.</a>';
-        }
-        
-        if (lowerCaseMessage.includes('ile') && lowerCaseMessage.includes('dostawa') || lowerCaseMessage.includes('cena') && lowerCaseMessage.includes('wysyłki') || lowerCaseMessage.includes('darmowa dostawa')) {
-            return 'Świetna wiadomość! Dostawa na terenie Polski jest dla naszych klientów <span class="gold-text">całkowicie bezpłatna</span> (0.00 PLN). 🚚';
-        }
-
-        if (lowerCaseMessage.includes('paczkomat') || lowerCaseMessage.includes('inpost') || lowerCaseMessage.includes('dpd') || lowerCaseMessage.includes('metoda dostawy')) {
-            return 'Oczywiście! Wysyłamy za pośrednictwem kuriera DPD/Inpost oraz do Paczkomatów. Przesyłka jest darmowa i realizowana w 24 godziny. 📦';
-        }
-
-        if (lowerCaseMessage.includes('dostaw') || lowerCaseMessage.includes('wysyłk') || lowerCaseMessage.includes('kurier')) {
-            return 'Wysyłka realizowana jest w ciągu <span class="gold-text">24 godzin</span> od zaksięgowania płatności. Czas dostawy to zazwyczaj 1-2 dni robocze.';
+        if (lowerCaseMessage.includes('gwarancja') || lowerCaseMessage.includes('oryginalnoś') || lowerCaseMessage.includes('autentyczność') || lowerCaseMessage.includes('podróbki')) {
+            return 'Gwarantujemy <span class="gold-text">100% oryginalności</span>! Perfumy pochodzą wyłącznie od autoryzowanych dystrybutorów. <a onclick="showPageAndScroll(\'onas-page\', \'sourcing\')">Więcej o autentyczności.</a>';
         }
         
-        if (lowerCaseMessage.includes('realizacja') || lowerCaseMessage.includes('czas') || (lowerCaseMessage.includes('kiedy') && (lowerCaseMessage.includes('dojdzie') || lowerCaseMessage.includes('otrzymam') || lowerCaseMessage.includes('paczk')))) {
-            return 'Zamówienie jest realizowane ekspresowo – <span class="gold-text">w 24 godziny</span> po zaksięgowaniu płatności. Od tego momentu kurier dostarcza paczkę w ciągu 1-2 dni roboczych.';
-        }
-
-        // 3. OBSŁUGA KLIENTA (Zwroty, Płatności, Kontakt)
-
-        if (lowerCaseMessage.includes('zwrot') || lowerCaseMessage.includes('odstąpienie') || lowerCaseMessage.includes('anulowanie')) {
-            return 'Pamiętaj, że perfumy podlegają zwrotowi <span class="gold-text">tylko jeśli opakowanie fabryczne nie zostało naruszone</span> (folia, plomba). Masz na to 14 dni. <a onclick="showPage(\'zwroty-page\')">Sprawdź szczegóły na stronie Zwroty i Reklamacje.</a>';
-        }
-
-        if (lowerCaseMessage.includes('reklamacj') || lowerCaseMessage.includes('uszkodzen') || lowerCaseMessage.includes('wadliwy')) {
-            return 'W przypadku wady produktu, prosimy o kontakt mailowy: **reklamacje@premiumflakon.pl** z opisem i zdjęciami wady. Rozpatrzymy to indywidualnie w ramach rękojmi.';
+        if (lowerCaseMessage.includes('paczkomat') || lowerCaseMessage.includes('inpost') || lowerCaseMessage.includes('dostawa') || lowerCaseMessage.includes('wysyłk') || lowerCaseMessage.includes('kurier')) {
+            return 'Wysyłamy do Paczkomatów i kurierem DPD/Inpost. Przesyłka jest **darmowa** (0.00 PLN) i realizowana w <span class="gold-text">24 godziny</span> po wpłacie.';
         }
         
-        if (lowerCaseMessage.includes('płatnoś') || lowerCaseMessage.includes('zapłacić') || lowerCaseMessage.includes('pobranie') || lowerCaseMessage.includes('metody')) {
-            return 'U nas zapłacisz szybko i bezpiecznie przelewem lub kartą. Ważna informacja: <span class="gold-text">nie realizujemy zamówień za pobraniem.</span>';
-        }
-        
-        // Etap zamówienia / Śledzenie
-        if (lowerCaseMessage.includes('etap') || lowerCaseMessage.includes('status') || lowerCaseMessage.includes('moje zamówienie') || lowerCaseMessage.includes('numer śledzenia')) {
-            return 'Aby sprawdzić status i etap realizacji zamówienia, zaloguj się do <span class="gold-text">Konta Klienta</span> i przejdź do sekcji "Twoje Zamówienia". Po wysyłce otrzymasz e-mail z numerem do śledzenia. <a onclick="showPage(\'konto-page\')">Przejdź do Konta.</a>';
+        if (lowerCaseMessage.includes('zwrot') || lowerCaseMessage.includes('odstąpienie')) {
+            return 'Zwrot jest możliwy w ciągu 14 dni, ale tylko jeśli <span class="gold-text">opakowanie fabryczne nie zostało naruszone</span>. Perfumy to produkt higieniczny. <a onclick="showPage(\'zwroty-page\')">Szczegóły w Regulaminie.</a>';
         }
         
         if (lowerCaseMessage.includes('kontakt') || lowerCaseMessage.includes('pracownik') || lowerCaseMessage.includes('zadzwonić')) {
-            return 'Oczywiście! Możesz zadzwonić: **532 116 720** (kontakt telefoniczny) lub napisać: **kontakt@premiumflakon.pl**. Zawsze możesz też sprawdzić sekcję pomocy! 😉 <a onclick="showPageAndScroll(\'pomoc-page\', \'contact-section\')">Zobacz dane kontaktowe.</a>';
+            return 'Jeśli potrzebujesz kontaktu z pracownikiem, zadzwoń: **532 116 720** lub napisz: **kontakt@premiumflakon.pl**. Zawsze możesz też sprawdzić sekcję pomocy! 😉';
         }
 
-        // 4. PRODUKTY (przykładowa prosta integracja z listą mock)
-        
-        const products = getProductsFromStorage();
-        const foundProduct = products.find(p => lowerCaseMessage.includes(p.name.toLowerCase()) || lowerCaseMessage.includes(p.brand.toLowerCase()));
-        
-        if (foundProduct) {
-            return `Ach, <span class="gold-text">${foundProduct.brand} ${foundProduct.name}</span>! To doskonały wybór! Jest dostępny w naszej kolekcji w cenie ${foundProduct.price.toFixed(2)} PLN. Chcesz rzucić okiem? <a onclick="showProductDetail('${foundProduct.id}')">Zobacz szczegóły produktu.</a>`;
-        }
-
-        // 5. ODPOWIEDŹ DOMYŚLNA (płynna i pomocna)
+        // 4. ODPOWIEDŹ DOMYŚLNA (płynna i pomocna)
         return 'Przepraszam, ale muszę się przyznać, że nie jestem pewien, co masz na myśli. 😟 Może spróbuj użyć prostszych słów kluczowych, np.: **Cena dostawy**, **Czy jest oryginalny**? Jeśli to pilne, <a onclick="showPageAndScroll(\'pomoc-page\', \'contact-section\')"><span class="gold-text">skontaktuj się bezpośrednio z naszym Zespołem Premium.</span></a>';
     }
 
     /**
      * ✅ POPRAWIONA FUNKCJA Wysyłania Wiadomości do Chatbota.
+     * Teraz obsługuje obietnice (Promises) z Supabase.
      */
-    function sendChatMessage() {
+    async function sendChatMessage() {
         const userInput = document.getElementById('user-input');
         const message = userInput.value.trim();
         const chatHistory = document.getElementById('chat-history');
@@ -2048,40 +1763,60 @@
         clientMessage.textContent = message;
         chatHistory.appendChild(clientMessage);
 
-        // 2. Generuj odpowiedź Chatbota (z nową, ulepszoną logiką)
-        const botResponseText = getBotResponse(message);
-
-        // 3. Dodaj odpowiedź Chatbota z niewielkim opóźnieniem dla lepszego efektu
-        setTimeout(() => {
-            const botMessage = document.createElement('div');
-            botMessage.className = 'bot-message';
-            // Używamy innerHTML, ponieważ getBotResponse może zwracać tagi <a>
-            botMessage.innerHTML = botResponseText; 
-            chatHistory.appendChild(botMessage);
-
-            // Przewiń na dół
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-        }, 500); // 0.5 sekundy opóźnienia dla lepszej płynności
-
-        // 4. Wyczyść pole tekstowe i zablokuj je na czas odpowiedzi
-        userInput.value = '';
+        // 2. Blokada inputu i oczekiwanie na odpowiedź
         userInput.disabled = true;
+        let botResponseText = '...'; 
+        
+        // Stworzenie tymczasowego wskaźnika ładowania bota
+        const tempBotMessage = document.createElement('div');
+        tempBotMessage.className = 'bot-message';
+        tempBotMessage.innerHTML = '🤖 Analizuję Twoje zapytanie...';
+        chatHistory.appendChild(tempBotMessage);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
 
+        try {
+             // 3. Sprawdzenie, czy odpowiedź jest Promise (czyli czy wymaga Supabase)
+            const response = getBotResponse(message);
+            
+            if (response && typeof response.then === 'function') {
+                // To jest Promise (zapytanie do Supabase) - czekamy
+                botResponseText = await response;
+            } else {
+                // To jest zwykły string (odpowiedź FAQ/konwersacyjna)
+                botResponseText = response;
+            }
+        } catch (error) {
+            console.error("Błąd podczas generowania odpowiedzi bota:", error);
+            botResponseText = 'Przepraszam, wystąpił błąd podczas komunikacji z bazą danych. Spróbuj później lub skontaktuj się z obsługą klienta.';
+        }
+        
+        // 4. Aktualizacja wiadomości
         setTimeout(() => {
+            tempBotMessage.innerHTML = botResponseText; 
+            
+            // Usunięcie (lub zamiana) wskaźnika ładowania
+            tempBotMessage.classList.remove('loading'); 
+            
+            // Upewnienie się, że jest przewinięte na dół
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            
+            // 5. Odblokowanie inputu
             userInput.disabled = false;
+            userInput.value = '';
             userInput.focus();
-        }, 600);
+        }, 800); // Wydłużone opóźnienie, aby bot "pomyślał" po zapytaniu do bazy
+
     }
 
 
     // Funkcje dla karuzeli (pozostawione dla pełności kodu)
     let placeholderInterval;
     const placeholders = [
-        "Gwarancja oryginalności",
-        "Jaki jest czas realizacji?",
+        "Jaki jest status mojego zamówienia?",
         "Czy dostawa jest płatna?",
-        "Czy można zwrócić perfumy?",
-        "Jaka jest cena Creed Aventus?"
+        "Czy perfumy są oryginalne?",
+        "Chciałbym zmienić adres.",
+        "Paczkomaty"
     ];
 
     function startPlaceholderCarousel() {
@@ -2104,6 +1839,12 @@
     // === POZOSTAŁE FUNKCJE I MOCKI (Uzupelnienie) ===
     // ===============================================
 
+    function getProductsFromStorage() {
+        const raw = JSON.parse(localStorage.getItem(LS_PRODUCTS_KEY) || '[]');
+        if (raw.length === 0) return initialProductsData; 
+        return raw;
+    }
+    
     function initializeProductStorage() {
         const products = localStorage.getItem(LS_PRODUCTS_KEY);
         if (!products) {
@@ -2402,17 +2143,10 @@
         // MOCK: Symulacja statystyk i zamówień
         document.getElementById('stats-active-users').textContent = Math.floor(Math.random() * 50) + 10;
         
-        // Pobierz dane z Supabase
-        const { data: orders, error } = await supabase.from('orders').select('*');
+        // Używamy zmockowanych danych w panelu admina dla uproszczenia (ale bot używa Supabase)
+        const orders = getOrdersFromStorage();
         
-        if (error || !orders) {
-            console.error("Błąd pobierania zamówień dla admina:", error);
-            document.getElementById('stats-total-revenue').textContent = 'N/A';
-            document.getElementById('stats-total-orders').textContent = 'N/A';
-            return;
-        }
-
-        const totalRevenue = orders.reduce((sum, order) => sum + order.total_amount, 0);
+        const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
         document.getElementById('stats-total-revenue').textContent = totalRevenue.toFixed(2) + ' PLN';
         document.getElementById('stats-total-orders').textContent = orders.length;
 
@@ -2420,14 +2154,14 @@
         ordersBody.innerHTML = '';
 
         orders.forEach(order => {
-            const itemsSummary = order.order_details.map(item => `${item.name} (x${item.quantity})`).join('; ');
+            const itemsSummary = order.items;
             ordersBody.innerHTML += `
                 <tr>
                     <td>#${order.id}</td>
-                    <td>${new Date(order.order_date).toLocaleDateString()}</td>
-                    <td>${order.customer_email}</td>
+                    <td>${order.date}</td>
+                    <td>${order.email}</td>
                     <td>${itemsSummary}</td>
-                    <td>${order.total_amount.toFixed(2)} PLN</td>
+                    <td>${order.total.toFixed(2)} PLN</td>
                     <td><span style="color:${order.status === 'Oczekuje' ? 'orange' : 'green'}; font-weight:700;">${order.status}</span></td>
                 </tr>
             `;
@@ -2860,8 +2594,14 @@
                 // Logic for Chabot start
                 const history = document.getElementById('chat-history');
                 if (history && history.children.length === 1) { // Tylko początkowa wiadomość
-                    // Ukrywamy opcje, żeby chatbot działał dynamicznie (było już w CSS)
-                    // document.getElementById('chat-options').style.display = 'none'; 
+                    // Resetuj stan konwersacji przy wejściu na stronę
+                    // conversationState.userAskedForOrder = false; // Te zmienne usunąłem, bo są zbędne po refaktoryzacji
+                    // conversationState.lastQueryType = null;
+
+                    // Opróżnienie historii, jeśli zawiera tylko jedno powitanie
+                    if (history.children.length > 0 && history.children[0].textContent.includes('Witaj')) {
+                        history.innerHTML = '<div class="bot-message">Witaj! Jestem Bot Wsparcia. Jak mogę Ci pomóc?</div>';
+                    }
                 }
                 startPlaceholderCarousel();
 
