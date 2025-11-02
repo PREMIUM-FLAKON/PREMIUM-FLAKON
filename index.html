@@ -1590,7 +1590,7 @@
     </template>
 
 
-    <script>
+  <script>
     // ===============================================
     // === KROK 1: INICJALIZACJA KLIENTA SUPABASE ===
     // ===============================================
@@ -1944,55 +1944,89 @@
     }
 
     // ===============================================
-    // === KROK 5: NAPRAWA I ULEPSZENIE CHATBOTA (NOWA LOGIKA) ===
+    // === KROK 5: MAKSYMALNIE ULEPSZONA LOGIKA CHATBOTA ===
     // ===============================================
 
     /**
      * 💡 Ulepszona funkcja zwracająca bardziej "inteligentne" odpowiedzi Chatbota.
-     * Używa prostego dopasowania słów kluczowych (Pattern Matching) do symulacji AI.
+     * Rozszerzono logikę Pattern Matching o więcej pytań biznesowych.
      * @param {string} message Wiadomość użytkownika
      * @returns {string} Odpowiedź Chatbota
      */
     function getBotResponse(message) {
         const lowerCaseMessage = message.toLowerCase().trim();
 
-        // 1. Sprawdzenie słów kluczowych dla FAQ
-        if (lowerCaseMessage.includes('gwarancja') || lowerCaseMessage.includes('oryginalnoś')) {
-            return 'Gwarantujemy <span class="gold-text">100% oryginalności</span>! Współpracujemy wyłącznie z autoryzowanymi dystrybutorami. <a onclick="showPageAndScroll(\'onas-page\', \'sourcing\')">Dowiedz się więcej o naszym sourcingu.</a>';
+        // 1. SCENARIUSZE NAJWAŻNIEJSZE (Dostawa, Realizacja, Oryginalność)
+        
+        if (lowerCaseMessage.includes('gwarancja') || lowerCaseMessage.includes('oryginalnoś') || lowerCaseMessage.includes('autentyczność')) {
+            return 'Gwarantujemy <span class="gold-text">100% oryginalności</span>! Współpracujemy wyłącznie z autoryzowanymi dystrybutorami. <a onclick="showPageAndScroll(\'onas-page\', \'sourcing\')">Dowiedz się więcej o naszym rygorystycznym sourcingu.</a>';
+        }
+        
+        if (lowerCaseMessage.includes('dostaw') || lowerCaseMessage.includes('wysyłk') || lowerCaseMessage.includes('kurier')) {
+            return 'Wysyłka realizowana jest w ciągu <span class="gold-text">24 godzin</span> od zaksięgowania płatności. Korzystamy z usług kurierskich (DPD/Inpost) lub Paczkomatów. Koszt dostawy to 0.00 PLN!';
+        }
+        
+        if (lowerCaseMessage.includes('ile') && lowerCaseMessage.includes('dostawa')) {
+            return 'Dostawa jest dla naszych klientów <span class="gold-text">całkowicie bezpłatna</span> (0.00 PLN). Wysyłamy w 24 godziny.';
         }
 
-        if (lowerCaseMessage.includes('dostaw') || lowerCaseMessage.includes('wysyłk')) {
-            return 'Wysyłka realizowana jest z naszej siedziby w Kętrzynie w ciągu <span class="gold-text">24 godzin</span> od zaksięgowania płatności. Oferujemy kuriera DPD/Inpost lub Paczkomaty. <a onclick="showPage(\'regulamin-page\')">Więcej w § 3 Regulaminu.</a>';
+        if (lowerCaseMessage.includes('realizacja') || lowerCaseMessage.includes('czas') || (lowerCaseMessage.includes('kiedy') && (lowerCaseMessage.includes('dojdzie') || lowerCaseMessage.includes('otrzymam')))) {
+            return 'Zamówienia realizujemy w ciągu <span class="gold-text">24 godzin</span> od momentu zaksięgowania płatności. Standardowy czas dostawy kurierskiej to zazwyczaj 1-2 dni robocze.';
         }
 
-        if (lowerCaseMessage.includes('zwrot') || lowerCaseMessage.includes('reklamacj')) {
-            return 'Zgodnie z prawem, przyjmujemy zwroty <span class="gold-text">tylko produktów nienaruszonych</span> (z fabryczną folią/plombą) w ciągu 14 dni. <a onclick="showPage(\'zwroty-page\')">Przejdź do strony Zwrotów i Reklamacji.</a>';
+        // 2. SCENARIUSZE OBSŁUGI KLIENTA (Zwroty, Reklamacje, Płatności)
+
+        if (lowerCaseMessage.includes('zwrot') || lowerCaseMessage.includes('odstąpienie')) {
+            return 'Jako perfumy, towar jest higieniczny, dlatego przyjmujemy zwroty <span class="gold-text">tylko produktów nienaruszonych</span> (z fabryczną folią/plombą) w ciągu 14 dni. <a onclick="showPage(\'zwroty-page\')">Szczegóły znajdziesz na stronie Zwrotów.</a>';
         }
 
-        if (lowerCaseMessage.includes('konto') || lowerCaseMessage.includes('zalogować')) {
-            return 'Możesz się zalogować lub utworzyć konto w sekcji <span class="gold-text">Konto Klienta</span>. <a onclick="showPage(\'konto-page\')">Przejdź do Konta Klienta.</a>';
+        if (lowerCaseMessage.includes('reklamacj') || lowerCaseMessage.includes('uszkodzen')) {
+            return 'Reklamacje z tytułu wad produktu (np. uszkodzony atomizer) rozpatrujemy indywidualnie na podstawie rękojmi. Skontaktuj się z nami mailowo: reklamacje@premiumflakon.pl, załączając zdjęcia wady.';
+        }
+        
+        if (lowerCaseMessage.includes('płatnoś') || lowerCaseMessage.includes('zapłacić') || lowerCaseMessage.includes('pobranie')) {
+            return 'Akceptujemy płatności elektroniczne (przelew, karta) za pośrednictwem bezpiecznych bramek płatniczych. <span class="gold-text">Nie oferujemy płatności za pobraniem.</span>';
         }
 
-        if (lowerCaseMessage.includes('aventus') || lowerCaseMessage.includes('creed')) {
-            return 'Creed Aventus to jeden z naszych bestsellerów! To dymny, owocowo-drzewny zapach dla mężczyzn. Czy chcesz go zobaczyć w kolekcji? <a onclick="showPage(\'kolekcja-page\')">Zobacz kolekcję.</a>';
+        // 3. SCENARIUSZE INFORMACYJNE (Konto, Lokalizacja, Produkt)
+
+        if (lowerCaseMessage.includes('konto') || lowerCaseMessage.includes('śledzić')) {
+            return 'Aby śledzić zamówienie i zarządzać danymi, zaloguj się do sekcji <span class="gold-text">Konto Klienta</span>. <a onclick="showPage(\'konto-page\')">Przejdź do logowania.</a>';
         }
 
-        // 2. Prostsze powitania/podziękowania
-        if (lowerCaseMessage.includes('cześć') || lowerCaseMessage.includes('witaj') || lowerCaseMessage.includes('dzień dobry')) {
-            return 'Witaj! Jestem Asystent PremiumFlakon. Jakie masz pytanie? (Np. Gwarancja, Dostawa, Zwroty)';
+        if (lowerCaseMessage.includes('lokalizacja') || lowerCaseMessage.includes('gdzie') && (lowerCaseMessage.includes('jesteście') || lowerCaseMessage.includes('siedziba'))) {
+            return 'Nasza baza operacyjna i magazyn znajdują się w <span class="gold-text">Kętrzynie (Warmińsko-Mazurskie)</span>. Stamtąd realizujemy wszystkie wysyłki.';
+        }
+        
+        if (lowerCaseMessage.includes('regulamin') || lowerCaseMessage.includes('zasady')) {
+            return 'Cały regulamin sklepu jest dostępny na dedykowanej stronie. <a onclick="showPage(\'regulamin-page\')">Przejdź do Regulaminu Sprzedaży.</a>';
+        }
+        
+        // 4. PRZYKŁAD PRODUKTU (można rozszerzyć dla innych bestsellerów)
+
+        if (lowerCaseMessage.includes('aventus') || lowerCaseMessage.includes('creed') || lowerCaseMessage.includes('layton')) {
+            const product = getProductsFromStorage().find(p => lowerCaseMessage.includes(p.name.toLowerCase()) || lowerCaseMessage.includes(p.brand.toLowerCase()));
+            if (product) {
+                 return `${product.brand} ${product.name} jest dostępny w cenie ${product.price.toFixed(2)} PLN. Sprawdź go! <a onclick="showProductDetail('${product.id}')">Zobacz szczegóły produktu.</a>`;
+            }
         }
 
-        if (lowerCaseMessage.includes('dziękuję') || lowerCaseMessage.includes('dzięki')) {
+
+        // 5. OBSŁUGA OGÓLNA
+        if (lowerCaseMessage.includes('cześć') || lowerCaseMessage.includes('witaj') || lowerCaseMessage.includes('dzień dobry') || lowerCaseMessage === 'start') {
+            return 'Witaj! Jestem Asystent PremiumFlakon. Pytaj o **Dostawę, Zwroty, Gwarancję** lub cokolwiek związanego ze sklepem. Chętnie pomogę.';
+        }
+
+        if (lowerCaseMessage.includes('dziękuję') || lowerCaseMessage.includes('dzięki') || lowerCaseMessage.includes('ok')) {
             return 'Cieszę się, że mogłem pomóc! Jeśli masz więcej pytań, jestem do Twojej dyspozycji.';
         }
 
-        // 3. Odpowiedź domyślna (bardziej AI)
-        return 'Przepraszam, ale nie mam gotowej odpowiedzi na Twoje pytanie. Możesz spróbować sformułować je inaczej, lub <a onclick="showPageAndScroll(\'pomoc-page\', \'contact-section\')"><span class="gold-text">skontaktować się bezpośrednio z naszym zespołem.</span></a>';
+        // 6. ODPOWIEDŹ DOMYŚLNA
+        return 'Przepraszam, ale nie mam gotowej odpowiedzi na Twoje pytanie. Możesz spróbować sformułować je inaczej (np. "Kiedy paczka dojdzie?"), lub <a onclick="showPageAndScroll(\'pomoc-page\', \'contact-section\')"><span class="gold-text">skontaktować się bezpośrednio z naszym zespołem.</span></a>';
     }
 
     /**
      * ✅ POPRAWIONA FUNKCJA Wysyłania Wiadomości do Chatbota.
-     * Naprawia mechanizm dodawania wiadomości użytkownika i generuje odpowiedź.
      */
     function sendChatMessage() {
         const userInput = document.getElementById('user-input');
@@ -2037,10 +2071,10 @@
     let placeholderInterval;
     const placeholders = [
         "Gwarancja oryginalności",
-        "Jak wygląda dostawa?",
+        "Jaki jest czas realizacji?",
+        "Czy dostawa jest płatna?",
         "Czy można zwrócić perfumy?",
-        "Jaka jest cena Creed Aventus?",
-        "Witaj"
+        "Jaka jest cena Creed Aventus?"
     ];
 
     function startPlaceholderCarousel() {
@@ -2061,6 +2095,7 @@
 
     // ===============================================
     // === POZOSTAŁE FUNKCJE I MOCKI (Uzupelnienie) ===
+    // (Ten blok pozostał bez zmian)
     // ===============================================
 
     function initializeProductStorage() {
