@@ -824,7 +824,38 @@
             .admin-layout { flex-direction: column; } 
             #koszyk-formularz { position: static; } 
         }
-     
+     @media (max-width: 768px) {
+            .container { padding: 0 15px; }
+            h1, h2, h3 { letter-spacing: 1px; }
+            .hero-content h1 { font-size: 3em; letter-spacing: 5px; }
+            .hero-slogan { font-size: 1em; }
+            .hero-section { padding: 120px 15px 80px 15px; }
+            .values-section .value-cards { flex-direction: column; gap: 20px; }
+            .values-section .card { flex-basis: 100%; padding: 20px; }
+            .detail-section .content-2col { flex-direction: column; gap: 30px; }
+            .detail-section .image-mock { display: none; }
+             .footer-links, .footer-contact { flex-basis: 100%; text-align: center; }
+            .footer-links a { display: inline-block; margin: 0 10px 5px 10px; }
+            .auth-container { flex-direction: column; gap: 30px; }
+             #pomoc-page .container > div { flex-direction: column; }
+             .chatbot-container { max-width: 100%; }
+             .advantage-list { flex-direction: column; gap: 20px; }
+            .advantage-item { flex: 1 1 100%; }
+            .dashboard-header { flex-direction: column; text-align: center; gap: 10px; }
+            .stats-card-container { flex-direction: column; } 
+
+            /* TO JEST KLUCZOWE: Filtr idzie na górę, produkty na dół */
+            .collection-layout { flex-direction: column; gap: 15px; }
+            #filter-sidebar { 
+                flex-basis: 100%; 
+                border-right: none; 
+                border-bottom: 1px solid #DDD; 
+            }
+            #product-list-wrapper { 
+                width: 100%; 
+                min-width: 100%; /* Nadpisuje min-width: 0 z desktopu */
+            }
+        }
         @media (max-width: 480px) {
             .hero-content h1 { font-size: 2em; }
             .btn-main { padding: 12px 40px; font-size: 0.9em; }
