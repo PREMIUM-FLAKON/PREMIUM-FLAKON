@@ -322,10 +322,10 @@
             cursor: pointer;
             font-size: 0.95em;
         }
-       #product-list-wrapper {
-            flex-grow: 1;
-            /* NOWY KOD: Oblicza szerokość: 100% minus 250px paska bocznego i 30px odstępu */
-            width: calc(100% - 280px); 
+      #product-list-wrapper {
+            /* NOWA POPRAWKA: To jest poprawny sposób, aby kolumna zajęła resztę miejsca */
+            flex: 1;
+            min-width: 0; /* Ważna reguła zapobiegająca "wypychaniu" przez zawartość */
         }
         #sort-options {
             margin-bottom: 20px;
