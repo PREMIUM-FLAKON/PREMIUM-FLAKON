@@ -1591,707 +1591,1266 @@
 
 
     <script>
-        // ===============================================
-        // === KROK 1: INICJALIZACJA KLIENTA SUPABASE ===
-        // ===============================================
-        const SUPABASE_URL = 'https://dtgwyrvbqpefrcjdnqqv.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0Z3d5cnZicXBlZnJjamRucXF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwMTU3MjIsImV4cCI6MjA3NzU5MTcyMn0.WObj9HRon0hYM9m9JC-ty1bE1DXxzwQ7RmkfValxJCs';
-        
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('Klient Supabase zainicjalizowany.');
+    // ===============================================
+    // === KROK 1: INICJALIZACJA KLIENTA SUPABASE ===
+    // ===============================================
+    const SUPABASE_URL = 'https://dtgwyrvbqpefrcjdnqqv.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0Z3d5cnZicXBlZnJjamRucXF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwMTU3MjIsImV4cCI6MjA3NzU5MTcyMn0.WObj9HRon0hYM9m9JC-ty1bE1DXxzwQ7RmkfValxJCs';
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('Klient Supabase zainicjalizowany.');
 
-        // ===============================================
-        // === KLUCZE LOCALSTORAGE & MOCK DATA ===
-        // ===============================================
-        const LS_PRODUCTS_KEY = 'pf_products';
-        const LS_USERS_KEY = 'pf_users';
-        const LS_SESSION_KEY = 'pf_currentUser';
-        const LS_ORDERS_KEY = 'pf_orders'; 
-        const LS_CART_KEY = 'pf_cart';
-        
-        // --- POCZĄTKOWA BAZA PRODUKTÓW (Jako fallback) ---
-        const initialProductsData = [
-            { id: 'PF101', brand: 'Creed', name: 'Aventus (EDP 100ml)', category: 'Męskie', price: 1250, description: '...', specs: [], images: [] },
-            { id: 'PF102', brand: 'Parfums de Marly', name: 'Layton (EDP 75ml)', category: 'Unisex', price: 899, description: '...', specs: [], images: [] },
-            { id: 'PF103', brand: 'Tom Ford', name: 'Tuscan Leather (EDP 50ml)', category: 'Unisex', price: 720, description: '...', specs: [], images: [] },
-            { id: 'PF104', brand: 'Frederic Malle', name: 'Portrait of a Lady (EDP 50ml)', category: 'Damskie', price: 1100, description: '...', specs: [], images: [] },
-            { id: 'PF105', brand: 'Kilian', name: 'Love, Don\'t Be Shy (EDP 50ml)', category: 'Damskie', price: 980, description: '...', specs: [], images: [] },
-        ];
-        const initialOrdersData = [
-            { id: '2025/08/01', date: '20.08.2025', email: 'michal@premium.pl', items: 'Aventus (100ml)', total: 1250, status: 'Dostarczono' },
-        ];
+    // ===============================================
+    // === KLUCZE LOCALSTORAGE & MOCK DATA ===
+    // ===============================================
+    const LS_PRODUCTS_KEY = 'pf_products';
+    const LS_USERS_KEY = 'pf_users';
+    const LS_SESSION_KEY = 'pf_currentUser';
+    const LS_ORDERS_KEY = 'pf_orders'; 
+    const LS_CART_KEY = 'pf_cart';
+    
+    // --- POCZĄTKOWA BAZA PRODUKTÓW (Jako fallback) ---
+    const initialProductsData = [
+        { id: 'PF101', brand: 'Creed', name: 'Aventus (EDP 100ml)', category: 'Męskie', price: 1250, description: '...', specs: [], images: [] },
+        { id: 'PF102', brand: 'Parfums de Marly', name: 'Layton (EDP 75ml)', category: 'Unisex', price: 899, description: '...', specs: [], images: [] },
+        { id: 'PF103', brand: 'Tom Ford', name: 'Tuscan Leather (EDP 50ml)', category: 'Unisex', price: 720, description: '...', specs: [], images: [] },
+        { id: 'PF104', brand: 'Frederic Malle', name: 'Portrait of a Lady (EDP 50ml)', category: 'Damskie', price: 1100, description: '...', specs: [], images: [] },
+        { id: 'PF105', brand: 'Kilian', name: 'Love, Don\'t Be Shy (EDP 50ml)', category: 'Damskie', price: 980, description: '...', specs: [], images: [] },
+    ];
+    const initialOrdersData = [
+        { id: '2025/08/01', date: '20.08.2025', email: 'michal@premium.pl', items: 'Aventus (100ml)', total: 1250, status: 'Dostarczono' },
+    ];
 
-        let activeUserInterval = null;
-        let adminImageData = [];
+    let activeUserInterval = null;
+    let adminImageData = [];
+    let currentDetailProductId = null; // Do śledzenia, który produkt jest w widoku detail
 
-        // ===============================================
-        // === ZARZĄDZANIE BAZAMI (SUPABASE I LOCALSTORAGE) ===
-        // ===============================================
+    // ===============================================
+    // === ZARZĄDZANIE BAZAMI (SUPABASE I LOCALSTORAGE) ===
+    // ===============================================
 
-        /** Funkcja pomocnicza do bezpiecznego parsowania tablic z PostGRES (TEXT[]) */
-        function parsePostgresArray(value) {
-            if (Array.isArray(value)) return value;
-            if (typeof value === 'string' && value.startsWith('{') && value.endsWith('}')) {
-                // Usuń nawiasy klamrowe i podziel po przecinku, usuwając cudzysłowy (które PostGRES dodaje)
-                return value.slice(1, -1).split(',').map(item => item.trim().replace(/^"|"$/g, ''));
-            }
-            return [];
+    /** Funkcja pomocnicza do bezpiecznego parsowania tablic z PostGRES (TEXT[]) */
+    function parsePostgresArray(value) {
+        if (Array.isArray(value)) return value;
+        if (typeof value === 'string' && value.startsWith('{') && value.endsWith('}')) {
+            // Usuń nawiasy klamrowe i podziel po przecinku, usuwając cudzysłowy (które PostGRES dodaje)
+            return value.slice(1, -1).split(',').map(item => item.trim().replace(/^"|"$/g, ''));
         }
+        return [];
+    }
 
 
-        /** Pobiera listę produktów z Supabase (główne źródło danych) */
-        async function getProductsFromSupabase() {
-            const { data, error } = await supabase
-                .from('products')
-                .select('*')
-                .order('id', { ascending: true });
+    /** Pobiera listę produktów z Supabase (główne źródło danych) */
+    async function getProductsFromSupabase() {
+        const { data, error } = await supabase
+            .from('products')
+            .select('*')
+            .order('id', { ascending: true });
 
-            if (error) {
-                console.error('Błąd pobierania produktów z Supabase:', error);
-                return []; // Zwraca pustą listę w razie błędu
-            }
-            
-            // KONWERSJA DANYCH: Zapewnienie, że typy JSONB i TEXT[] są poprawne
-            return data.map(p => ({
-                id: p.id ? p.id.toString() : 'mock_id', // Upewnienie się, że ID jest stringiem
-                brand: p.brand || 'Brak marki',
-                name: p.name || 'Brak nazwy',
-                price: parseFloat(p.price) || 0,
-                category: p.category || 'Unisex',
-                description: p.description || 'Brak opisu produktu.',
-                specs: p.specs || [], 
-                images: parsePostgresArray(p.images) // Użycie funkcji parsującej dla TEXT[]
-            }));
-        }
-
-        /** Funkcja ładowana przy starcie: Pobiera z Supabase i synchronizuje z LocalStorage (dla szybkiego odczytu) */
-        async function fetchProductsFromSupabase() {
-            const products = await getProductsFromSupabase();
-            
-            const noProductsEl = document.getElementById('no-products');
-            
-            if (products.length > 0) {
-                 // Nadpisz LocalStorage danymi z Supabase
-                localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(products)); 
-                if (noProductsEl) noProductsEl.style.display = 'none';
-            } else if (noProductsEl) {
-                 noProductsEl.textContent = 'Brak produktów w bazie.';
-                 noProductsEl.style.display = 'block';
-            }
-            
-            // Odśwież widok
-            applyFilters();
-        }
-
-        /** Pobiera produkty z LocalStorage (używane przez filtry i koszyk, jako szybki odczyt) */
-        function getProductsFromStorage() {
-            const raw = JSON.parse(localStorage.getItem(LS_PRODUCTS_KEY) || '[]');
-            if (raw.length === 0) return initialProductsData; 
-            return raw;
-        }
-
-        /** Zapisuje dane do LocalStorage (utrzymuje synchronizację po zapisie do Supabase) */
-        function saveProductsToStorage(products) {
-            localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(products));
-        }
-
-        /** Pobiera zamówienia z LocalStorage (obecnie mock data) */
-        function getOrdersFromStorage() {
-            return JSON.parse(localStorage.getItem(LS_ORDERS_KEY) || '[]');
-        }
-
-        // ===============================================
-        // === KROK 2: UWIERZYTELNIANIE (SUPABASE AUTH) ===
-        // ===============================================
-
-        /** Synchronizuje status logowania z Supabase do LocalStorage */
-        async function syncUserSession() {
-            const { data: { user } } = await supabase.auth.getUser();
-            
-            if (user) {
-                const isAdmin = user.user_metadata?.is_admin === true;
-                const username = user.user_metadata?.username || user.email;
-
-                const currentUser = { 
-                    email: user.email, 
-                    username: username, 
-                    isAdmin: isAdmin,
-                    id: user.id
-                };
-                localStorage.setItem(LS_SESSION_KEY, JSON.stringify(currentUser));
-            } else {
-                localStorage.removeItem(LS_SESSION_KEY);
-            }
-             updateSideMenu();
-        }
-
-        /** Rejestruje nowego użytkownika w Supabase Auth (ZASTĄPIONE) */
-        async function registerUser() {
-            const username = document.getElementById('register-username').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-
-            const { data, error } = await supabase.auth.signUp({
-                email: email,
-                password: password,
-                options: {
-                    data: {
-                        username: username,
-                        is_admin: false
-                    }
-                }
-            });
-
-            if (error) {
-                alert('Błąd rejestracji: ' + error.message);
-                return;
-            }
-
-            alert('Rejestracja pomyślna! Sprawdź swoją skrzynkę e-mail, aby potwierdzić konto.');
-            document.getElementById('register-username').value = '';
-            document.getElementById('register-email').value = '';
-            document.getElementById('register-password').value = '';
-        }
-
-        /** Loguje użytkownika (ZASTĄPIONE) */
-        async function loginUser() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password,
-            });
-
-            if (error) {
-                alert('Błąd logowania: ' + error.message);
-                logoutUser();
-                return;
-            }
-
-            await syncUserSession(); 
-            
-            if (isCurrentUserAdmin()) {
-                showPage('admin-page');
-            } else {
-                showPage('konto-page');
-            }
+        if (error) {
+            console.error('Błąd pobierania produktów z Supabase:', error);
+            return []; // Zwraca pustą listę w razie błędu
         }
         
-        /** Wylogowuje użytkownika (ZASTĄPIONE) */
-        async function logoutUser() {
-            await supabase.auth.signOut();
+        // KONWERSJA DANYCH: Zapewnienie, że typy JSONB i TEXT[] są poprawne
+        return data.map(p => ({
+            id: p.id ? p.id.toString() : 'mock_id', // Upewnienie się, że ID jest stringiem
+            brand: p.brand || 'Brak marki',
+            name: p.name || 'Brak nazwy',
+            price: parseFloat(p.price) || 0,
+            category: p.category || 'Unisex',
+            description: p.description || 'Brak opisu produktu.',
+            specs: p.specs || [], 
+            images: parsePostgresArray(p.images) // Użycie funkcji parsującej dla TEXT[]
+        }));
+    }
+
+    /** Funkcja ładowana przy starcie: Pobiera z Supabase i synchronizuje z LocalStorage (dla szybkiego odczytu) */
+    async function fetchProductsFromSupabase() {
+        const products = await getProductsFromSupabase();
+        
+        const noProductsEl = document.getElementById('no-products');
+        
+        if (products.length > 0) {
+            // Nadpisz LocalStorage danymi z Supabase
+            localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(products)); 
+            if (noProductsEl) noProductsEl.style.display = 'none';
+        } else if (noProductsEl) {
+            noProductsEl.textContent = 'Brak produktów w bazie.';
+            noProductsEl.style.display = 'block';
+        }
+        
+        // Odśwież widok
+        applyFilters();
+    }
+
+    /** Pobiera produkty z LocalStorage (używane przez filtry i koszyk, jako szybki odczyt) */
+    function getProductsFromStorage() {
+        const raw = JSON.parse(localStorage.getItem(LS_PRODUCTS_KEY) || '[]');
+        if (raw.length === 0) return initialProductsData; 
+        return raw;
+    }
+
+    /** Zapisuje dane do LocalStorage (utrzymuje synchronizację po zapisie do Supabase) */
+    function saveProductsToStorage(products) {
+        localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(products));
+    }
+
+    /** Pobiera zamówienia z LocalStorage (obecnie mock data) */
+    function getOrdersFromStorage() {
+        return JSON.parse(localStorage.getItem(LS_ORDERS_KEY) || '[]');
+    }
+
+    // ===============================================
+    // === KROK 2: UWIERZYTELNIANIE (SUPABASE AUTH) ===
+    // ===============================================
+
+    /** Synchronizuje status logowania z Supabase do LocalStorage */
+    async function syncUserSession() {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+            const isAdmin = user.user_metadata?.is_admin === true;
+            const username = user.user_metadata?.username || user.email;
+
+            const currentUser = { 
+                email: user.email, 
+                username: username, 
+                isAdmin: isAdmin,
+                id: user.id
+            };
+            localStorage.setItem(LS_SESSION_KEY, JSON.stringify(currentUser));
+        } else {
             localStorage.removeItem(LS_SESSION_KEY);
-            updateSideMenu();
-            
-            const activePage = document.querySelector('.page-section.active');
-            if (activePage && (activePage.id === 'konto-page' || activePage.id === 'admin-page')) {
-                showPage('landing-page');
-            }
         }
+          updateSideMenu();
+    }
+
+    /** Rejestruje nowego użytkownika w Supabase Auth (ZASTĄPIONE) */
+    async function registerUser() {
+        const username = document.getElementById('register-username').value;
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+
+        const { data, error } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+                data: {
+                    username: username,
+                    is_admin: false
+                }
+            }
+        });
+
+        if (error) {
+            alert('Błąd rejestracji: ' + error.message);
+            return;
+        }
+
+        alert('Rejestracja pomyślna! Sprawdź swoją skrzynkę e-mail, aby potwierdzić konto.');
+        document.getElementById('register-username').value = '';
+        document.getElementById('register-email').value = '';
+        document.getElementById('register-password').value = '';
+    }
+
+    /** Loguje użytkownika (ZASTĄPIONE) */
+    async function loginUser() {
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password,
+        });
+
+        if (error) {
+            alert('Błąd logowania: ' + error.message);
+            logoutUser();
+            return;
+        }
+
+        await syncUserSession(); 
         
-        // Reszta logiki uwierzytelniania pozostaje w LocalStorage, ale jest zasilana przez syncUserSession
-        function getCurrentUser() {
-            const user = localStorage.getItem(LS_SESSION_KEY);
-            return user ? JSON.parse(user) : null;
+        if (isCurrentUserAdmin()) {
+            showPage('admin-page');
+        } else {
+            showPage('konto-page');
         }
-
-        function getIsLoggedIn() {
-            return getCurrentUser() !== null;
+    }
+    
+    /** Wylogowuje użytkownika (ZASTĄPIONE) */
+    async function logoutUser() {
+        await supabase.auth.signOut();
+        localStorage.removeItem(LS_SESSION_KEY);
+        updateSideMenu();
+        
+        const activePage = document.querySelector('.page-section.active');
+        if (activePage && (activePage.id === 'konto-page' || activePage.id === 'admin-page')) {
+            showPage('landing-page');
         }
+    }
+    
+    function getCurrentUser() {
+        const user = localStorage.getItem(LS_SESSION_KEY);
+        return user ? JSON.parse(user) : null;
+    }
 
-        function isCurrentUserAdmin() {
-            const user = getCurrentUser();
-            return user && user.isAdmin === true;
-        }
+    function getIsLoggedIn() {
+        return getCurrentUser() !== null;
+    }
 
-        function getUserName() {
-            const user = getCurrentUser();
-            return user ? user.username : "Kliencie";
-        }
+    function isCurrentUserAdmin() {
+        const user = getCurrentUser();
+        return user && user.isAdmin === true;
+    }
+
+    function getUserName() {
+        const user = getCurrentUser();
+        return user ? user.username : "Kliencie";
+    }
 
 
-        // ===============================================
-        // === KROK 3: ZARZĄDZANIE PRODUKTAMI (ADMIN) ===
-        // ===============================================
+    // ===============================================
+    // === KROK 3: ZARZĄDZANIE PRODUKTAMI (ADMIN) ===
+    // ===============================================
 
-        /** Obsługuje zapis/edycję produktu do Supabase (ZASTĄPIONE) */
-        async function handleAdminFormSubmit(event) {
-            event.preventDefault();
-            
-            const productId = document.getElementById('admin-product-id').value;
-            
-            // 1. Zbieranie danych
-            const productData = {
-                brand: document.getElementById('admin-brand').value,
-                name: document.getElementById('admin-name').value,
-                price: parseInt(document.getElementById('admin-price').value, 10),
-                category: document.getElementById('admin-category').value,
-                description: document.getElementById('admin-description').value,
-                specs: readSpecsFromForm(),
-                images: adminImageData.slice() 
-            };
+    /** Obsługuje zapis/edycję produktu do Supabase (ZASTĄPIONE) */
+    async function handleAdminFormSubmit(event) {
+        event.preventDefault();
+        
+        const productId = document.getElementById('admin-product-id').value;
+        
+        // 1. Zbieranie danych
+        const productData = {
+            brand: document.getElementById('admin-brand').value,
+            name: document.getElementById('admin-name').value,
+            price: parseInt(document.getElementById('admin-price').value, 10),
+            category: document.getElementById('admin-category').value,
+            description: document.getElementById('admin-description').value,
+            specs: readSpecsFromForm(),
+            images: adminImageData.slice() 
+        };
 
-            let response;
+        let response;
 
-            if (productId) {
-                // --- TRYB EDYCJI: Wykonaj UPDATE na Supabase ---
-                response = await supabase
-                    .from('products')
-                    .update(productData)
-                    .eq('id', productId)
-                    .select();
-
-            } else {
-                // --- TRYB DODAWANIA: Wykonaj INSERT do Supabase ---
-                response = await supabase
-                    .from('products')
-                    .insert([productData])
-                    .select();
-            }
-
-            if (response.error) {
-                alert(`Błąd operacji: ${response.error.message}. Sprawdź uprawnienia RLS!`);
-                console.error(response.error);
-                return;
-            }
-
-            alert(productId ? 'Produkt zaktualizowany w Supabase!' : 'Nowy produkt dodany do Supabase!');
-            
-            // 3. Odświeżenie widoku po operacji
-            clearAdminForm();
-            await fetchProductsFromSupabase(); // Pociągnij najnowsze dane z bazy
-            renderAdminProductList();        
-        }
-
-        /** Usuwa produkt z Supabase (ZASTĄPIONE) */
-        async function deleteProduct(productId) {
-            if (!confirm('Czy na pewno chcesz trwale usunąć ten produkt? Tej akcji nie można cofnąć.')) {
-                return;
-            }
-            
-            const { error } = await supabase
+        if (productId) {
+            // --- TRYB EDYCJI: Wykonaj UPDATE na Supabase ---
+            response = await supabase
                 .from('products')
-                .delete()
-                .eq('id', productId);
+                .update(productData)
+                .eq('id', productId)
+                .select();
 
-            if (error) {
-                alert(`Błąd usuwania: ${error.message}. Sprawdź uprawnienia RLS!`);
-                return;
-            }
-            
-            alert('Produkt usunięty z Supabase.');
-            
-            await fetchProductsFromSupabase();
-            renderAdminProductList(); 
+        } else {
+            // --- TRYB DODAWANIA: Wykonaj INSERT do Supabase ---
+            response = await supabase
+                .from('products')
+                .insert([productData])
+                .select();
         }
 
-        // ===============================================
-        // === KROK 4: SKŁADANIE ZAMÓWIENIA (KOSZYK) ===
-        // ===============================================
-
-        /** Zapisuje zamówienie do Supabase zamiast wysyłania mailto (ZASTĄPIONE) */
-        async function handleOrderSubmit(event) {
-            event.preventDefault();
-            
-            const imie = document.getElementById('order-imie').value;
-            const email = document.getElementById('order-email').value;
-            const adres = document.getElementById('order-adres').value;
-            const uwagi = document.getElementById('order-uwagi').value;
-            const cart = getCart();
-
-            if (cart.length === 0) {
-                alert('Koszyk jest pusty!');
-                return;
-            }
-
-            let sumaCalkowita = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-            // Struktura danych do wstawienia do tabeli 'orders'
-            const orderDetails = cart.map(item => ({
-                id: item.id,
-                name: item.name,
-                price: item.price,
-                quantity: item.quantity
-            }));
-            
-            const orderData = {
-                customer_name: imie,
-                customer_email: email,
-                delivery_address: adres,
-                order_details: orderDetails, // Wstaw całą listę produktów
-                total_amount: sumaCalkowita,
-                status: 'Oczekuje',
-                notes: uwagi,
-                order_date: new Date().toISOString()
-            };
-
-            const { error } = await supabase
-                .from('orders')
-                .insert([orderData]);
-
-            if (error) {
-                alert(`Błąd składania zamówienia: ${error.message}. Sprawdź, czy tabela 'orders' istnieje i ma politykę RLS dla INSERT dla roli anon!`);
-                console.error(error);
-                return;
-            }
-
-            alert("Dziękujemy! Twoje zamówienie zostało złożone i jest obecnie przetwarzane.");
-            
-            // Opróżnij koszyk i odśwież widok
-            saveCart([]); 
-            renderCartPage(); 
+        if (response.error) {
+            alert(`Błąd operacji: ${response.error.message}. Sprawdź uprawnienia RLS!`);
+            console.error(response.error);
+            return;
         }
 
+        alert(productId ? 'Produkt zaktualizowany w Supabase!' : 'Nowy produkt dodany do Supabase!');
+        
+        // 3. Odświeżenie widoku po operacji
+        clearAdminForm();
+        await fetchProductsFromSupabase(); // Pociągnij najnowsze dane z bazy
+        renderAdminProductList();       
+    }
 
-        // ===============================================
-        // === POZOSTAŁE FUNKCJE I MOCKI ===
-        // ===============================================
-
-        function initializeProductStorage() {
-            const products = localStorage.getItem(LS_PRODUCTS_KEY);
-            if (!products) {
-                localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(initialProductsData));
-            }
-        }
-
-        function initializeOrderStorage() {
-            const orders = localStorage.getItem(LS_ORDERS_KEY);
-            if (!orders) {
-                localStorage.setItem(LS_ORDERS_KEY, JSON.stringify(initialOrdersData));
-            }
+    /** Usuwa produkt z Supabase (ZASTĄPIONE) */
+    async function deleteProduct(productId) {
+        if (!confirm('Czy na pewno chcesz trwale usunąć ten produkt? Tej akcji nie można cofnąć.')) {
+            return;
         }
         
-        function renderAdminProductList() {
-            const listBody = document.getElementById('admin-product-list-body');
-            if (!listBody) return;
-            const products = getProductsFromStorage();
-            listBody.innerHTML = '';
-            
-            if (products.length === 0) {
-                listBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Brak produktów w bazie.</td></tr>';
-                return;
-            }
-            products.forEach(p => {
-                listBody.innerHTML += `
-                    <tr>
-                        <td>${p.id}</td>
-                        <td>${p.brand}</td>
-                        <td>${p.name}</td>
-                        <td>${p.price} PLN</td>
-                        <td>${p.category}</td>
-                        <td>
-                            <button class="btn-admin-edit" onclick="populateAdminForm('${p.id}')">Edytuj</button>
-                            <button class="btn-admin-delete" onclick="deleteProduct('${p.id}')">Usuń</button>
-                        </td>
-                    </tr>
-                `;
-            });
+        const { error } = await supabase
+            .from('products')
+            .delete()
+            .eq('id', productId);
+
+        if (error) {
+            alert(`Błąd usuwania: ${error.message}. Sprawdź uprawnienia RLS!`);
+            return;
         }
         
-        function updateSideMenu() {
-            const userPanel = document.getElementById('user-panel-side');
-            const kontoLink = document.getElementById('nav-konto-side');
-            const user = getCurrentUser();
+        alert('Produkt usunięty z Supabase.');
+        
+        await fetchProductsFromSupabase();
+        renderAdminProductList(); 
+    }
 
-            let panelHTML = '';
+    // ===============================================
+    // === KROK 4: SKŁADANIE ZAMÓWIENIA (KOSZYK) ===
+    // ===============================================
 
-            if (user) {
-                panelHTML = `
-                    <div style="padding: 15px 32px; color: #AAA; font-size: 1.1em; text-align: left; padding-bottom: 5px;">
-                        Witaj, <strong style="color: var(--color-accent-gold); display: block; font-size: 1.2em;">${user.username}</strong>
-                    </div>
-                `;
+    /** Zapisuje zamówienie do Supabase zamiast wysyłania mailto (ZASTĄPIONE) */
+    async function handleOrderSubmit(event) {
+        event.preventDefault();
+        
+        const imie = document.getElementById('order-imie').value;
+        const email = document.getElementById('order-email').value;
+        const adres = document.getElementById('order-adres').value;
+        const uwagi = document.getElementById('order-uwagi').value;
+        const cart = getCart();
 
-                if (user.isAdmin) {
-                    panelHTML += `
-                        <a id="nav-admin-panel-side" onclick="closeNav(); showPage('admin-page');" style="color: #e74c3c; font-weight: 700;">PANEL ADMINA</a>
-                        <a id="nav-zamowienia-side" onclick="closeNav(); showPage('kolekcja-page');">Podgląd sklepu</a>
-                    `;
-                } else {
-                    panelHTML += `
-                        <a id="nav-zamowienia-side" onclick="closeNav(); showPage('konto-page'); showDashboardContent('orders');">Moje Zamówienia</a>
-                    `;
-                }
-                
+        if (cart.length === 0) {
+            alert('Koszyk jest pusty!');
+            return;
+        }
+
+        let sumaCalkowita = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+        // Struktura danych do wstawienia do tabeli 'orders'
+        const orderDetails = cart.map(item => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity
+        }));
+        
+        const orderData = {
+            customer_name: imie,
+            customer_email: email,
+            delivery_address: adres,
+            order_details: orderDetails, // Wstaw całą listę produktów
+            total_amount: sumaCalkowita,
+            status: 'Oczekuje',
+            notes: uwagi,
+            order_date: new Date().toISOString()
+        };
+
+        const { error } = await supabase
+            .from('orders')
+            .insert([orderData]);
+
+        if (error) {
+            alert(`Błąd składania zamówienia: ${error.message}. Sprawdź, czy tabela 'orders' istnieje i ma politykę RLS dla INSERT dla roli anon!`);
+            console.error(error);
+            return;
+        }
+
+        alert("Dziękujemy! Twoje zamówienie zostało złożone i jest obecnie przetwarzane.");
+        
+        // Opróżnij koszyk i odśwież widok
+        saveCart([]); 
+        renderCartPage(); 
+    }
+
+    // ===============================================
+    // === KROK 5: NAPRAWA I ULEPSZENIE CHATBOTA (NOWA LOGIKA) ===
+    // ===============================================
+
+    /**
+     * 💡 Ulepszona funkcja zwracająca bardziej "inteligentne" odpowiedzi Chatbota.
+     * Używa prostego dopasowania słów kluczowych (Pattern Matching) do symulacji AI.
+     * @param {string} message Wiadomość użytkownika
+     * @returns {string} Odpowiedź Chatbota
+     */
+    function getBotResponse(message) {
+        const lowerCaseMessage = message.toLowerCase().trim();
+
+        // 1. Sprawdzenie słów kluczowych dla FAQ
+        if (lowerCaseMessage.includes('gwarancja') || lowerCaseMessage.includes('oryginalnoś')) {
+            return 'Gwarantujemy <span class="gold-text">100% oryginalności</span>! Współpracujemy wyłącznie z autoryzowanymi dystrybutorami. <a onclick="showPageAndScroll(\'onas-page\', \'sourcing\')">Dowiedz się więcej o naszym sourcingu.</a>';
+        }
+
+        if (lowerCaseMessage.includes('dostaw') || lowerCaseMessage.includes('wysyłk')) {
+            return 'Wysyłka realizowana jest z naszej siedziby w Kętrzynie w ciągu <span class="gold-text">24 godzin</span> od zaksięgowania płatności. Oferujemy kuriera DPD/Inpost lub Paczkomaty. <a onclick="showPage(\'regulamin-page\')">Więcej w § 3 Regulaminu.</a>';
+        }
+
+        if (lowerCaseMessage.includes('zwrot') || lowerCaseMessage.includes('reklamacj')) {
+            return 'Zgodnie z prawem, przyjmujemy zwroty <span class="gold-text">tylko produktów nienaruszonych</span> (z fabryczną folią/plombą) w ciągu 14 dni. <a onclick="showPage(\'zwroty-page\')">Przejdź do strony Zwrotów i Reklamacji.</a>';
+        }
+
+        if (lowerCaseMessage.includes('konto') || lowerCaseMessage.includes('zalogować')) {
+            return 'Możesz się zalogować lub utworzyć konto w sekcji <span class="gold-text">Konto Klienta</span>. <a onclick="showPage(\'konto-page\')">Przejdź do Konta Klienta.</a>';
+        }
+
+        if (lowerCaseMessage.includes('aventus') || lowerCaseMessage.includes('creed')) {
+            return 'Creed Aventus to jeden z naszych bestsellerów! To dymny, owocowo-drzewny zapach dla mężczyzn. Czy chcesz go zobaczyć w kolekcji? <a onclick="showPage(\'kolekcja-page\')">Zobacz kolekcję.</a>';
+        }
+
+        // 2. Prostsze powitania/podziękowania
+        if (lowerCaseMessage.includes('cześć') || lowerCaseMessage.includes('witaj') || lowerCaseMessage.includes('dzień dobry')) {
+            return 'Witaj! Jestem Asystent PremiumFlakon. Jakie masz pytanie? (Np. Gwarancja, Dostawa, Zwroty)';
+        }
+
+        if (lowerCaseMessage.includes('dziękuję') || lowerCaseMessage.includes('dzięki')) {
+            return 'Cieszę się, że mogłem pomóc! Jeśli masz więcej pytań, jestem do Twojej dyspozycji.';
+        }
+
+        // 3. Odpowiedź domyślna (bardziej AI)
+        return 'Przepraszam, ale nie mam gotowej odpowiedzi na Twoje pytanie. Możesz spróbować sformułować je inaczej, lub <a onclick="showPageAndScroll(\'pomoc-page\', \'contact-section\')"><span class="gold-text">skontaktować się bezpośrednio z naszym zespołem.</span></a>';
+    }
+
+    /**
+     * ✅ POPRAWIONA FUNKCJA Wysyłania Wiadomości do Chatbota.
+     * Naprawia mechanizm dodawania wiadomości użytkownika i generuje odpowiedź.
+     */
+    function sendChatMessage() {
+        const userInput = document.getElementById('user-input');
+        const message = userInput.value.trim();
+        const chatHistory = document.getElementById('chat-history');
+
+        if (message === '') return;
+
+        // 1. Dodaj wiadomość użytkownika
+        const clientMessage = document.createElement('div');
+        clientMessage.className = 'client-message';
+        clientMessage.textContent = message;
+        chatHistory.appendChild(clientMessage);
+
+        // 2. Generuj odpowiedź Chatbota (z nową, ulepszoną logiką)
+        const botResponseText = getBotResponse(message);
+
+        // 3. Dodaj odpowiedź Chatbota z niewielkim opóźnieniem dla lepszego efektu
+        setTimeout(() => {
+            const botMessage = document.createElement('div');
+            botMessage.className = 'bot-message';
+            // Używamy innerHTML, ponieważ getBotResponse może zwracać tagi <a>
+            botMessage.innerHTML = botResponseText; 
+            chatHistory.appendChild(botMessage);
+
+            // Przewiń na dół
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }, 500);
+
+        // 4. Wyczyść pole tekstowe i zablokuj je na czas odpowiedzi
+        userInput.value = '';
+        userInput.disabled = true;
+
+        setTimeout(() => {
+            userInput.disabled = false;
+            userInput.focus();
+        }, 600);
+    }
+
+
+    // Funkcje dla karuzeli (pozostawione dla pełności kodu)
+    let placeholderInterval;
+    const placeholders = [
+        "Gwarancja oryginalności",
+        "Jak wygląda dostawa?",
+        "Czy można zwrócić perfumy?",
+        "Jaka jest cena Creed Aventus?",
+        "Witaj"
+    ];
+
+    function startPlaceholderCarousel() {
+        const input = document.getElementById('user-input');
+        if (!input) return;
+
+        let index = 0;
+        
+        // Zatrzymaj poprzedni interwał, jeśli istnieje
+        if (placeholderInterval) clearInterval(placeholderInterval);
+
+        placeholderInterval = setInterval(() => {
+            index = (index + 1) % placeholders.length;
+            input.placeholder = "Wpisz: " + placeholders[index] + "...";
+        }, 4000); // Zmiana co 4 sekundy
+    }
+
+
+    // ===============================================
+    // === POZOSTAŁE FUNKCJE I MOCKI (Uzupelnienie) ===
+    // ===============================================
+
+    function initializeProductStorage() {
+        const products = localStorage.getItem(LS_PRODUCTS_KEY);
+        if (!products) {
+            localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(initialProductsData));
+        }
+    }
+
+    function initializeOrderStorage() {
+        const orders = localStorage.getItem(LS_ORDERS_KEY);
+        if (!orders) {
+            localStorage.setItem(LS_ORDERS_KEY, JSON.stringify(initialOrdersData));
+        }
+    }
+    
+    function renderAdminProductList() {
+        const listBody = document.getElementById('admin-product-list-body');
+        if (!listBody) return;
+        const products = getProductsFromStorage();
+        listBody.innerHTML = '';
+        
+        if (products.length === 0) {
+            listBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Brak produktów w bazie.</td></tr>';
+            return;
+        }
+        products.forEach(p => {
+            listBody.innerHTML += `
+                <tr>
+                    <td>${p.id}</td>
+                    <td>${p.brand}</td>
+                    <td>${p.name}</td>
+                    <td>${p.price} PLN</td>
+                    <td>${p.category}</td>
+                    <td>
+                        <button class="btn-admin-edit" onclick="populateAdminForm('${p.id}')">Edytuj</button>
+                        <button class="btn-admin-delete" onclick="deleteProduct('${p.id}')">Usuń</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+    
+    function updateSideMenu() {
+        const userPanel = document.getElementById('user-panel-side');
+        const kontoLink = document.getElementById('nav-konto-side');
+        const user = getCurrentUser();
+
+        let panelHTML = '';
+
+        if (user) {
+            panelHTML = `
+                <div style="padding: 15px 32px; color: #AAA; font-size: 1.1em; text-align: left; padding-bottom: 5px;">
+                    Witaj, <strong style="color: var(--color-accent-gold); display: block; font-size: 1.2em;">${user.username}</strong>
+                </div>
+            `;
+
+            if (user.isAdmin) {
                 panelHTML += `
-                    <a id="nav-wyloguj-side" onclick="closeNav(); logoutUser();">Wyloguj się</a>
-                    <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 30px;">
+                    <a id="nav-admin-panel-side" onclick="closeNav(); showPage('admin-page');" style="color: #e74c3c; font-weight: 700;">PANEL ADMINA</a>
+                    <a id="nav-zamowienia-side" onclick="closeNav(); showPage('kolekcja-page');">Podgląd sklepu</a>
                 `;
-                kontoLink.textContent = 'Panel Konta';
-
             } else {
-                kontoLink.textContent = 'Konto Klienta';
+                panelHTML += `
+                    <a id="nav-zamowienia-side" onclick="closeNav(); showPage('konto-page'); showDashboardContent('orders');">Moje Zamówienia</a>
+                `;
             }
+            
+            panelHTML += `
+                <a id="nav-wyloguj-side" onclick="closeNav(); logoutUser();">Wyloguj się</a>
+                <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 30px;">
+            `;
+            kontoLink.textContent = 'Panel Konta';
 
-            userPanel.innerHTML = panelHTML;
+        } else {
+            kontoLink.textContent = 'Konto Klienta';
         }
 
-        /** Renderowanie Produktów */
-        function renderProducts(products) {
-            const grid = document.getElementById('product-grid');
-            if (!grid) return; 
-            
-            grid.innerHTML = '';
-            const noProducts = document.getElementById('no-products');
-            
-            if (products.length === 0) {
-                if (noProducts) {
-                     noProducts.textContent = 'Brak produktów spełniających kryteria.';
-                     noProducts.style.display = 'block';
-                }
-                return;
-            }
-            if (noProducts) noProducts.style.display = 'none';
+        userPanel.innerHTML = panelHTML;
+    }
 
-            products.forEach(product => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                
-                // Zapewnienie, że kolumna images jest tablicą i pobieramy pierwszy element
-                const imageUrl = Array.isArray(product.images) && product.images.length > 0 
+    /** Renderowanie Produktów */
+    function renderProducts(products) {
+        const grid = document.getElementById('product-grid');
+        if (!grid) return; 
+        
+        grid.innerHTML = '';
+        const noProducts = document.getElementById('no-products');
+        
+        if (products.length === 0) {
+            if (noProducts) {
+                noProducts.textContent = 'Brak produktów spełniających kryteria.';
+                noProducts.style.display = 'block';
+            }
+            return;
+        }
+        if (noProducts) noProducts.style.display = 'none';
+
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            
+            // Zapewnienie, że kolumna images jest tablicą i pobieramy pierwszy element
+            const imageUrl = Array.isArray(product.images) && product.images.length > 0 
                                  ? product.images[0] 
                                  : ''; 
 
-                card.innerHTML = `
-                    <div style="aspect-ratio: 3 / 4; background-color: #F8F8F4; border: 1px dashed #CCC; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${imageUrl}'); background-size: cover; background-position: center;">
-                        ${imageUrl ? '' : 'Brak Zdjęcia'}
-                    </div>
-                    <div class="brand">${product.brand}</div>
-                    <h3>${product.name}</h3>
-                    <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category || 'N/A'}</p>
-                    <div class="price">${product.price.toFixed(2)} PLN</div>
-                    <div style="display:flex; gap:8px; margin-top:10px;">
-                        <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
-                        <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:10px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function applyFilters() {
-            let filteredProducts = getProductsFromStorage();
-            
-            const selectedBrands = Array.from(document.querySelectorAll('#filter-sidebar input[data-filter="brand"]:checked')).map(cb => cb.value);
-            const selectedCategories = Array.from(document.querySelectorAll('#filter-sidebar input[data-filter="category"]:checked')).map(cb => cb.value);
-            
-            if (selectedBrands.length > 0) {
-                filteredProducts = filteredProducts.filter(p => selectedBrands.includes(p.brand));
-            }
-            
-            if (selectedCategories.length > 0) {
-                filteredProducts = filteredProducts.filter(p => selectedCategories.includes(p.category));
-            }
-            
-            const sortByElement = document.getElementById('sort-by');
-            if(sortByElement) {
-                const sortBy = sortByElement.value;
-                if (sortBy === 'price-asc') {
-                    filteredProducts.sort((a, b) => a.price - b.price);
-                } else if (sortBy === 'price-desc') {
-                    filteredProducts.sort((a, b) => b.price - a.price);
-                }
-            }
-            
-            renderProducts(filteredProducts);
-        }
-        
-        function highlightNavLink(activePageId) { 
-            const headerNav = document.querySelector('header nav');
-            if (!headerNav) return; 
-            const allNavLinks = headerNav.querySelectorAll('a');
-            allNavLinks.forEach(link => { link.classList.remove('active-nav-link'); });
-
-            let targetIdPrefix;
-            if (activePageId.includes('kolekcja')) { targetIdPrefix = 'link-kolekcja'; } 
-            else if (activePageId.includes('onas')) { targetIdPrefix = 'link-onas'; } 
-            else if (activePageId.includes('regulamin')) { targetIdPrefix = 'link-regulamin'; } 
-            else if (activePageId.includes('polityka')) { targetIdPrefix = 'link-polityka'; } 
-            else if (activePageId.includes('zwroty')) { targetIdPrefix = 'link-zwroty'; } 
-            else if (activePageId.includes('pomoc')) { targetIdPrefix = 'link-pomoc'; }
-            else if (activePageId.includes('konto')) { targetIdPrefix = 'link-konto'; }
-            else if (activePageId.includes('koszyk')) { targetIdPrefix = 'link-koszyk'; }
-
-            if (targetIdPrefix) {
-                document.querySelectorAll(`[id^="${targetIdPrefix}"]`).forEach(link => {
-                    if (link.id.includes(targetIdPrefix)) { link.classList.add('active-nav-link'); }
-                });
-            }
-        }
-
-        function scrollToElement(elementId) {
-            const element = document.getElementById(elementId);
-            if (element) { setTimeout(() => { element.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100); }
-        }
-
-        function showPageAndScroll(pageId, elementId) {
-            showPage(pageId);
-            scrollToElement(elementId);
-            const targetPageId = pageId.split('-')[0];
-            highlightNavLink(targetPageId);
-        }
-
-        function openNav() { document.getElementById("side-menu").classList.add("open"); }
-        function closeNav() { document.getElementById("side-menu").classList.remove("open"); }
-
-        function showPage(pageId) { 
-            if (pageId === 'admin-page' && !isCurrentUserAdmin()) {
-                alert('Nie masz uprawnień do tej strony. Zaloguj się jako administrator.');
-                showPage(getIsLoggedIn() ? 'konto-page' : 'landing-page');
-                return;
-            }
-            if (pageId === 'konto-page' && isCurrentUserAdmin()) {
-                pageId = 'admin-page';
-            }
-            
-            const sections = document.querySelectorAll('.page-section');
-            sections.forEach(section => { section.classList.remove('active'); });
-            
-            const activeSection = document.getElementById(pageId);
-            if (activeSection) {
-                activeSection.classList.add('active');
-                const event = new CustomEvent('pageShow', { detail: { pageId: pageId } });
-                document.dispatchEvent(event);
-            } else {
-                document.getElementById('landing-page').classList.add('active');
-                return;
-            }
-            
-            if (pageId !== 'landing-page') { highlightNavLink(pageId); } 
-            else { document.querySelectorAll('header nav a').forEach(link => { link.classList.remove('active-nav-link'); }); }
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            if (pageId === 'kolekcja-page') { applyFilters(); }
-            if (pageId === 'konto-page') { renderKontoPage(); }
-            if (pageId === 'admin-page') { renderAdminPage(); }
-            if (pageId === 'koszyk-page') { renderCartPage(); }
-        }
-
-        function renderKontoPage() { 
-            const kontoContent = document.getElementById('konto-content');
-            if (!kontoContent) return;
-
-            kontoContent.innerHTML = ''; 
-            
-            if (getIsLoggedIn() && !isCurrentUserAdmin()) {
-                const template = document.getElementById('dashboard-template');
-                const clone = document.importNode(template.content, true);
-                kontoContent.appendChild(clone);
-                
-                document.getElementById('user-name-display').textContent = getUserName();
-                showDashboardContent('orders');
-            } else {
-                const template = document.getElementById('auth-template');
-                const clone = document.importNode(template.content, true);
-                kontoContent.appendChild(clone);
-            }
-        }
-        
-        function showDashboardContent(view) { /* MOCK */ }
-        function renderAdminPage() { /* MOCK */ }
-        function renderAdminStatsAndOrders() { /* MOCK */ }
-        function renderCartPage() { /* MOCK */ }
-        function updateCartCounters() { /* MOCK */ }
-        function addToCart(productId) { /* MOCK */ }
-        function updateCartQuantity(productId, newQuantity) { /* MOCK */ }
-        function removeFromCart(productId) { /* MOCK */ }
-        function showProductDetail(productId) { /* MOCK */ }
-        function renderProductDetail(productId) { /* MOCK */ }
-        function addToCartFromDetail() { /* MOCK */ }
-        function editProductFromDetail() { /* MOCK */ }
-        function addSpecField(key='', value='') { /* MOCK */ }
-        function removeSpecField(rowId) { /* MOCK */ }
-        function readSpecsFromForm() { return []; /* MOCK */ }
-        function setSpecsToForm(specs) { /* MOCK */ }
-        function escapeHtmlAttr(s) { return s; /* MOCK */ }
-        function setupAdminImageInput() { /* MOCK */ }
-        function handleAdminImagesChange(event) { /* MOCK */ }
-        function renderAdminImagePreviews() { /* MOCK */ }
-        function removeAdminImage(index) { /* MOCK */ }
-        
-        // Funkcje pomocnicze dla Admina (mocki)
-        function clearAdminForm() { /* MOCK */ }
-        function populateAdminForm(productId) { /* MOCK */ }
-
-
-        // === INICJALIZACJA ===
-        document.addEventListener('DOMContentLoaded', async () => {
-            initializeProductStorage();
-            initializeOrderStorage();
-            
-            // Synchronizuj status użytkownika (Supabase Auth -> LocalStorage)
-            await syncUserSession(); 
-            
-            const fullFooterContent = `
-                <div class="container footer-content">
-                    <div class="footer-links">
-                        <h4>Informacje</h4>
-                        <a onclick="showPage('polityka-page');">Polityka Prywatności</a>
-                        <a onclick="showPage('regulamin-page');">Regulamin Sprzedaży</a>
-                        <a onclick="showPage('zwroty-page');">Zwroty i Reklamacje</a>
-                    </div>
-                    <div class="footer-links">
-                        <h4>PREMIUM FLAKON</h4>
-                        <a onclick="showPage('kolekcja-page');">Katalog Zapachów</a>
-                        <a onclick="showPage('onas-page');">O Naszej Misji</a>
-                        <a onclick="showPage('pomoc-page');">Wsparcie i FAQ</a>
-                        <a onclick="showPage('konto-page');">Moje Konto Klienta</a>
-                    </div>
-                    <div class="footer-contact">
-                        <h4>&iquest; Masz Pytanie?</h4>
-                        <strong class="gold-text">TELEFON:</strong> <a href="tel:532116720">532 116 720</a>
-                        <strong class="gold-text">E-MAIL:</strong> <a href="mailto:kontakt@premiumflakon.pl">kontakt@premiumflakon.pl</a>
-                    </div>
-                    <div class="copyright">
-                        <p>&copy; 2025 PREMIUM FLAKON. Wszelkie prawa zastrzeżone.</p>
-                    </div>
+            card.innerHTML = `
+                <div style="aspect-ratio: 3 / 4; background-color: #F8F8F4; border: 1px dashed #CCC; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${imageUrl}'); background-size: cover; background-position: center;">
+                    ${imageUrl ? '' : 'Brak Zdjęcia'}
+                </div>
+                <div class="brand">${product.brand}</div>
+                <h3>${product.name}</h3>
+                <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category || 'N/A'}</p>
+                <div class="price">${product.price.toFixed(2)} PLN</div>
+                <div style="display:flex; gap:8px; margin-top:10px;">
+                    <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
+                    <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:10px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
                 </div>
             `;
-            document.querySelectorAll('footer').forEach(footer => {
-                footer.innerHTML = fullFooterContent;
+            grid.appendChild(card);
+        });
+    }
+
+    function applyFilters() {
+        let filteredProducts = getProductsFromStorage();
+        
+        const selectedBrands = Array.from(document.querySelectorAll('#filter-sidebar input[data-filter="brand"]:checked')).map(cb => cb.value);
+        const selectedCategories = Array.from(document.querySelectorAll('#filter-sidebar input[data-filter="category"]:checked')).map(cb => cb.value);
+        
+        if (selectedBrands.length > 0) {
+            filteredProducts = filteredProducts.filter(p => selectedBrands.includes(p.brand));
+        }
+        
+        if (selectedCategories.length > 0) {
+            filteredProducts = filteredProducts.filter(p => selectedCategories.includes(p.category));
+        }
+        
+        const sortByElement = document.getElementById('sort-by');
+        if(sortByElement) {
+            const sortBy = sortByElement.value;
+            if (sortBy === 'price-asc') {
+                filteredProducts.sort((a, b) => a.price - b.price);
+            } else if (sortBy === 'price-desc') {
+                filteredProducts.sort((a, b) => b.price - a.price);
+            }
+        }
+        
+        renderProducts(filteredProducts);
+    }
+    
+    function highlightNavLink(activePageId) { 
+        const headerNav = document.querySelector('header nav');
+        if (!headerNav) return; 
+        const allNavLinks = headerNav.querySelectorAll('a');
+        allNavLinks.forEach(link => { link.classList.remove('active-nav-link'); });
+
+        let targetIdPrefix;
+        if (activePageId.includes('kolekcja')) { targetIdPrefix = 'link-kolekcja'; } 
+        else if (activePageId.includes('onas')) { targetIdPrefix = 'link-onas'; } 
+        else if (activePageId.includes('regulamin')) { targetIdPrefix = 'link-regulamin'; } 
+        else if (activePageId.includes('polityka')) { targetIdPrefix = 'link-polityka'; } 
+        else if (activePageId.includes('zwroty')) { targetIdPrefix = 'link-zwroty'; } 
+        else if (activePageId.includes('pomoc')) { targetIdPrefix = 'link-pomoc'; }
+        else if (activePageId.includes('konto')) { targetIdPrefix = 'link-konto'; }
+        else if (activePageId.includes('koszyk')) { targetIdPrefix = 'link-koszyk'; }
+
+        if (targetIdPrefix) {
+            document.querySelectorAll(`[id^="${targetIdPrefix}"]`).forEach(link => {
+                if (link.id.includes(targetIdPrefix)) { link.classList.add('active-nav-link'); }
             });
+        }
+    }
+
+    function scrollToElement(elementId) {
+        const element = document.getElementById(elementId);
+        if (element) { setTimeout(() => { element.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100); }
+    }
+
+    function showPageAndScroll(pageId, elementId) {
+        showPage(pageId);
+        scrollToElement(elementId);
+        const targetPageId = pageId.split('-')[0];
+        highlightNavLink(targetPageId);
+    }
+
+    function openNav() { document.getElementById("side-menu").classList.add("open"); }
+    function closeNav() { document.getElementById("side-menu").classList.remove("open"); }
+
+    function showPage(pageId) { 
+        if (pageId === 'admin-page' && !isCurrentUserAdmin()) {
+            alert('Nie masz uprawnień do tej strony. Zaloguj się jako administrator.');
+            showPage(getIsLoggedIn() ? 'konto-page' : 'landing-page');
+            return;
+        }
+        if (pageId === 'konto-page' && isCurrentUserAdmin()) {
+            pageId = 'admin-page';
+        }
+        
+        const sections = document.querySelectorAll('.page-section');
+        sections.forEach(section => { section.classList.remove('active'); });
+        
+        const activeSection = document.getElementById(pageId);
+        if (activeSection) {
+            activeSection.classList.add('active');
+            const event = new CustomEvent('pageShow', { detail: { pageId: pageId } });
+            document.dispatchEvent(event);
+        } else {
+            document.getElementById('landing-page').classList.add('active');
+            return;
+        }
+        
+        if (pageId !== 'landing-page') { highlightNavLink(pageId); } 
+        else { document.querySelectorAll('header nav a').forEach(link => { link.classList.remove('active-nav-link'); }); }
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        if (pageId === 'kolekcja-page') { applyFilters(); }
+        if (pageId === 'konto-page') { renderKontoPage(); }
+        if (pageId === 'admin-page') { renderAdminPage(); }
+        if (pageId === 'koszyk-page') { renderCartPage(); }
+    }
+
+    function renderKontoPage() { 
+        const kontoContent = document.getElementById('konto-content');
+        if (!kontoContent) return;
+
+        kontoContent.innerHTML = ''; 
+        
+        if (getIsLoggedIn() && !isCurrentUserAdmin()) {
+            const template = document.getElementById('dashboard-template');
+            const clone = document.importNode(template.content, true);
+            kontoContent.appendChild(clone);
             
-            fetchProductsFromSupabase();
+            document.getElementById('user-name-display').textContent = getUserName();
+            showDashboardContent('orders');
+        } else {
+            const template = document.getElementById('auth-template');
+            const clone = document.importNode(template.content, true);
+            kontoContent.appendChild(clone);
+        }
+    }
+    
+    function renderAdminPage() { 
+        const adminContent = document.getElementById('admin-content');
+        if (!adminContent) return;
 
-            document.addEventListener('pageShow', (e) => {
-                if (e.detail.pageId === 'pomoc-page') {
-                    // Logic for Chabot start
-                    const history = document.getElementById('chat-history');
-                    if (history && history.children.length === 1) { // Tylko początkowa wiadomość
-                         // Ukrywamy opcje, żeby chatbot działał dynamicznie
-                        document.getElementById('chat-options').style.display = 'none';
-                    }
-                    startPlaceholderCarousel();
+        adminContent.innerHTML = '';
+        const template = document.getElementById('admin-template');
+        const clone = document.importNode(template.content, true);
+        adminContent.appendChild(clone);
 
-                    const userInputEl = document.getElementById('user-input');
-                    if (userInputEl) {
-                        userInputEl.disabled = false;
-                        userInputEl.addEventListener('keydown', function(event) {
-                            if (event.key === 'Enter') {
-                                event.preventDefault();
-                                sendChatMessage();
-                            }
-                        });
-                    }
-                }
-                if (e.detail.pageId === 'product-page') {
-                    if (currentDetailProductId) renderProductDetail(currentDetailProductId);
-                }
+        // Pokaż domyślnie statystyki i produkty
+        showAdminContent('stats');
+    }
+
+    function showDashboardContent(view) {
+        // MOCK: renderowanie treści w panelu użytkownika
+        const main = document.getElementById('dashboard-main');
+        document.querySelectorAll('.dashboard-nav a').forEach(a => a.classList.remove('active'));
+        document.getElementById('nav-' + view).classList.add('active');
+
+        if (view === 'orders') {
+            main.innerHTML = `<h3>Historia zamówień</h3><p>Lista Twoich ostatnich zamówień.</p>
+                <table class="order-table">
+                    <thead><tr><th>ID</th><th>Data</th><th>Suma</th><th>Status</th></tr></thead>
+                    <tbody><tr><td>#4567</td><td>01.10.2025</td><td>899.00 PLN</td><td>Wysłane</td></tr></tbody>
+                </table>`;
+        } else if (view === 'address') {
+             main.innerHTML = `<h3>Adresy dostawy</h3><p>Zarządzaj swoimi adresami.</p>`;
+        } else if (view === 'profile') {
+             main.innerHTML = `<h3>Edytuj profil</h3><p>Zmień swoją nazwę użytkownika lub hasło.</p>`;
+        }
+    }
+    
+    function showAdminContent(view) {
+         // MOCK: renderowanie treści w panelu admina
+        const main = document.getElementById('admin-main');
+        document.querySelectorAll('.dashboard-nav a').forEach(a => a.classList.remove('active'));
+        document.getElementById('nav-admin-' + view).classList.add('active');
+
+        if (view === 'stats') {
+            const template = document.getElementById('admin-stats-template');
+            main.innerHTML = '';
+            main.appendChild(document.importNode(template.content, true));
+            renderAdminStatsAndOrders();
+        } else if (view === 'products') {
+            const template = document.getElementById('admin-products-template');
+            main.innerHTML = '';
+            main.appendChild(document.importNode(template.content, true));
+            renderAdminProductList();
+            setupAdminImageInput(); // Uruchomienie obsługi obrazów
+            addSpecField(); // Domyślne pole specyfikacji
+        }
+    }
+
+    async function renderAdminStatsAndOrders() {
+        // MOCK: Symulacja statystyk i zamówień
+        document.getElementById('stats-active-users').textContent = Math.floor(Math.random() * 50) + 10;
+        
+        // Pobierz dane z Supabase
+        const { data: orders, error } = await supabase.from('orders').select('*');
+        
+        if (error || !orders) {
+            console.error("Błąd pobierania zamówień dla admina:", error);
+            document.getElementById('stats-total-revenue').textContent = 'N/A';
+            document.getElementById('stats-total-orders').textContent = 'N/A';
+            return;
+        }
+
+        const totalRevenue = orders.reduce((sum, order) => sum + order.total_amount, 0);
+        document.getElementById('stats-total-revenue').textContent = totalRevenue.toFixed(2) + ' PLN';
+        document.getElementById('stats-total-orders').textContent = orders.length;
+
+        const ordersBody = document.getElementById('admin-orders-list-body');
+        ordersBody.innerHTML = '';
+
+        orders.forEach(order => {
+            const itemsSummary = order.order_details.map(item => `${item.name} (x${item.quantity})`).join('; ');
+            ordersBody.innerHTML += `
+                <tr>
+                    <td>#${order.id}</td>
+                    <td>${new Date(order.order_date).toLocaleDateString()}</td>
+                    <td>${order.customer_email}</td>
+                    <td>${itemsSummary}</td>
+                    <td>${order.total_amount.toFixed(2)} PLN</td>
+                    <td><span style="color:${order.status === 'Oczekuje' ? 'orange' : 'green'}; font-weight:700;">${order.status}</span></td>
+                </tr>
+            `;
+        });
+    }
+
+    function getCart() {
+        return JSON.parse(localStorage.getItem(LS_CART_KEY) || '[]');
+    }
+
+    function saveCart(cart) {
+        localStorage.setItem(LS_CART_KEY, JSON.stringify(cart));
+        updateCartCounters();
+    }
+
+    function updateCartCounters() {
+        const cart = getCart();
+        const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+        document.querySelectorAll('.cart-counter').forEach(el => {
+            el.textContent = count;
+        });
+    }
+
+    function addToCart(productId) {
+        const products = getProductsFromStorage();
+        const product = products.find(p => p.id === productId);
+        
+        if (!product) {
+            alert('Błąd: Produkt nie znaleziony.');
+            return;
+        }
+
+        const cart = getCart();
+        const existingItem = cart.find(item => item.id === productId);
+
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({
+                id: product.id,
+                name: product.name,
+                brand: product.brand,
+                price: product.price,
+                quantity: 1,
+                image: Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : ''
             });
+        }
 
-            showPage('landing-page');
+        saveCart(cart);
+        alert(`Dodano ${product.name} do koszyka!`);
+    }
 
-            document.querySelectorAll('#filter-sidebar input[type="checkbox"]').forEach(checkbox => {
-                checkbox.addEventListener('change', applyFilters);
-            });
-            const sortByElement = document.getElementById('sort-by');
-            if(sortByElement) sortByElement.addEventListener('change', applyFilters);
+    function addToCartFromDetail() {
+        if (currentDetailProductId) {
+            addToCart(currentDetailProductId);
+            // Opcjonalnie przejdź do koszyka
+            // showPage('koszyk-page'); 
+        }
+    }
 
-            updateCartCounters();
+    function updateCartQuantity(productId, newQuantity) {
+        let cart = getCart();
+        newQuantity = parseInt(newQuantity, 10);
+
+        if (newQuantity <= 0 || isNaN(newQuantity)) {
+            removeFromCart(productId);
+            return;
+        }
+
+        const item = cart.find(i => i.id === productId);
+        if (item) {
+            item.quantity = newQuantity;
+            saveCart(cart);
+            renderCartPage();
+        }
+    }
+
+    function removeFromCart(productId) {
+        let cart = getCart();
+        cart = cart.filter(item => item.id !== productId);
+        saveCart(cart);
+        renderCartPage();
+    }
+
+
+    function renderCartPage() {
+        const cart = getCart();
+        const lista = document.getElementById('koszyk-lista');
+        const formContainer = document.getElementById('koszyk-formularz-container');
+        if (!lista || !formContainer) return;
+
+        lista.innerHTML = '';
+        formContainer.innerHTML = '';
+
+        if (cart.length === 0) {
+            lista.innerHTML = `
+                <div id="pusty-koszyk-info">
+                    <h3>Twój koszyk jest pusty.</h3>
+                    <p>Wróć do kolekcji i znajdź swój idealny zapach!</p>
+                    <a onclick="showPage('kolekcja-page');" class="btn-main" style="margin-top: 20px;">Odkryj Kolekcję</a>
+                </div>
+            `;
+            return;
+        }
+
+        let total = 0;
+        cart.forEach(item => {
+            const itemTotal = item.price * item.quantity;
+            total += itemTotal;
+            lista.innerHTML += `
+                <div class="koszyk-item">
+                    <div class="koszyk-item-img" style="background-image: url('${item.image}');">
+                        ${item.image ? '' : 'Brak Zdjęcia'}
+                    </div>
+                    <div class="koszyk-item-info">
+                        <div class="brand">${item.brand}</div>
+                        <h4>${item.name}</h4>
+                    </div>
+                    <div class="koszyk-ilosc">
+                        <label for="qty-${item.id}">Ilość:</label>
+                        <input type="number" id="qty-${item.id}" value="${item.quantity}" min="1" 
+                            onchange="updateCartQuantity('${item.id}', this.value)">
+                    </div>
+                    <div class="koszyk-item-cena">${itemTotal.toFixed(2)} PLN</div>
+                    <button class="btn-usun" onclick="removeFromCart('${item.id}')">&#10005;</button>
+                </div>
+            `;
+        });
+
+        // Formularz zamówienia
+        formContainer.innerHTML = `
+            <div id="koszyk-formularz">
+                <h3 style="color: var(--color-accent-gold); text-align: center;">Podsumowanie i Dostawa</h3>
+                <div id="koszyk-podsumowanie">
+                    <p style="margin-bottom: 5px;">Suma częściowa: <strong class="gold-text">${total.toFixed(2)} PLN</strong></p>
+                    <p style="margin-bottom: 10px;">Dostawa: <strong>GRATIS</strong></p>
+                    <h3>RAZEM: ${total.toFixed(2)} PLN</h3>
+                </div>
+
+                <form onsubmit="handleOrderSubmit(event); return false;">
+                    <div class="form-group">
+                        <label for="order-imie">Imię i Nazwisko</label>
+                        <input type="text" id="order-imie" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="order-email">Adres E-mail</label>
+                        <input type="email" id="order-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="order-adres">Adres Dostawy (Ulica, Kod, Miasto)</label>
+                        <textarea id="order-adres" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="order-uwagi">Uwagi do zamówienia (opcjonalnie)</label>
+                        <textarea id="order-uwagi" rows="2"></textarea>
+                    </div>
+                    <p style="font-size: 0.8em; color: #666; margin-top: -10px;">Zamówienie zostanie złożone w systemie i trafi do realizacji po opłaceniu (płatność za pobraniem nie jest dostępna).</p>
+                    <button type="submit" class="btn-auth">ZŁÓŻ ZAMÓWIENIE Z OBOWIĄZKIEM ZAPŁATY</button>
+                </form>
+            </div>
+        `;
+    }
+
+    function showProductDetail(productId) {
+        currentDetailProductId = productId;
+        showPage('product-page');
+    }
+
+    function renderProductDetail(productId) {
+        const product = getProductsFromStorage().find(p => p.id === productId);
+        if (!product) {
+            alert('Błąd: Produkt szczegółowy nie znaleziony.');
+            return;
+        }
+
+        document.getElementById('detail-brand').textContent = product.brand;
+        document.getElementById('detail-name').textContent = product.name;
+        document.getElementById('detail-price').textContent = product.price.toFixed(2) + ' PLN';
+        document.getElementById('detail-description').textContent = product.description;
+        
+        // Obrazy
+        const detailImage = document.getElementById('detail-image');
+        const detailThumbnails = document.getElementById('detail-thumbnails');
+        detailImage.style.backgroundImage = product.images.length > 0 ? `url('${product.images[0]}')` : 'none';
+        detailThumbnails.innerHTML = '';
+        
+        product.images.forEach((image, index) => {
+            const thumb = document.createElement('div');
+            thumb.style.backgroundImage = `url('${image}')`;
+            thumb.style.width = '60px';
+            thumb.style.height = '60px';
+            thumb.style.cursor = 'pointer';
+            thumb.style.backgroundSize = 'cover';
+            thumb.style.backgroundPosition = 'center';
+            thumb.style.border = '1px solid #CCC';
+            thumb.onclick = () => { detailImage.style.backgroundImage = `url('${image}')`; };
+            detailThumbnails.appendChild(thumb);
         });
         
-    </script>
+        // Specyfikacja
+        const detailSpecs = document.getElementById('detail-specs');
+        detailSpecs.innerHTML = '';
+        if (product.specs && product.specs.length > 0) {
+            product.specs.forEach(spec => {
+                detailSpecs.innerHTML += `<tr><td style="width: 30%; font-weight: 700;">${spec.key}</td><td>${spec.value}</td></tr>`;
+            });
+        } else {
+             detailSpecs.innerHTML = `<tr><td colspan="2">Brak szczegółowej specyfikacji.</td></tr>`;
+        }
+
+        // Przycisk edycji dla Admina
+        document.getElementById('detail-edit-btn').style.display = isCurrentUserAdmin() ? 'block' : 'none';
+    }
+
+    function editProductFromDetail() {
+        if (currentDetailProductId) {
+            showPage('admin-page');
+            showAdminContent('products');
+            populateAdminForm(currentDetailProductId);
+            // Scroll do formularza
+            scrollToElement('admin-form-container');
+        }
+    }
+
+    function escapeHtmlAttr(s) {
+        return s.replace(/"/g, '&quot;');
+    }
+    
+    function addSpecField(key = '', value = '') {
+        const container = document.getElementById('admin-specs-list');
+        if (!container) return;
+        const rowId = 'spec-' + Date.now();
+        const row = document.createElement('div');
+        row.id = rowId;
+        row.style.display = 'flex';
+        row.style.gap = '10px';
+        row.style.marginBottom = '10px';
+        row.innerHTML = `
+            <input type="text" class="spec-key" value="${escapeHtmlAttr(key)}" placeholder="Klucz (np. Nuta Głowy)" style="flex:1;">
+            <input type="text" class="spec-value" value="${escapeHtmlAttr(value)}" placeholder="Wartość (np. Bergamotka)" style="flex:1;">
+            <button type="button" onclick="removeSpecField('${rowId}')" style="background: none; border: none; color: #C00; cursor: pointer;">&times;</button>
+        `;
+        container.appendChild(row);
+    }
+
+    function removeSpecField(rowId) {
+        const row = document.getElementById(rowId);
+        if (row) row.remove();
+    }
+
+    function readSpecsFromForm() {
+        const specs = [];
+        const container = document.getElementById('admin-specs-list');
+        if (!container) return specs;
+        
+        container.querySelectorAll('.spec-key').forEach((keyInput, index) => {
+            const valueInput = container.querySelectorAll('.spec-value')[index];
+            if (keyInput.value.trim() && valueInput.value.trim()) {
+                specs.push({
+                    key: keyInput.value.trim(),
+                    value: valueInput.value.trim()
+                });
+            }
+        });
+        return specs;
+    }
+
+    function setSpecsToForm(specs) {
+        const container = document.getElementById('admin-specs-list');
+        if (!container) return;
+        container.innerHTML = '';
+        if (specs && specs.length > 0) {
+            specs.forEach(spec => {
+                addSpecField(spec.key, spec.value);
+            });
+        }
+        if (container.children.length === 0) {
+             addSpecField(); // Upewnij się, że zawsze jest przynajmniej jedno puste pole
+        }
+    }
+    
+    function setupAdminImageInput() {
+        const input = document.getElementById('admin-images');
+        if (input) {
+            input.removeEventListener('change', handleAdminImagesChange);
+            input.addEventListener('change', handleAdminImagesChange);
+        }
+    }
+
+    function handleAdminImagesChange(event) {
+        const files = event.target.files;
+        if (files.length > 5) {
+            alert('Możesz dodać maksymalnie 5 zdjęć.');
+            event.target.value = ''; // Wyczyść input
+            return;
+        }
+
+        adminImageData = []; // Wyczyść poprzednie dane
+        const promises = [];
+
+        for (let i = 0; i < files.length; i++) {
+            promises.push(new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.readAsDataURL(files[i]);
+            }));
+        }
+
+        Promise.all(promises).then(results => {
+            adminImageData = results;
+            renderAdminImagePreviews();
+        });
+    }
+
+    function renderAdminImagePreviews() {
+        const previewContainer = document.getElementById('admin-image-previews');
+        if (!previewContainer) return;
+
+        previewContainer.innerHTML = '';
+        adminImageData.forEach((dataUrl, index) => {
+            const img = document.createElement('div');
+            img.style.width = '80px';
+            img.style.height = '80px';
+            img.style.backgroundImage = `url('${dataUrl}')`;
+            img.style.backgroundSize = 'cover';
+            img.style.backgroundPosition = 'center';
+            img.style.border = '2px solid var(--color-accent-gold)';
+            img.style.position = 'relative';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = 'x';
+            removeBtn.style.position = 'absolute';
+            removeBtn.style.top = '0';
+            removeBtn.style.right = '0';
+            removeBtn.style.background = 'red';
+            removeBtn.style.color = 'white';
+            removeBtn.style.border = 'none';
+            removeBtn.style.cursor = 'pointer';
+            removeBtn.onclick = () => removeAdminImage(index);
+            
+            img.appendChild(removeBtn);
+            previewContainer.appendChild(img);
+        });
+    }
+
+    function removeAdminImage(index) {
+        adminImageData.splice(index, 1);
+        renderAdminImagePreviews();
+    }
+    
+    function clearAdminForm() {
+        document.getElementById('admin-product-id').value = '';
+        document.getElementById('admin-brand').value = '';
+        document.getElementById('admin-name').value = '';
+        document.getElementById('admin-price').value = '';
+        document.getElementById('admin-category').value = 'Męskie';
+        document.getElementById('admin-description').value = '';
+        document.getElementById('admin-form-title').textContent = 'Dodaj Nowy Produkt';
+        
+        const imageInput = document.getElementById('admin-images');
+        if (imageInput) imageInput.value = ''; // Wyczyść input file
+        adminImageData = []; // Wyczyść dane obrazów
+        renderAdminImagePreviews();
+        
+        const specsList = document.getElementById('admin-specs-list');
+        if(specsList) specsList.innerHTML = '';
+        addSpecField();
+    }
+
+    function populateAdminForm(productId) {
+        const product = getProductsFromStorage().find(p => p.id === productId);
+        if (!product) return;
+
+        document.getElementById('admin-product-id').value = product.id;
+        document.getElementById('admin-brand').value = product.brand;
+        document.getElementById('admin-name').value = product.name;
+        document.getElementById('admin-price').value = product.price;
+        document.getElementById('admin-category').value = product.category;
+        document.getElementById('admin-description').value = product.description;
+        document.getElementById('admin-form-title').textContent = `Edytuj Produkt: ${product.name}`;
+        
+        setSpecsToForm(product.specs);
+
+        adminImageData = product.images.slice();
+        renderAdminImagePreviews();
+    }
+
+
+    // === INICJALIZACJA ===
+    document.addEventListener('DOMContentLoaded', async () => {
+        initializeProductStorage();
+        initializeOrderStorage();
+        
+        // Synchronizuj status użytkownika (Supabase Auth -> LocalStorage)
+        await syncUserSession(); 
+        
+        const fullFooterContent = `
+            <div class="container footer-content">
+                <div class="footer-links">
+                    <h4>Informacje</h4>
+                    <a onclick="showPage('polityka-page');">Polityka Prywatności</a>
+                    <a onclick="showPage('regulamin-page');">Regulamin Sprzedaży</a>
+                    <a onclick="showPage('zwroty-page');">Zwroty i Reklamacje</a>
+                </div>
+                <div class="footer-links">
+                    <h4>PREMIUM FLAKON</h4>
+                    <a onclick="showPage('kolekcja-page');">Katalog Zapachów</a>
+                    <a onclick="showPage('onas-page');">O Naszej Misji</a>
+                    <a onclick="showPage('pomoc-page');">Wsparcie i FAQ</a>
+                    <a onclick="showPage('konto-page');">Moje Konto Klienta</a>
+                </div>
+                <div class="footer-contact">
+                    <h4>&iquest; Masz Pytanie?</h4>
+                    <strong class="gold-text">TELEFON:</strong> <a href="tel:532116720">532 116 720</a>
+                    <strong class="gold-text">E-MAIL:</strong> <a href="mailto:kontakt@premiumflakon.pl">kontakt@premiumflakon.pl</a>
+                </div>
+                <div class="copyright">
+                    <p>&copy; 2025 PREMIUM FLAKON. Wszelkie prawa zastrzeżone.</p>
+                </div>
+            </div>
+        `;
+        document.querySelectorAll('footer').forEach(footer => {
+            footer.innerHTML = fullFooterContent;
+        });
+        
+        fetchProductsFromSupabase(); // Inicjalne pobranie produktów i render
+
+        document.addEventListener('pageShow', (e) => {
+            if (e.detail.pageId === 'pomoc-page') {
+                // Logic for Chabot start
+                const history = document.getElementById('chat-history');
+                if (history && history.children.length === 1) { // Tylko początkowa wiadomość
+                    // Ukrywamy opcje, żeby chatbot działał dynamicznie (było już w CSS)
+                    // document.getElementById('chat-options').style.display = 'none'; 
+                }
+                startPlaceholderCarousel();
+
+                const userInputEl = document.getElementById('user-input');
+                if (userInputEl) {
+                    userInputEl.disabled = false;
+                    userInputEl.addEventListener('keydown', function(event) {
+                        if (event.key === 'Enter') {
+                            event.preventDefault();
+                            sendChatMessage();
+                        }
+                    });
+                }
+            }
+            if (e.detail.pageId === 'product-page') {
+                if (currentDetailProductId) renderProductDetail(currentDetailProductId);
+            }
+        });
+
+        showPage('landing-page');
+
+        document.querySelectorAll('#filter-sidebar input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', applyFilters);
+        });
+        const sortByElement = document.getElementById('sort-by');
+        if(sortByElement) sortByElement.addEventListener('change', applyFilters);
+
+        updateCartCounters();
+    });
+    
+</script>
 </body>
 </html>
