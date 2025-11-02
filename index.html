@@ -3207,21 +3207,33 @@
             applyFilters();
 
             document.addEventListener('pageShow', (e) => {
-             if (e.detail.pageId === 'pomoc-page') {
-    // NOWA INICJALIZACJA CHATA
-    chatState = 'IDLE'; // Resetuj stan przy każdym otwarciu
-    document.getElementById('chat-history').innerHTML = '<div class="bot-message">Witaj! Jestem Bot Wsparcia. Jak mogę Ci pomóc?</div>'; // Wiadomość powitalna
-    displayDefaultOptions(); // Pokaż przyciski
-    toggleChatInput(true); // Odblokuj input
 
-    const userInputEl = document.getElementById('user-input');
-    if (userInputEl && !userInputEl.dataset.listenerAttached) { // Zapobiegaj wielokrotnemu dodaniu listenera
-        userInputEl.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                sendChatMessage();
-            }
-        });
+                // --- Kod dla Chatbota na stronie Pomocy ---
+                if (e.detail.pageId === 'pomoc-page') {
+                    // NOWA INICJALIZACJA CHATA
+                    chatState = 'IDLE'; // Resetuj stan przy każdym otwarciu
+                    document.getElementById('chat-history').innerHTML = '<div class="bot-message">Witaj! Jestem Bot Wsparcia. Jak mogę Ci pomóc?</div>'; // Wiadomość powitalna
+                    displayDefaultOptions(); // Pokaż przyciski
+                    toggleChatInput(true); // Odblokuj input
+                    
+                    const userInputEl = document.getElementById('user-input');
+                    if (userInputEl && !userInputEl.dataset.listenerAttached) { // Zapobiegaj wielokrotnemu dodaniu listenera
+                        userInputEl.addEventListener('keydown', function(event) {
+                            if (event.key === 'Enter') {
+                                event.preventDefault();
+                                sendChatMessage();
+                            }
+                        });
+                        userInputEl.dataset.listenerAttached = 'true';
+                    }
+                }
+                
+                // --- Kod dla Strony Produktu (żeby linki działały) ---
+                if (e.detail.pageId === 'product-page') {
+                    // ensure details render if navigated directly
+                    if (currentDetailProductId) renderProductDetail(currentDetailProductId);
+                }
+            });
         userInputEl.dataset.listenerAttached = 'true';
     }
 }
