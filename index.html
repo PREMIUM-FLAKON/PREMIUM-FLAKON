@@ -815,8 +815,8 @@
             header nav { display: none; }
             .footer-content { flex-wrap: wrap; justify-content: space-around; }
             .footer-links, .footer-contact { flex-basis: 45%; margin-bottom: 30px; }
-            /* ZMIANA: Ta reguła ustawia mniejsze produkty na tabletach, ale wciąż w siatce */
-            #product-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+            /* POPRAWKA: Sztywno ustawia 2 kolumny na tabletach i telefonach */
+            #product-grid { grid-template-columns: repeat(2, 1fr); }
             .dashboard-content { flex-direction: column; }
             .dashboard-nav { flex: 1 1 100%; }
             .admin-layout { flex-direction: column; } 
