@@ -2875,8 +2875,8 @@
             footer.innerHTML = fullFooterContent;
         });
         
-        // KLUCZOWE WYWOŁANIE: Ładuje produkty z Supabase, a następnie wywołuje applyFilters()
-        fetchProductsFromSupabase(); 
+      // KLUCZOWA POPRAWKA: Najpierw ładujemy produkty z Supabase, a applyFilters() jest wywoływane WEWNĄTRZ tej funkcji.
+        await fetchProductsFromSupabase();
 
         document.addEventListener('pageShow', (e) => {
             if (e.detail.pageId === 'pomoc-page') {
