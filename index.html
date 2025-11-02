@@ -2446,22 +2446,25 @@
         }
 
         /** Usuwa produkt z bazy */
-        function deleteProduct(productId) {
-            if (!confirm('Czy na pewno chcesz trwale usunąć ten produkt? Tej akcji nie można cofnąć.')) {
-                return;
-            }
+        /** Usuwa produkt z bazy */
+function deleteProduct(productId) {
+    if (!confirm('Czy na pewno chcesz trwale usunąć ten produkt? Tej akcji nie można cofnąć.')) {
+        return;
+    }
 
-            let products = getProductsFromStorage();
-            const filteredProducts = products.filter(p => p.id !== productId);
-            saveProductsToStorage(filteredProducts);
-            
-            // NOWOŚĆ: Usuń również z Supabase
-            deleteProductFromSupabase(productId); 
-            
-            alert('Produkt usunięty.');
-            renderAdminProductList(); 
-            applyFilters(); // NOWOŚĆ: Odśwież też widok sklepu
-        }
+    let products = getProductsFromStorage();
+    const filteredProducts = products.filter(p => p.id !== productId);
+    
+    // Zapisz zmienioną listę do LocalStorage
+    localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(filteredProducts));
+    
+    // NOWOŚĆ: Usuń również z Supabase
+    deleteProductFromSupabase(productId); 
+    
+    alert('Produkt usunięty.');
+    renderAdminProductList(); 
+    applyFilters(); // Odśwież widok sklepu
+}
 
 
         // --- FUNKCJE NAWIGACJI ---
