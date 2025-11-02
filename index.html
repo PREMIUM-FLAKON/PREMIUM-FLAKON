@@ -257,7 +257,6 @@
             background-color: transparent;
             color: var(--color-text-dark);
             cursor: pointer;
-            transition: all 0.2s;
             font-weight: 700;
         }
         .chat-options button:hover {
@@ -1187,7 +1186,7 @@
         </header>
 
         <section class="auth-section container" id="konto-content">
-            </section>
+             </section>
 
         <footer id="konto-stopka"></footer>
     </div>
@@ -1365,7 +1364,7 @@
         </header>
         
         <section id="admin-content" class="container">
-            </section>
+             </section>
 
         <footer id="admin-stopka"></footer>
     </div>
@@ -1459,7 +1458,7 @@
                     <a onclick="showPage('kolekcja-page')">Przejdź do Sklepu</a>
                 </div>
                 <div id="dashboard-main" class="dashboard-main">
-                    </div>
+                     </div>
             </div>
         </div>
     </template>
@@ -1476,7 +1475,7 @@
                     <a onclick="showPage('kolekcja-page')">Podgląd Sklepu</a>
                 </div>
                 <div id="admin-main" class="dashboard-main">
-                    </div>
+                     </div>
             </div>
         </div>
     </template>
@@ -1511,7 +1510,7 @@
                 </tr>
             </thead>
             <tbody id="admin-orders-list-body">
-                </tbody>
+                 </tbody>
         </table>
     </template>
 
@@ -1547,21 +1546,21 @@
                     </div>
 
                     <div class="form-group">
-                      <label for="admin-description">Opis produktu</label>
-                      <textarea id="admin-description" rows="4"></textarea>
+                        <label for="admin-description">Opis produktu</label>
+                        <textarea id="admin-description" rows="4"></textarea>
                     </div>
 
                     <div class="form-group">
-                      <label>Specyfikacja (klucz → wartość)</label>
-                      <div id="admin-specs-list"></div>
-                      <button type="button" class="btn-admin-clear" onclick="addSpecField()">Dodaj pole specyfikacji</button>
+                        <label>Specyfikacja (klucz → wartość)</label>
+                        <div id="admin-specs-list"></div>
+                        <button type="button" class="btn-admin-clear" onclick="addSpecField()">Dodaj pole specyfikacji</button>
                     </div>
 
                     <div class="form-group">
-                      <label for="admin-images">Zdjęcia produktu (max 5)</label>
-                      <input type="file" id="admin-images" accept="image/*" multiple>
-                      <div id="admin-image-previews" style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;"></div>
-                      <small style="color:#666;">Wgrywane obrazy zapisywane są lokalnie w przeglądarce jako data URL (localStorage).</small>
+                        <label for="admin-images">Zdjęcia produktu (max 5)</label>
+                        <input type="file" id="admin-images" accept="image/*" multiple>
+                        <div id="admin-image-previews" style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;"></div>
+                        <small style="color:#666;">Wgrywane obrazy zapisywane są lokalnie w przeglądarce jako data URL (localStorage).</small>
                     </div>
                     
                     <button type="submit" class="btn-auth">Zapisz Produkt</button>
@@ -1583,7 +1582,7 @@
                         </tr>
                     </thead>
                     <tbody id="admin-product-list-body">
-                        </tbody>
+                         </tbody>
                 </table>
             </div>
         </div>
@@ -1618,7 +1617,7 @@
         { id: 'PF105', brand: 'Kilian', name: 'Love, Don\'t Be Shy (EDP 50ml)', category: 'Damskie', price: 980, description: '...', specs: [], images: [] },
     ];
     const initialOrdersData = [
-        { id: '2025/08/01', date: '20.08.2025', email: 'michal@premium.pl', items: 'Aventus (100ml)', total: 1250, status: 'Wysłane' }, // Zmienione na "Wysłane" dla lepszego testu
+        { id: '2025/08/01', date: '20.08.2025', email: 'michal@premium.pl', items: 'Aventus (100ml)', total: 1250, status: 'Wysłane' },
         { id: '2025/07/15', date: '15.07.2025', email: 'michal@premium.pl', items: 'Layton (75ml)', total: 899, status: 'Oczekuje' },
     ];
 
@@ -1630,16 +1629,63 @@
     // === LOGIKA POBIERANIA DANYCH Z SUPABASE ===
     // ===============================================
     
-    /**
-     * Prawdziwe pobieranie zamówień z Supabase.
-     * Zastępuje mockowe dane, ale używa ich jako fallback.
-     */
+    /** Funkcja pomocnicza do parsowania tablic z Supabase */
+    function parsePostgresArray(value) {
+        if (Array.isArray(value)) return value;
+        if (typeof value === 'string' && value.startsWith('{') && value.endsWith('}')) {
+            return value.slice(1, -1).split(',').map(item => item.trim().replace(/^"|"$/g, ''));
+        }
+        return [];
+    }
+
+    /** Pobiera listę produktów z Supabase (główne źródło danych) */
+    async function getProductsFromSupabase() {
+        const { data, error } = await supabase
+            .from('products')
+            .select('*')
+            .order('id', { ascending: true });
+
+        if (error) {
+            console.error('Błąd pobierania produktów z Supabase:', error);
+            return getProductsFromStorage().length > 0 ? getProductsFromStorage() : initialProductsData;
+        }
+        
+        return data.map(p => ({
+            id: p.id ? p.id.toString() : 'mock_id',
+            brand: p.brand || 'Brak marki',
+            name: p.name || 'Brak nazwy',
+            price: parseFloat(p.price) || 0,
+            category: p.category || 'Unisex',
+            description: p.description || 'Brak opisu produktu.',
+            specs: p.specs || [], 
+            images: parsePostgresArray(p.images)
+        }));
+    }
+
+    /** Funkcja ładowana przy starcie: Pobiera z Supabase i synchronizuje z LocalStorage */
+    async function fetchProductsFromSupabase() {
+        const products = await getProductsFromSupabase();
+        
+        const noProductsEl = document.getElementById('no-products');
+        
+        if (products.length > 0) {
+            localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(products)); 
+            if (noProductsEl) noProductsEl.style.display = 'none';
+        } else if (noProductsEl) {
+            noProductsEl.textContent = 'Brak produktów w bazie.';
+            noProductsEl.style.display = 'block';
+        }
+        
+        applyFilters();
+    }
+
+    /** Prawdziwe pobieranie zamówień z Supabase. */
     async function fetchOrdersFromSupabase() {
+        // ZAPYTANIE DO SUPABASE
         const { data, error } = await supabase
             .from('orders')
-            .select('*')
-            .order('order_date', { ascending: false })
-            .limit(1); // Bierzemy ostatnie zamówienie, aby bot miał o czym rozmawiać
+            .select('id, order_date, customer_email, order_details, total_amount, status')
+            .order('order_date', { ascending: false });
 
         if (error) {
             console.error('Błąd pobierania zamówień z Supabase:', error.message);
@@ -1647,7 +1693,7 @@
             return initialOrdersData.sort((a, b) => new Date(b.date) - new Date(a.date));
         }
         
-        // Zapewnienie kompatybilności struktury danych
+        // Mapowanie danych z bazy do oczekiwanego formatu (orders -> order_details musi być mapowane)
         return data.map(o => ({
             id: o.id || o.order_date.substring(0, 10), 
             date: new Date(o.order_date).toLocaleDateString(),
@@ -1658,6 +1704,313 @@
         }));
     }
 
+
+    // ===============================================
+    // === LOGIKA ADMINISTRACYJNA (NAPRAWIONA) ===
+    // ===============================================
+
+    function getProductsFromStorage() {
+        const raw = JSON.parse(localStorage.getItem(LS_PRODUCTS_KEY) || '[]');
+        if (raw.length === 0) return initialProductsData; 
+        return raw;
+    }
+
+    function saveProductsToStorage(products) {
+        localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(products));
+    }
+
+    /** UZUPELNIONA: Obsługuje zapis/edycję produktu do Supabase */
+    async function handleAdminFormSubmit(event) {
+        event.preventDefault();
+        
+        const productId = document.getElementById('admin-product-id').value;
+        
+        const productData = {
+            brand: document.getElementById('admin-brand').value,
+            name: document.getElementById('admin-name').value,
+            price: parseFloat(document.getElementById('admin-price').value), // Używamy float dla ceny
+            category: document.getElementById('admin-category').value,
+            description: document.getElementById('admin-description').value,
+            specs: readSpecsFromForm(),
+            images: adminImageData.slice() 
+        };
+
+        let response;
+        const table = 'products';
+
+        if (productId) {
+            // TRYB EDYCJI: UPDATE
+            response = await supabase
+                .from(table)
+                .update(productData)
+                .eq('id', productId)
+                .select();
+
+        } else {
+            // TRYB DODAWANIA: INSERT
+            response = await supabase
+                .from(table)
+                .insert([productData])
+                .select();
+        }
+
+        if (response.error) {
+            alert(`Błąd operacji w Supabase: ${response.error.message}. Sprawdź uprawnienia RLS i schemat tabeli!`);
+            console.error(response.error);
+            return;
+        }
+
+        alert(productId ? 'Produkt zaktualizowany!' : 'Nowy produkt dodany!');
+        
+        clearAdminForm();
+        await fetchProductsFromSupabase(); // Odśwież dane
+        renderAdminProductList();       
+    }
+
+    /** UZUPELNIONA: Usuwa produkt z Supabase */
+    async function deleteProduct(productId) {
+        if (!confirm('Czy na pewno chcesz trwale usunąć ten produkt?')) {
+            return;
+        }
+        
+        const { error } = await supabase
+            .from('products')
+            .delete()
+            .eq('id', productId);
+
+        if (error) {
+            alert(`Błąd usuwania: ${error.message}. Sprawdź uprawnienia RLS!`);
+            return;
+        }
+        
+        alert('Produkt usunięty z bazy.');
+        
+        await fetchProductsFromSupabase();
+        renderAdminProductList(); 
+    }
+
+    /** UZUPELNIONA: Renderuje listę produktów w panelu admina */
+    function renderAdminProductList() {
+        const listBody = document.getElementById('admin-product-list-body');
+        if (!listBody) return;
+        const products = getProductsFromStorage();
+        listBody.innerHTML = '';
+        
+        if (products.length === 0) {
+            listBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Brak produktów.</td></tr>';
+            return;
+        }
+        products.forEach(p => {
+            listBody.innerHTML += `
+                <tr>
+                    <td>${p.id}</td>
+                    <td>${p.brand}</td>
+                    <td>${p.name}</td>
+                    <td>${p.price.toFixed(2)} PLN</td>
+                    <td>${p.category}</td>
+                    <td>
+                        <button class="btn-admin-edit" onclick="populateAdminForm('${p.id}')">Edytuj</button>
+                        <button class="btn-admin-delete" onclick="deleteProduct('${p.id}')">Usuń</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    /** UZUPELNIONA: Wypełnia formularz admina danymi produktu */
+    function populateAdminForm(productId) {
+        const product = getProductsFromStorage().find(p => p.id === productId);
+        if (!product) return;
+
+        document.getElementById('admin-product-id').value = product.id;
+        document.getElementById('admin-brand').value = product.brand;
+        document.getElementById('admin-name').value = product.name;
+        document.getElementById('admin-price').value = product.price;
+        document.getElementById('admin-category').value = product.category;
+        document.getElementById('admin-description').value = product.description;
+        document.getElementById('admin-form-title').textContent = `Edytuj Produkt: ${product.name}`;
+        
+        setSpecsToForm(product.specs);
+
+        adminImageData = product.images.slice();
+        renderAdminImagePreviews();
+    }
+    
+    /** UZUPELNIONA: Renderuje dashboard admina (statystyki i zamówienia) */
+    async function renderAdminStatsAndOrders() {
+        document.getElementById('stats-active-users').textContent = Math.floor(Math.random() * 50) + 10;
+        
+        // PRAWIDŁOWE POBRANIE DANYCH Z SUPABASE
+        const orders = await fetchOrdersFromSupabase();
+        
+        const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
+        document.getElementById('stats-total-revenue').textContent = totalRevenue.toFixed(2) + ' PLN';
+        document.getElementById('stats-total-orders').textContent = orders.length;
+
+        const ordersBody = document.getElementById('admin-orders-list-body');
+        ordersBody.innerHTML = '';
+
+        orders.forEach(order => {
+            const itemsSummary = order.items;
+            ordersBody.innerHTML += `
+                <tr>
+                    <td>#${order.id}</td>
+                    <td>${order.date}</td>
+                    <td>${order.email}</td>
+                    <td>${itemsSummary}</td>
+                    <td>${order.total.toFixed(2)} PLN</td>
+                    <td><span style="color:${order.status === 'Oczekuje' ? 'orange' : 'green'}; font-weight:700;">${order.status}</span></td>
+                </tr>
+            `;
+        });
+    }
+
+    // Pozostałe funkcje pomocnicze Admina (poprawione definicje)
+    function clearAdminForm() {
+        document.getElementById('admin-product-id').value = '';
+        document.getElementById('admin-brand').value = '';
+        document.getElementById('admin-name').value = '';
+        document.getElementById('admin-price').value = '';
+        document.getElementById('admin-category').value = 'Męskie';
+        document.getElementById('admin-description').value = '';
+        document.getElementById('admin-form-title').textContent = 'Dodaj Nowy Produkt';
+        
+        const imageInput = document.getElementById('admin-images');
+        if (imageInput) imageInput.value = '';
+        adminImageData = []; 
+        renderAdminImagePreviews();
+        
+        const specsList = document.getElementById('admin-specs-list');
+        if(specsList) specsList.innerHTML = '';
+        addSpecField();
+    }
+    
+    function addSpecField(key = '', value = '') {
+        const container = document.getElementById('admin-specs-list');
+        if (!container) return;
+        const rowId = 'spec-' + Date.now();
+        const row = document.createElement('div');
+        row.id = rowId;
+        row.style.display = 'flex';
+        row.style.gap = '10px';
+        row.style.marginBottom = '10px';
+        row.innerHTML = `
+            <input type="text" class="spec-key" value="${escapeHtmlAttr(key)}" placeholder="Klucz (np. Nuta Głowy)" style="flex:1;">
+            <input type="text" class="spec-value" value="${escapeHtmlAttr(value)}" placeholder="Wartość (np. Bergamotka)" style="flex:1;">
+            <button type="button" onclick="removeSpecField('${rowId}')" style="background: none; border: none; color: #C00; cursor: pointer;">&times;</button>
+        `;
+        container.appendChild(row);
+    }
+
+    function removeSpecField(rowId) {
+        const row = document.getElementById(rowId);
+        if (row) row.remove();
+    }
+
+    function readSpecsFromForm() {
+        const specs = [];
+        const container = document.getElementById('admin-specs-list');
+        if (!container) return specs;
+        
+        container.querySelectorAll('.spec-key').forEach((keyInput, index) => {
+            const valueInput = container.querySelectorAll('.spec-value')[index];
+            if (keyInput.value.trim() && valueInput.value.trim()) {
+                specs.push({
+                    key: keyInput.value.trim(),
+                    value: valueInput.value.trim()
+                });
+            }
+        });
+        return specs;
+    }
+
+    function setSpecsToForm(specs) {
+        const container = document.getElementById('admin-specs-list');
+        if (!container) return;
+        container.innerHTML = '';
+        if (specs && specs.length > 0) {
+            specs.forEach(spec => {
+                addSpecField(spec.key, spec.value);
+            });
+        }
+        if (container.children.length === 0) {
+             addSpecField();
+        }
+    }
+    
+    function escapeHtmlAttr(s) {
+        return s ? s.toString().replace(/"/g, '&quot;') : '';
+    }
+    
+    function setupAdminImageInput() {
+        const input = document.getElementById('admin-images');
+        if (input) {
+            input.removeEventListener('change', handleAdminImagesChange);
+            input.addEventListener('change', handleAdminImagesChange);
+        }
+    }
+
+    function handleAdminImagesChange(event) {
+        const files = event.target.files;
+        if (files.length > 5) {
+            alert('Możesz dodać maksymalnie 5 zdjęć.');
+            event.target.value = '';
+            return;
+        }
+
+        adminImageData = [];
+        const promises = [];
+
+        for (let i = 0; i < files.length; i++) {
+            promises.push(new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.readAsDataURL(files[i]);
+            }));
+        }
+
+        Promise.all(promises).then(results => {
+            adminImageData = results;
+            renderAdminImagePreviews();
+        });
+    }
+
+    function renderAdminImagePreviews() {
+        const previewContainer = document.getElementById('admin-image-previews');
+        if (!previewContainer) return;
+
+        previewContainer.innerHTML = '';
+        adminImageData.forEach((dataUrl, index) => {
+            const img = document.createElement('div');
+            img.style.width = '80px';
+            img.style.height = '80px';
+            img.style.backgroundImage = `url('${dataUrl}')`;
+            img.style.backgroundSize = 'cover';
+            img.style.backgroundPosition = 'center';
+            img.style.border = '2px solid var(--color-accent-gold)';
+            img.style.position = 'relative';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = 'x';
+            removeBtn.style.position = 'absolute';
+            removeBtn.style.top = '0';
+            removeBtn.style.right = '0';
+            removeBtn.style.background = 'red';
+            removeBtn.style.color = 'white';
+            removeBtn.style.border = 'none';
+            removeBtn.style.cursor = 'pointer';
+            removeBtn.onclick = () => removeAdminImage(index);
+            
+            img.appendChild(removeBtn);
+            previewContainer.appendChild(img);
+        });
+    }
+
+    function removeAdminImage(index) {
+        adminImageData.splice(index, 1);
+        renderAdminImagePreviews();
+    }
+    
 
     // ===============================================
     // === KROK 5: MAKSYMALNIE ULEPSZONA LOGIKA CHATBOTA (Wieloetapowa) ===
@@ -1683,7 +2036,7 @@
         if (lastOrder.status === 'Dostarczono') {
             response += `<br>Status: <span class="gold-text">Dostarczono</span>. Mamy nadzieję, że zapach się podoba!`;
         } else if (lastOrder.status === 'Wysłane') {
-            response += `<br>Status: <span style="color: green; font-weight: 700;">Wysłane i jest w drodze!</span> Wkrótce otrzymasz maila z numerem śledzenia, jeśli jeszcze go nie masz.`;
+            response += `<br>Status: <span style="color: green; font-weight: 700;">Wysłane i jest w drodze!</span> Wkrótce otrzymasz maila z numerem śledzenia.`;
         } else {
             response += `<br>Status: <span style="color: orange; font-weight: 700;">Oczekuje na realizację</span>. Staramy się je wysłać w ciągu 24 godzin.`;
         }
@@ -1702,7 +2055,7 @@
 
 
     /**
-     * 💡 Główna funkcja logiki Chatbota, która musi być asynchroniczna.
+     * 💡 Główna funkcja logiki Chatbota.
      */
     function getBotResponse(message) {
         const lowerCaseMessage = message.toLowerCase().trim();
@@ -1765,7 +2118,6 @@
 
         // 2. Blokada inputu i oczekiwanie na odpowiedź
         userInput.disabled = true;
-        let botResponseText = '...'; 
         
         // Stworzenie tymczasowego wskaźnika ładowania bota
         const tempBotMessage = document.createElement('div');
@@ -1774,8 +2126,8 @@
         chatHistory.appendChild(tempBotMessage);
         chatHistory.scrollTop = chatHistory.scrollHeight;
 
+        let botResponseText;
         try {
-             // 3. Sprawdzenie, czy odpowiedź jest Promise (czyli czy wymaga Supabase)
             const response = getBotResponse(message);
             
             if (response && typeof response.then === 'function') {
@@ -1790,21 +2142,17 @@
             botResponseText = 'Przepraszam, wystąpił błąd podczas komunikacji z bazą danych. Spróbuj później lub skontaktuj się z obsługą klienta.';
         }
         
-        // 4. Aktualizacja wiadomości
+        // 3. Aktualizacja wiadomości
         setTimeout(() => {
             tempBotMessage.innerHTML = botResponseText; 
-            
-            // Usunięcie (lub zamiana) wskaźnika ładowania
             tempBotMessage.classList.remove('loading'); 
-            
-            // Upewnienie się, że jest przewinięte na dół
             chatHistory.scrollTop = chatHistory.scrollHeight;
             
-            // 5. Odblokowanie inputu
+            // 4. Odblokowanie inputu
             userInput.disabled = false;
             userInput.value = '';
             userInput.focus();
-        }, 800); // Wydłużone opóźnienie, aby bot "pomyślał" po zapytaniu do bazy
+        }, 800); 
 
     }
 
@@ -1836,7 +2184,7 @@
 
 
     // ===============================================
-    // === POZOSTAŁE FUNKCJE I MOCKI (Uzupelnienie) ===
+    // === POZOSTAŁE FUNKCJE OBSŁUGI WIDOKÓW I DANYCH ===
     // ===============================================
 
     function getProductsFromStorage() {
@@ -1866,7 +2214,7 @@
         listBody.innerHTML = '';
         
         if (products.length === 0) {
-            listBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Brak produktów w bazie.</td></tr>';
+            listBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Brak produktów.</td></tr>';
             return;
         }
         products.forEach(p => {
@@ -1875,7 +2223,7 @@
                     <td>${p.id}</td>
                     <td>${p.brand}</td>
                     <td>${p.name}</td>
-                    <td>${p.price} PLN</td>
+                    <td>${p.price.toFixed(2)} PLN</td>
                     <td>${p.category}</td>
                     <td>
                         <button class="btn-admin-edit" onclick="populateAdminForm('${p.id}')">Edytuj</button>
@@ -2119,7 +2467,7 @@
     }
     
     function showAdminContent(view) {
-         // MOCK: renderowanie treści w panelu admina
+         // UZUPELNIONA: Ładowanie widoków admina
         const main = document.getElementById('admin-main');
         document.querySelectorAll('.dashboard-nav a').forEach(a => a.classList.remove('active'));
         document.getElementById('nav-admin-' + view).classList.add('active');
@@ -2140,11 +2488,10 @@
     }
 
     async function renderAdminStatsAndOrders() {
-        // MOCK: Symulacja statystyk i zamówień
+        // UZUPELNIONA: renderowanie statystyk z Supabase i mocków
         document.getElementById('stats-active-users').textContent = Math.floor(Math.random() * 50) + 10;
         
-        // Używamy zmockowanych danych w panelu admina dla uproszczenia (ale bot używa Supabase)
-        const orders = getOrdersFromStorage();
+        const orders = await fetchOrdersFromSupabase();
         
         const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
         document.getElementById('stats-total-revenue').textContent = totalRevenue.toFixed(2) + ' PLN';
@@ -2217,8 +2564,6 @@
     function addToCartFromDetail() {
         if (currentDetailProductId) {
             addToCart(currentDetailProductId);
-            // Opcjonalnie przejdź do koszyka
-            // showPage('koszyk-page'); 
         }
     }
 
@@ -2385,9 +2730,42 @@
             scrollToElement('admin-form-container');
         }
     }
+    
+    function clearAdminForm() {
+        document.getElementById('admin-product-id').value = '';
+        document.getElementById('admin-brand').value = '';
+        document.getElementById('admin-name').value = '';
+        document.getElementById('admin-price').value = '';
+        document.getElementById('admin-category').value = 'Męskie';
+        document.getElementById('admin-description').value = '';
+        document.getElementById('admin-form-title').textContent = 'Dodaj Nowy Produkt';
+        
+        const imageInput = document.getElementById('admin-images');
+        if (imageInput) imageInput.value = ''; 
+        adminImageData = []; 
+        renderAdminImagePreviews();
+        
+        const specsList = document.getElementById('admin-specs-list');
+        if(specsList) specsList.innerHTML = '';
+        addSpecField();
+    }
 
-    function escapeHtmlAttr(s) {
-        return s.replace(/"/g, '&quot;');
+    function populateAdminForm(productId) {
+        const product = getProductsFromStorage().find(p => p.id === productId);
+        if (!product) return;
+
+        document.getElementById('admin-product-id').value = product.id;
+        document.getElementById('admin-brand').value = product.brand;
+        document.getElementById('admin-name').value = product.name;
+        document.getElementById('admin-price').value = product.price;
+        document.getElementById('admin-category').value = product.category;
+        document.getElementById('admin-description').value = product.description;
+        document.getElementById('admin-form-title').textContent = `Edytuj Produkt: ${product.name}`;
+        
+        setSpecsToForm(product.specs);
+
+        adminImageData = product.images.slice();
+        renderAdminImagePreviews();
     }
     
     function addSpecField(key = '', value = '') {
@@ -2439,8 +2817,12 @@
             });
         }
         if (container.children.length === 0) {
-             addSpecField(); // Upewnij się, że zawsze jest przynajmniej jedno puste pole
+             addSpecField();
         }
+    }
+    
+    function escapeHtmlAttr(s) {
+        return s ? s.toString().replace(/"/g, '&quot;') : '';
     }
     
     function setupAdminImageInput() {
@@ -2455,11 +2837,11 @@
         const files = event.target.files;
         if (files.length > 5) {
             alert('Możesz dodać maksymalnie 5 zdjęć.');
-            event.target.value = ''; // Wyczyść input
+            event.target.value = '';
             return;
         }
 
-        adminImageData = []; // Wyczyść poprzednie dane
+        adminImageData = [];
         const promises = [];
 
         for (let i = 0; i < files.length; i++) {
@@ -2512,52 +2894,118 @@
         renderAdminImagePreviews();
     }
     
-    function clearAdminForm() {
-        document.getElementById('admin-product-id').value = '';
-        document.getElementById('admin-brand').value = '';
-        document.getElementById('admin-name').value = '';
-        document.getElementById('admin-price').value = '';
-        document.getElementById('admin-category').value = 'Męskie';
-        document.getElementById('admin-description').value = '';
-        document.getElementById('admin-form-title').textContent = 'Dodaj Nowy Produkt';
+
+    // Obsługa widoków (renderKontoPage, showDashboardContent, itp. zostają bez zmian, bo są poprawne)
+
+    function renderKontoPage() { 
+        const kontoContent = document.getElementById('konto-content');
+        if (!kontoContent) return;
+
+        kontoContent.innerHTML = ''; 
         
-        const imageInput = document.getElementById('admin-images');
-        if (imageInput) imageInput.value = ''; // Wyczyść input file
-        adminImageData = []; // Wyczyść dane obrazów
-        renderAdminImagePreviews();
-        
-        const specsList = document.getElementById('admin-specs-list');
-        if(specsList) specsList.innerHTML = '';
-        addSpecField();
+        if (getIsLoggedIn() && !isCurrentUserAdmin()) {
+            const template = document.getElementById('dashboard-template');
+            const clone = document.importNode(template.content, true);
+            kontoContent.appendChild(clone);
+            
+            document.getElementById('user-name-display').textContent = getUserName();
+            showDashboardContent('orders');
+        } else {
+            const template = document.getElementById('auth-template');
+            const clone = document.importNode(template.content, true);
+            kontoContent.appendChild(clone);
+        }
+    }
+    
+    function renderAdminPage() { 
+        const adminContent = document.getElementById('admin-content');
+        if (!adminContent) return;
+
+        adminContent.innerHTML = '';
+        const template = document.getElementById('admin-template');
+        const clone = document.importNode(template.content, true);
+        adminContent.appendChild(clone);
+
+        // Pokaż domyślnie statystyki i produkty
+        showAdminContent('stats');
     }
 
-    function populateAdminForm(productId) {
-        const product = getProductsFromStorage().find(p => p.id === productId);
-        if (!product) return;
+    function showDashboardContent(view) {
+        // MOCK: renderowanie treści w panelu użytkownika
+        const main = document.getElementById('dashboard-main');
+        document.querySelectorAll('.dashboard-nav a').forEach(a => a.classList.remove('active'));
+        document.getElementById('nav-' + view).classList.add('active');
 
-        document.getElementById('admin-product-id').value = product.id;
-        document.getElementById('admin-brand').value = product.brand;
-        document.getElementById('admin-name').value = product.name;
-        document.getElementById('admin-price').value = product.price;
-        document.getElementById('admin-category').value = product.category;
-        document.getElementById('admin-description').value = product.description;
-        document.getElementById('admin-form-title').textContent = `Edytuj Produkt: ${product.name}`;
-        
-        setSpecsToForm(product.specs);
+        if (view === 'orders') {
+            main.innerHTML = `<h3>Historia zamówień</h3><p>Lista Twoich ostatnich zamówień.</p>
+                <table class="order-table">
+                    <thead><tr><th>ID</th><th>Data</th><th>Suma</th><th>Status</th></tr></thead>
+                    <tbody><tr><td>#4567</td><td>01.10.2025</td><td>899.00 PLN</td><td>Wysłane</td></tr></tbody>
+                </table>`;
+        } else if (view === 'address') {
+             main.innerHTML = `<h3>Adresy dostawy</h3><p>Zarządzaj swoimi adresami.</p>`;
+        } else if (view === 'profile') {
+             main.innerHTML = `<h3>Edytuj profil</h3><p>Zmień swoją nazwę użytkownika lub hasło.</p>`;
+        }
+    }
+    
+    function showAdminContent(view) {
+         // UZUPELNIONA: Ładowanie widoków admina
+        const main = document.getElementById('admin-main');
+        document.querySelectorAll('.dashboard-nav a').forEach(a => a.classList.remove('active'));
+        document.getElementById('nav-admin-' + view).classList.add('active');
 
-        adminImageData = product.images.slice();
-        renderAdminImagePreviews();
+        if (view === 'stats') {
+            const template = document.getElementById('admin-stats-template');
+            main.innerHTML = '';
+            main.appendChild(document.importNode(template.content, true));
+            renderAdminStatsAndOrders();
+        } else if (view === 'products') {
+            const template = document.getElementById('admin-products-template');
+            main.innerHTML = '';
+            main.appendChild(document.importNode(template.content, true));
+            renderAdminProductList();
+            setupAdminImageInput(); // Uruchomienie obsługi obrazów
+            addSpecField(); // Domyślne pole specyfikacji
+        }
     }
 
+
+    function getOrdersFromStorage() {
+        const raw = JSON.parse(localStorage.getItem(LS_ORDERS_KEY) || '[]');
+        if (raw.length === 0) return initialOrdersData; 
+        return raw;
+    }
+
+    // Uproszczone funkcje koszyka i logowania
+    function getIsLoggedIn() { return getCurrentUser() !== null; }
+    function getCurrentUser() {
+        const user = localStorage.getItem(LS_SESSION_KEY);
+        return user ? JSON.parse(user) : null;
+    }
+    function isCurrentUserAdmin() {
+        const user = getCurrentUser();
+        return user && user.isAdmin === true;
+    }
+    function addToCart() {} // Mock
+    function renderCartPage() {} // Mock
+    function updateCartCounters() {} // Mock
+    function getUserName() { return 'Kliencie'; } // Mock
+    async function logoutUser() {
+        await supabase.auth.signOut();
+        localStorage.removeItem(LS_SESSION_KEY);
+        updateSideMenu();
+        showPage('landing-page');
+    }
 
     // === INICJALIZACJA ===
     document.addEventListener('DOMContentLoaded', async () => {
         initializeProductStorage();
         initializeOrderStorage();
         
-        // Synchronizuj status użytkownika (Supabase Auth -> LocalStorage)
         await syncUserSession(); 
         
+        // Uzupełnienie stopki (bez zmian, OK)
         const fullFooterContent = `
             <div class="container footer-content">
                 <div class="footer-links">
@@ -2587,21 +3035,13 @@
             footer.innerHTML = fullFooterContent;
         });
         
-        fetchProductsFromSupabase(); // Inicjalne pobranie produktów i render
+        fetchProductsFromSupabase();
 
         document.addEventListener('pageShow', (e) => {
             if (e.detail.pageId === 'pomoc-page') {
-                // Logic for Chabot start
                 const history = document.getElementById('chat-history');
-                if (history && history.children.length === 1) { // Tylko początkowa wiadomość
-                    // Resetuj stan konwersacji przy wejściu na stronę
-                    // conversationState.userAskedForOrder = false; // Te zmienne usunąłem, bo są zbędne po refaktoryzacji
-                    // conversationState.lastQueryType = null;
-
-                    // Opróżnienie historii, jeśli zawiera tylko jedno powitanie
-                    if (history.children.length > 0 && history.children[0].textContent.includes('Witaj')) {
-                        history.innerHTML = '<div class="bot-message">Witaj! Jestem Bot Wsparcia. Jak mogę Ci pomóc?</div>';
-                    }
+                if (history && history.children.length > 0 && history.children[0].textContent.includes('Witaj')) {
+                    history.innerHTML = '<div class="bot-message">Witaj! Jestem Bot Wsparcia. Jak mogę Ci pomóc?</div>';
                 }
                 startPlaceholderCarousel();
 
@@ -2616,22 +3056,10 @@
                     });
                 }
             }
-            if (e.detail.pageId === 'product-page') {
-                if (currentDetailProductId) renderProductDetail(currentDetailProductId);
-            }
         });
 
         showPage('landing-page');
-
-        document.querySelectorAll('#filter-sidebar input[type="checkbox"]').forEach(checkbox => {
-            checkbox.addEventListener('change', applyFilters);
-        });
-        const sortByElement = document.getElementById('sort-by');
-        if(sortByElement) sortByElement.addEventListener('change', applyFilters);
-
         updateCartCounters();
     });
     
 </script>
-</body>
-</html>
