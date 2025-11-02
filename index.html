@@ -1808,8 +1808,8 @@
             showPage('konto-page');
         }
 
-       /** Loguje użytkownika (klienta lub admina) */
-        async function loginUser() { // ZMIEŃ: Dodaj 'async'
+    /** Loguje użytkownika (klienta lub admina) */
+        async function loginUser() { // UWAGA: FUNKCJA MUSI BYĆ ASYNC
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 
@@ -1821,7 +1821,7 @@
                 }
                 
                 // === PRÓBA LOGOWANIA W SUPABASE (DLA RLS) ===
-                const { error } = await supabase.auth.signInWithPassword({
+                const { error } = await supabase.auth.signInWithPassword({ // CZEKAMY NA WYNIK LOGOWANIA
                     email: email,
                     password: password,
                 });
@@ -1844,7 +1844,7 @@
                 return;
             }
 
-            // === ŚCIEŻKA DLA ZWYKŁEGO UŻYTKOWNIKA (BEZ ZMIAN) ===
+            // === ŚCIEŻKA DLA ZWYKŁEGO UŻYTKOWNIKA ===
             let users = JSON.parse(localStorage.getItem(LS_USERS_KEY) || '{}');
 
             if (users[email] && users[email].password === password) {
@@ -2445,9 +2445,8 @@
             if (preview) preview.innerHTML = '';
         }
 
-        /** Usuwa produkt z bazy */
-        /** Usuwa produkt z bazy */
-function deleteProduct(productId) {
+
+        function deleteProduct(productId) {
     if (!confirm('Czy na pewno chcesz trwale usunąć ten produkt? Tej akcji nie można cofnąć.')) {
         return;
     }
@@ -2462,10 +2461,9 @@ function deleteProduct(productId) {
     deleteProductFromSupabase(productId); 
     
     alert('Produkt usunięty.');
-    renderAdminProductList(); 
+    renderAdminProductList(); 
     applyFilters(); // Odśwież widok sklepu
 }
-
 
         // --- FUNKCJE NAWIGACJI ---
         function highlightNavLink(activePageId) {
