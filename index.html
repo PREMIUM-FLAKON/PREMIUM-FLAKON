@@ -2354,48 +2354,48 @@
         userPanel.innerHTML = panelHTML;
     }
 
-    /** Renderowanie Produktów */
-    function renderProducts(products) {
-        const grid = document.getElementById('product-grid');
-        if (!grid) return; 
-        
-        grid.innerHTML = '';
-        const noProducts = document.getElementById('no-products');
-        
-        if (products.length === 0) {
-            if (noProducts) {
-                noProducts.textContent = 'Brak produktów spełniających kryteria.';
-                noProducts.style.display = 'block';
-            }
-            return;
-        }
-        if (noProducts) noProducts.style.display = 'none';
+    /** Renderowanie Produktów (NAPRAWIONA WERSJA) */
+    function renderProducts(products) {
+        const grid = document.getElementById('product-grid');
+        if (!grid) return; 
+        
+        grid.innerHTML = ''; // Wyczyść grid (usuwa też "Ładowanie...")
+        
+        if (products.length === 0) {
+            // Jeśli nie ma produktów, wstaw z powrotem informację
+            grid.innerHTML = `
+                <p id="no-products" style="text-align: center; display: block; padding: 40px; border: 1px solid #CCC; background-color: #EEE;">
+                    Brak produktów w bazie danych lub spełniających kryteria.
+                </p>`;
+            return;
+        }
 
-        products.forEach(product => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            
-            // Zapewnienie, że kolumna images jest tablicą i pobieramy pierwszy element
-            const imageUrl = Array.isArray(product.images) && product.images.length > 0 
-                                 ? product.images[0] 
-                                 : ''; 
+        // Jeśli są produkty, wygeneruj karty
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            
+            // Zapewnienie, że kolumna images jest tablicą i pobieramy pierwszy element
+            const imageUrl = Array.isArray(product.images) && product.images.length > 0 
+                                 ? product.images[0] 
+                                 : ''; 
 
-            card.innerHTML = `
-                <div style="aspect-ratio: 3 / 4; background-color: #F8F8F4; border: 1px dashed #CCC; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${imageUrl}'); background-size: cover; background-position: center;">
-                    ${imageUrl ? '' : 'Brak Zdjęcia'}
-                </div>
-                <div class="brand">${product.brand}</div>
-                <h3>${product.name}</h3>
-                <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category || 'N/A'}</p>
-                <div class="price">${product.price.toFixed(2)} PLN</div>
-                <div style="display:flex; gap:8px; margin-top:10px;">
-                    <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
-                    <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:10px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
-                </div>
-            `;
-            grid.appendChild(card);
-        });
-    }
+            card.innerHTML = `
+                <div style="aspect-ratio: 3 / 4; background-color: #F8F8F4; border: 1px dashed #CCC; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${imageUrl}'); background-size: cover; background-position: center;">
+                    ${imageUrl ? '' : 'Brak Zdjęcia'}
+                </div>
+                <div class="brand">${product.brand}</div>
+                <h3>${product.name}</h3>
+                <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category || 'N/A'}</p>
+                <div class="price">${product.price.toFixed(2)} PLN</div>
+                <div style="display:flex; gap:8px; margin-top:10px;">
+                    <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
+                    <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:10px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
 
     function applyFilters() {
         let filteredProducts = getProductsFromStorage();
