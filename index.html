@@ -338,10 +338,11 @@
             border: 1px solid #AAA;
         }
         #product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
-        }
+            display: grid;
+            /* ZMIANA: Sztywne 3 kolumny */
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
         .product-card {
             background-color: #FFFFFF;
             border: 1px solid #E0E0E0;
@@ -810,20 +811,18 @@
             font-size: 1em;
             padding: 12px 30px;
         }
-        
-      @media (max-width: 1024px) {
+     @media (max-width: 1024px) {
             header nav { display: none; }
             .footer-content { flex-wrap: wrap; justify-content: space-around; }
             .footer-links, .footer-contact { flex-basis: 45%; margin-bottom: 30px; }
-            /* Przeniesiono reguły układu kolekcji do 768px */
+            /* ZMIANA: Ta reguła ustawia mniejsze produkty na tabletach, ale wciąż w siatce */
             #product-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
             .dashboard-content { flex-direction: column; }
             .dashboard-nav { flex: 1 1 100%; }
             .admin-layout { flex-direction: column; } 
             #koszyk-formularz { position: static; } 
         }
-
-        @media (max-width: 768px) {
+       @media (max-width: 768px) {
             .container { padding: 0 15px; }
             h1, h2, h3 { letter-spacing: 1px; }
             .hero-content h1 { font-size: 3em; letter-spacing: 5px; }
@@ -843,7 +842,7 @@
             .dashboard-header { flex-direction: column; text-align: center; gap: 10px; }
             .stats-card-container { flex-direction: column; } 
 
-            /* DODANE REGUŁY Z 1024px */
+            /* ZMIANA: Te reguły włączają się teraz tylko dla telefonów (poniżej 768px) */
             .collection-layout { flex-direction: column; }
             #filter-sidebar { flex: 1 1 100%; border-right: none; border-bottom: 1px solid #DDD; }
         }
