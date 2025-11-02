@@ -1808,13 +1808,30 @@
             showPage('konto-page');
         }
 
-        /** Loguje użytkownika (klienta lub admina) */
-        function loginUser() {
+       /** Loguje użytkownika (klienta lub admina) */
+        async function loginUser() { // ZMIEŃ: Dodaj 'async'
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 
-            // === SPECJALNA ŚCIEŻKA DLA ADMINA ===
+            // ZACZNIJ OD PRÓBY LOGOWANIA ADMINA PRZEZ SUPABASE AUTH
             if (email.toLowerCase() === 'admin@premium.pl' && password === 'admin123') {
+                if (!supabase) {
+                    alert('Błąd: Supabase nie jest skonfigurowane. Zalogowanie Admina niemożliwe.');
+                    return;
+                }
+                
+                // === PRÓBA LOGOWANIA W SUPABASE (DLA RLS) ===
+                const { error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
+                
+                if (error) {
+                    alert(`Błąd logowania Admina: ${error.message}. Sprawdź, czy Admin istnieje w Supabase > Authentication > Users.`);
+                    return;
+                }
+                
+                // Sukces: Zalogowano Admina w Supabase i lokalnie
                 const currentUser = { 
                     email: 'admin@premium.pl', 
                     username: 'Administrator', 
@@ -1827,7 +1844,7 @@
                 return;
             }
 
-            // === ŚCIEŻKA DLA ZWYKŁEGO UŻYTKOWNIKA ===
+            // === ŚCIEŻKA DLA ZWYKŁEGO UŻYTKOWNIKA (BEZ ZMIAN) ===
             let users = JSON.parse(localStorage.getItem(LS_USERS_KEY) || '{}');
 
             if (users[email] && users[email].password === password) {
