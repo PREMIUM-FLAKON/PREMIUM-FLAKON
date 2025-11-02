@@ -1956,58 +1956,71 @@
         const lowerCaseMessage = message.toLowerCase().trim();
 
         // 1. SCENARIUSZE KONWERSACYJNE (dla płynności i przyjazności)
-        if (lowerCaseMessage.includes('cześć') || lowerCaseMessage.includes('witaj') || lowerCaseMessage.includes('dzień dobry') || lowerCaseMessage === 'start' || lowerCaseMessage === 'elo') {
+        const greetings = ['cześć', 'witaj', 'dzień dobry', 'siema', 'elo', 'hej'];
+        if (greetings.some(g => lowerCaseMessage.includes(g))) {
             return 'Witaj! Miło mi Cię poznać! Jestem Asystent PremiumFlakon i chętnie odpowiem na Twoje pytania. ✨ O co chciałbyś zapytać? (Np. **Gwarancja**, **Dostawa**, **Zwroty**).';
         }
-        if (lowerCaseMessage.includes('dziękuję') || lowerCaseMessage.includes('dzięki') || lowerCaseMessage.includes('dobra')) {
+
+        const thanks = ['dziękuję', 'dzięki', 'super', 'dobra', 'ok', 'dzieki'];
+        if (thanks.some(t => lowerCaseMessage.includes(t))) {
             return 'Cieszę się, że mogłem pomóc! Jeśli coś jeszcze przyjdzie Ci do głowy, daj znać! Zawsze jestem tu dla Ciebie. Miłego dnia! 👋';
         }
-        if (lowerCaseMessage.includes('co tam') || lowerCaseMessage.includes('jak leci')) {
+        
+        if (lowerCaseMessage.includes('co tam') || lowerCaseMessage.includes('jak leci') || lowerCaseMessage.includes('co słychać')) {
             return 'U mnie wszystko w porządku, dziękuję za troskę! Jestem gotów pomóc w kwestiach luksusowych zapachów i zakupów. Jakie masz pytania?';
         }
-        if (lowerCaseMessage.includes('jesteś botem') || lowerCaseMessage.includes('czy jesteś AI')) {
+        if (lowerCaseMessage.includes('jesteś botem') || lowerCaseMessage.includes('czy jesteś AI') || lowerCaseMessage.includes('program')) {
             return 'Jestem zaawansowanym Asystentem, który uczy się z Regulaminu i bazy wiedzy sklepu, aby udzielać Ci szybkich i precyzyjnych odpowiedzi. Mów mi po prostu: Asystencie! 😉';
         }
 
 
         // 2. SCENARIUSZE BIZNESOWE (Gwarancja, Dostawa, Realizacja)
         
-        if (lowerCaseMessage.includes('gwarancja') || lowerCaseMessage.includes('oryginalnoś') || lowerCaseMessage.includes('autentyczność') || lowerCaseMessage.includes('podróbki')) {
+        if (lowerCaseMessage.includes('gwarancja') || lowerCaseMessage.includes('oryginalnoś') || lowerCaseMessage.includes('autentyczność') || lowerCaseMessage.includes('podróbki') || lowerCaseMessage.includes('jakość')) {
             return 'Zapewniamy Cię, że wszystkie nasze produkty to <span class="gold-text">100% oryginalne perfumy</span>! Współpracujemy tylko z autoryzowanymi dystrybutorami. Masz naszą pełną gwarancję. <a onclick="showPageAndScroll(\'onas-page\', \'sourcing\')">Więcej o autentyczności.</a>';
         }
         
-        if (lowerCaseMessage.includes('ile') && lowerCaseMessage.includes('dostawa') || lowerCaseMessage.includes('cena') && lowerCaseMessage.includes('wysyłki')) {
-            return 'Świetna wiadomość! Dostawa na terenie Polski jest dla naszych klientów <span class="gold-text">całkowicie bezpłatna</span>. 🚚';
+        if (lowerCaseMessage.includes('ile') && lowerCaseMessage.includes('dostawa') || lowerCaseMessage.includes('cena') && lowerCaseMessage.includes('wysyłki') || lowerCaseMessage.includes('darmowa dostawa')) {
+            return 'Świetna wiadomość! Dostawa na terenie Polski jest dla naszych klientów <span class="gold-text">całkowicie bezpłatna</span> (0.00 PLN). 🚚';
+        }
+
+        if (lowerCaseMessage.includes('paczkomat') || lowerCaseMessage.includes('inpost') || lowerCaseMessage.includes('dpd') || lowerCaseMessage.includes('metoda dostawy')) {
+            return 'Oczywiście! Wysyłamy za pośrednictwem kuriera DPD/Inpost oraz do Paczkomatów. Przesyłka jest darmowa i realizowana w 24 godziny. 📦';
         }
 
         if (lowerCaseMessage.includes('dostaw') || lowerCaseMessage.includes('wysyłk') || lowerCaseMessage.includes('kurier')) {
-            return 'Realizujemy wysyłki kurierskie (DPD/Inpost) lub Paczkomatami. Paczki wysyłamy <span class="gold-text">w ciągu 24 godzin</span> od zaksięgowania płatności. Zazwyczaj docierają do Ciebie w 1-2 dni robocze.';
+            return 'Wysyłka realizowana jest w ciągu <span class="gold-text">24 godzin</span> od zaksięgowania płatności. Czas dostawy to zazwyczaj 1-2 dni robocze.';
         }
         
-        if (lowerCaseMessage.includes('realizacja') || lowerCaseMessage.includes('czas') || (lowerCaseMessage.includes('kiedy') && (lowerCaseMessage.includes('dojdzie') || lowerCaseMessage.includes('otrzymam')))) {
+        if (lowerCaseMessage.includes('realizacja') || lowerCaseMessage.includes('czas') || (lowerCaseMessage.includes('kiedy') && (lowerCaseMessage.includes('dojdzie') || lowerCaseMessage.includes('otrzymam') || lowerCaseMessage.includes('paczk')))) {
             return 'Zamówienie jest realizowane ekspresowo – <span class="gold-text">w 24 godziny</span> po zaksięgowaniu płatności. Od tego momentu kurier dostarcza paczkę w ciągu 1-2 dni roboczych.';
         }
 
         // 3. OBSŁUGA KLIENTA (Zwroty, Płatności, Kontakt)
 
-        if (lowerCaseMessage.includes('zwrot') || lowerCaseMessage.includes('odstąpienie')) {
-            return 'Pamiętaj, że jako produkt higieniczny, perfumy podlegają zwrotowi <span class="gold-text">tylko jeśli opakowanie fabryczne nie zostało naruszone</span> (folia, plomba). Masz na to 14 dni. <a onclick="showPage(\'zwroty-page\')">Sprawdź szczegóły na stronie Zwroty i Reklamacje.</a>';
+        if (lowerCaseMessage.includes('zwrot') || lowerCaseMessage.includes('odstąpienie') || lowerCaseMessage.includes('anulowanie')) {
+            return 'Pamiętaj, że perfumy podlegają zwrotowi <span class="gold-text">tylko jeśli opakowanie fabryczne nie zostało naruszone</span> (folia, plomba). Masz na to 14 dni. <a onclick="showPage(\'zwroty-page\')">Sprawdź szczegóły na stronie Zwroty i Reklamacje.</a>';
         }
 
-        if (lowerCaseMessage.includes('reklamacj') || lowerCaseMessage.includes('uszkodzen')) {
-            return 'Jeśli produkt ma wadę (np. uszkodzony atomizer), prosimy o kontakt mailowy: **reklamacje@premiumflakon.pl** z opisem i zdjęciami wady. Rozpatrzymy to indywidualnie w ramach rękojmi.';
+        if (lowerCaseMessage.includes('reklamacj') || lowerCaseMessage.includes('uszkodzen') || lowerCaseMessage.includes('wadliwy')) {
+            return 'W przypadku wady produktu, prosimy o kontakt mailowy: **reklamacje@premiumflakon.pl** z opisem i zdjęciami wady. Rozpatrzymy to indywidualnie w ramach rękojmi.';
         }
         
         if (lowerCaseMessage.includes('płatnoś') || lowerCaseMessage.includes('zapłacić') || lowerCaseMessage.includes('pobranie') || lowerCaseMessage.includes('metody')) {
             return 'U nas zapłacisz szybko i bezpiecznie przelewem lub kartą. Ważna informacja: <span class="gold-text">nie realizujemy zamówień za pobraniem.</span>';
         }
         
+        // Etap zamówienia / Śledzenie
+        if (lowerCaseMessage.includes('etap') || lowerCaseMessage.includes('status') || lowerCaseMessage.includes('moje zamówienie') || lowerCaseMessage.includes('numer śledzenia')) {
+            return 'Aby sprawdzić status i etap realizacji zamówienia, zaloguj się do <span class="gold-text">Konta Klienta</span> i przejdź do sekcji "Twoje Zamówienia". Po wysyłce otrzymasz e-mail z numerem do śledzenia. <a onclick="showPage(\'konto-page\')">Przejdź do Konta.</a>';
+        }
+        
         if (lowerCaseMessage.includes('kontakt') || lowerCaseMessage.includes('pracownik') || lowerCaseMessage.includes('zadzwonić')) {
-            return 'Oczywiście! Możesz zadzwonić: **532 116 720** (kontakt telefoniczny) lub napisać na **kontakt@premiumflakon.pl**. Jestem też gotów przekierować Cię na stronę kontaktu! 😉 <a onclick="showPageAndScroll(\'pomoc-page\', \'contact-section\')">Zobacz dane kontaktowe.</a>';
+            return 'Oczywiście! Możesz zadzwonić: **532 116 720** (kontakt telefoniczny) lub napisać: **kontakt@premiumflakon.pl**. Zawsze możesz też sprawdzić sekcję pomocy! 😉 <a onclick="showPageAndScroll(\'pomoc-page\', \'contact-section\')">Zobacz dane kontaktowe.</a>';
         }
 
-        // 4. PRZYKŁADOWA ODPOWIEDŹ DLA PRODUKTU
-
+        // 4. PRODUKTY (przykładowa prosta integracja z listą mock)
+        
         const products = getProductsFromStorage();
         const foundProduct = products.find(p => lowerCaseMessage.includes(p.name.toLowerCase()) || lowerCaseMessage.includes(p.brand.toLowerCase()));
         
@@ -2015,8 +2028,8 @@
             return `Ach, <span class="gold-text">${foundProduct.brand} ${foundProduct.name}</span>! To doskonały wybór! Jest dostępny w naszej kolekcji w cenie ${foundProduct.price.toFixed(2)} PLN. Chcesz rzucić okiem? <a onclick="showProductDetail('${foundProduct.id}')">Zobacz szczegóły produktu.</a>`;
         }
 
-        // 5. ODPOWIEDŹ DOMYŚLNA
-        return 'Przepraszam, ale muszę się przyznać, że nie jestem pewien, co masz na myśli. 😟 Może spróbuj użyć słów kluczowych (np. **Cena dostawy**, **Czy jest oryginalny**)? Jeśli to pilne, <a onclick="showPageAndScroll(\'pomoc-page\', \'contact-section\')"><span class="gold-text">skontaktuj się bezpośrednio z naszym Zespołem Premium.</span></a>';
+        // 5. ODPOWIEDŹ DOMYŚLNA (płynna i pomocna)
+        return 'Przepraszam, ale muszę się przyznać, że nie jestem pewien, co masz na myśli. 😟 Może spróbuj użyć prostszych słów kluczowych, np.: **Cena dostawy**, **Czy jest oryginalny**? Jeśli to pilne, <a onclick="showPageAndScroll(\'pomoc-page\', \'contact-section\')"><span class="gold-text">skontaktuj się bezpośrednio z naszym Zespołem Premium.</span></a>';
     }
 
     /**
@@ -2089,7 +2102,6 @@
 
     // ===============================================
     // === POZOSTAŁE FUNKCJE I MOCKI (Uzupelnienie) ===
-    // (Ten blok pozostał bez zmian)
     // ===============================================
 
     function initializeProductStorage() {
