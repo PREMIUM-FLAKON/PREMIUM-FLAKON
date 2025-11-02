@@ -1,872 +1,843 @@
-<style>
-        /* === ZMIENNE KOLORÓW I FONTÓW === */
-        :root {
-            --color-background-light: #F8F8F4;
-            --color-background-dark: #1A1A1A;
-            --color-text-dark: #1A1A1A;
-            --color-text-light: #F8F8F4;
-            --color-accent-gold: #C0A04C;
-            --font-serif: 'Playfair Display', serif;
-            --font-sans: 'Lato', sans-serif;
-        }
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PREMIUM FLAKON - Perfumy Luksusowych Producentów</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght{300;400;700}&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* === ZMIENNE KOLORÓW I FONTÓW === */
+        :root {
+            --color-background-light: #F8F8F4;
+            --color-background-dark: #1A1A1A;
+            --color-text-dark: #1A1A1A;
+            --color-text-light: #F8F8F4;
+            --color-accent-gold: #C0A04C;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Lato', sans-serif;
+        }
 
-        /* === GLOBALNE STYLE === */
-        body {
-            font-family: var(--font-sans);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            background-color: var(--color-background-dark);
-            overflow-x: hidden;
-        }
-        
-        h1, h2, h3, h4 {
-            font-family: var(--font-serif);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
+        /* === GLOBALNE STYLE === */
+        body {
+            font-family: var(--font-sans);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background-color: var(--color-background-dark);
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: var(--font-serif);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
 
-        .gold-text {
-            color: var(--color-accent-gold);
-            font-weight: 700;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+        .gold-text {
+            color: var(--color-accent-gold);
+            font-weight: 700;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
 
-        /* === PRZEŁĄCZANIE WIDOKÓW === */
-        .page-section {
-            display: none; 
-            background-color: var(--color-background-light); 
-            color: var(--color-text-dark);
-            min-height: 100vh;
-        }
-        .page-section.active {
-            display: block;
-        }
-        
-        /* [POZOSTAŁE STYLE (NIEZMIENIONE)] */
-        header {
-            text-align: center;
-            padding: 25px 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            background-color: var(--color-background-light);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        
-        header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative; 
-        }
+        /* === PRZEŁĄCZANIE WIDOKÓW === */
+        .page-section {
+            display: none; 
+            background-color: var(--color-background-light); 
+            color: var(--color-text-dark);
+            min-height: 100vh;
+        }
+        .page-section.active {
+            display: block;
+        }
+        
+        /* [POZOSTAŁE STYLE (NIEZMIENIONE)] */
+        header {
+            text-align: center;
+            padding: 25px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            background-color: var(--color-background-light);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative; 
+        }
 
-        header nav a {
-            color: var(--color-text-dark);
-            text-decoration: none;
-            font-size: 13px;
-            margin: 0 12px;
-            text-transform: uppercase;
-            transition: color 0.3s, border-bottom 0.3s; 
-            cursor: pointer;
-        }
-        
-        header nav a .cart-counter {
-            background-color: var(--color-accent-gold);
-            color: var(--color-background-dark);
-            border-radius: 50%;
-            padding: 0px 5px;
-            font-size: 0.8em;
-            font-weight: 700;
-            min-width: 18px;
-            display: inline-block;
-            line-height: 18px;
-            text-align: center;
-            position: relative;
-            top: -2px;
-        }
+        header nav a {
+            color: var(--color-text-dark);
+            text-decoration: none;
+            font-size: 13px;
+            margin: 0 12px;
+            text-transform: uppercase;
+            transition: color 0.3s, border-bottom 0.3s; 
+            cursor: pointer;
+        }
+        
+        header nav a .cart-counter {
+            background-color: var(--color-accent-gold);
+            color: var(--color-background-dark);
+            border-radius: 50%;
+            padding: 0px 5px;
+            font-size: 0.8em;
+            font-weight: 700;
+            min-width: 18px;
+            display: inline-block;
+            line-height: 18px;
+            text-align: center;
+            position: relative;
+            top: -2px;
+        }
 
-        .active-nav-link {
-            color: var(--color-accent-gold) !important;
-            font-weight: 700;
-            border-bottom: 2px solid var(--color-accent-gold);
-            padding-bottom: 5px;
-        }
-        
-        #side-menu {
-            height: 100%; width: 0; position: fixed; z-index: 20; top: 0; right: 0;
-            background-color: rgba(26, 26, 26, 0.95); overflow-x: hidden; transition: 0.5s;
-            padding-top: 60px; color: var(--color-text-light); text-align: center;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
-        }
-        #side-menu.open { width: 300px; }
-        #side-menu a {
-            padding: 15px 8px 15px 32px; text-decoration: none; font-size: 18px;
-            color: var(--color-text-light); display: block; transition: 0.3s;
-            text-transform: uppercase; letter-spacing: 2px; font-family: var(--font-serif);
-            cursor: pointer;
-        }
-        #side-menu a:hover { color: var(--color-accent-gold); background-color: #222; }
-        #side-menu .closebtn { position: absolute; top: 0; right: 25px; font-size: 36px; margin-left: 50px; font-weight: 300; }
-        
-        #side-menu a .cart-counter {
-            background-color: var(--color-accent-gold);
-            color: var(--color-background-dark);
-            border-radius: 50%;
-            padding: 2px 7px;
-            font-size: 0.8em;
-            font-weight: 700;
-            display: inline-block;
-            line-height: normal;
-        }
-        
-        .menu-toggle {
-            font-size: 30px; cursor: pointer;
-            z-index: 15; transition: color 0.3s; line-height: 1;
-        }
-        #landing-page .menu-toggle {
-            position: absolute; top: 40px; right: 40px; 
-            color: var(--color-text-light); 
-        }
-        #landing-page .menu-toggle:hover { color: var(--color-accent-gold); }
-        header .menu-toggle { 
-            color: var(--color-text-dark); 
-            margin-left: auto; 
-            padding-right: 15px; 
-        }
-        header .menu-toggle:hover { color: var(--color-accent-gold); }
+        .active-nav-link {
+            color: var(--color-accent-gold) !important;
+            font-weight: 700;
+            border-bottom: 2px solid var(--color-accent-gold);
+            padding-bottom: 5px;
+        }
+        
+        #side-menu {
+            height: 100%; width: 0; position: fixed; z-index: 20; top: 0; right: 0;
+            background-color: rgba(26, 26, 26, 0.95); overflow-x: hidden; transition: 0.5s;
+            padding-top: 60px; color: var(--color-text-light); text-align: center;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+        }
+        #side-menu.open { width: 300px; }
+        #side-menu a {
+            padding: 15px 8px 15px 32px; text-decoration: none; font-size: 18px;
+            color: var(--color-text-light); display: block; transition: 0.3s;
+            text-transform: uppercase; letter-spacing: 2px; font-family: var(--font-serif);
+            cursor: pointer;
+        }
+        #side-menu a:hover { color: var(--color-accent-gold); background-color: #222; }
+        #side-menu .closebtn { position: absolute; top: 0; right: 25px; font-size: 36px; margin-left: 50px; font-weight: 300; }
+        
+        #side-menu a .cart-counter {
+            background-color: var(--color-accent-gold);
+            color: var(--color-background-dark);
+            border-radius: 50%;
+            padding: 2px 7px;
+            font-size: 0.8em;
+            font-weight: 700;
+            display: inline-block;
+            line-height: normal;
+        }
+        
+        .menu-toggle {
+            font-size: 30px; cursor: pointer;
+            z-index: 15; transition: color 0.3s; line-height: 1;
+        }
+        #landing-page .menu-toggle {
+            position: absolute; top: 40px; right: 40px; 
+            color: var(--color-text-light); 
+        }
+        #landing-page .menu-toggle:hover { color: var(--color-accent-gold); }
+        header .menu-toggle { 
+            color: var(--color-text-dark); 
+            margin-left: auto; 
+            padding-right: 15px; 
+        }
+        header .menu-toggle:hover { color: var(--color-accent-gold); }
 
-        #landing-page {
-            background-color: var(--color-background-dark); 
-            color: var(--color-text-light);
-            text-align: center;
-            min-height: auto; 
-        }
+        #landing-page {
+            background-color: var(--color-background-dark); 
+            color: var(--color-text-light);
+            text-align: center;
+            min-height: auto; 
+        }
 
-        .hero-section {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85)), url('https://cdn.pixabay.com/photo/2016/08/29/18/43/perfume-1629235_1280.jpg') no-repeat center center/cover;
-            padding: 180px 20px 140px 20px; 
-            position: relative;
-        }
-        
-        .hero-content h1 { font-size: 4em; letter-spacing: 8px; margin-bottom: 5px; font-weight: 900; }
-        .hero-slogan { font-size: 1.2em; margin-bottom: 40px; font-weight: 400; letter-spacing: 3px; }
-        .hero-content p { font-family: var(--font-sans); font-size: 1.2em; margin-bottom: 40px; color: rgba(255, 255, 255, 0.9); }
-        .btn-main {
-            display: inline-block; padding: 16px 60px; background-color: var(--color-accent-gold);
-            color: var(--color-background-dark); box-shadow: 0 0 15px rgba(192, 160, 76, 0.4);
-            border: 1px solid var(--color-accent-gold); text-decoration: none; text-transform: uppercase;
-            font-weight: 700; letter-spacing: 2px; transition: all 0.3s; cursor: pointer;
-        }
-        .btn-main:hover { background-color: transparent; color: var(--color-accent-gold); border: 1px solid var(--color-accent-gold); }
-        
-        .values-section, .detail-section { background-color: var(--color-background-dark); color: var(--color-text-light); }
-        .values-section { padding: 100px 0; }
-        .values-section .value-cards { display: flex; justify-content: space-around; gap: 30px; margin-top: 40px; }
-        .values-section .card { flex-basis: 30%; padding: 30px; border: 1px solid rgba(192, 160, 76, 0.3); background-color: #222; }
-        .detail-section { padding: 120px 0; }
-        .detail-section .content-2col { display: flex; gap: 40px; align-items: flex-start; }
-        .detail-section .image-mock { flex: 1; min-height: 400px; border: 4px solid var(--color-accent-gold); box-shadow: 0 0 20px rgba(192, 160, 76, 0.2); background-color: #000; }
-        
-        .mini-footer { background-color: #101010; color: rgba(255, 255, 255, 0.5); padding: 30px 0; font-size: 0.8em; display: flex; justify-content: space-between; align-items: center; }
-        .social-icons a { color: var(--color-text-light); text-decoration: none; font-size: 1.3em; margin: 0 10px; transition: color 0.3s; }
-        .social-icons a:hover { color: var(--color-accent-gold); }
-        .social-icons span { margin-right: 15px; color: var(--color-accent-gold); font-weight: 700; text-transform: uppercase; font-size: 1em; }
-        
-        footer { background-color: #222; color: var(--color-text-light); padding: 40px 0; font-size: 0.85em; }
-        .footer-content { display: flex; justify-content: space-between; gap: 30px; }
-        .footer-links h4, .footer-contact h4 { color: var(--color-accent-gold); font-size: 1em; margin-top: 0; margin-bottom: 15px; letter-spacing: 1px; }
-        .footer-links a { display: block; color: #AAA; text-decoration: none; margin-bottom: 5px; transition: color 0.3s; cursor: pointer; }
-        .footer-links a:hover { color: var(--color-text-light); }
-        .footer-contact strong { display: block; margin-top: 10px; font-size: 0.85em; font-weight: 700; }
-        .footer-contact a { color: var(--color-text-light); text-decoration: none; font-size: 1.1em; display: inline-block; }
-        .copyright { flex-basis: 100%; text-align: center; padding-top: 20px; border-top: 1px solid #333; margin-top: 20px; font-size: 0.75em; color: #666; line-height: 1.4; }
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85)), url('https://cdn.pixabay.com/photo/2016/08/29/18/43/perfume-1629235_1280.jpg') no-repeat center center/cover;
+            padding: 180px 20px 140px 20px; 
+            position: relative;
+        }
+        
+        .hero-content h1 { font-size: 4em; letter-spacing: 8px; margin-bottom: 5px; font-weight: 900; }
+        .hero-slogan { font-size: 1.2em; margin-bottom: 40px; font-weight: 400; letter-spacing: 3px; }
+        .hero-content p { font-family: var(--font-sans); font-size: 1.2em; margin-bottom: 40px; color: rgba(255, 255, 255, 0.9); }
+        .btn-main {
+            display: inline-block; padding: 16px 60px; background-color: var(--color-accent-gold);
+            color: var(--color-background-dark); box-shadow: 0 0 15px rgba(192, 160, 76, 0.4);
+            border: 1px solid var(--color-accent-gold); text-decoration: none; text-transform: uppercase;
+            font-weight: 700; letter-spacing: 2px; transition: all 0.3s; cursor: pointer;
+        }
+        .btn-main:hover { background-color: transparent; color: var(--color-accent-gold); border: 1px solid var(--color-accent-gold); }
+        
+        .values-section, .detail-section { background-color: var(--color-background-dark); color: var(--color-text-light); }
+        .values-section { padding: 100px 0; }
+        .values-section .value-cards { display: flex; justify-content: space-around; gap: 30px; margin-top: 40px; }
+        .values-section .card { flex-basis: 30%; padding: 30px; border: 1px solid rgba(192, 160, 76, 0.3); background-color: #222; }
+        .detail-section { padding: 120px 0; }
+        .detail-section .content-2col { display: flex; gap: 40px; align-items: flex-start; }
+        .detail-section .image-mock { flex: 1; min-height: 400px; border: 4px solid var(--color-accent-gold); box-shadow: 0 0 20px rgba(192, 160, 76, 0.2); background-color: #000; }
+        
+        .mini-footer { background-color: #101010; color: rgba(255, 255, 255, 0.5); padding: 30px 0; font-size: 0.8em; display: flex; justify-content: space-between; align-items: center; }
+        .social-icons a { color: var(--color-text-light); text-decoration: none; font-size: 1.3em; margin: 0 10px; transition: color 0.3s; }
+        .social-icons a:hover { color: var(--color-accent-gold); }
+        .social-icons span { margin-right: 15px; color: var(--color-accent-gold); font-weight: 700; text-transform: uppercase; font-size: 1em; }
+        
+        footer { background-color: #222; color: var(--color-text-light); padding: 40px 0; font-size: 0.85em; }
+        .footer-content { display: flex; justify-content: space-between; gap: 30px; }
+        .footer-links h4, .footer-contact h4 { color: var(--color-accent-gold); font-size: 1em; margin-top: 0; margin-bottom: 15px; letter-spacing: 1px; }
+        .footer-links a { display: block; color: #AAA; text-decoration: none; margin-bottom: 5px; transition: color 0.3s; cursor: pointer; }
+        .footer-links a:hover { color: var(--color-text-light); }
+        .footer-contact strong { display: block; margin-top: 10px; font-size: 0.85em; font-weight: 700; }
+        .footer-contact a { color: var(--color-text-light); text-decoration: none; font-size: 1.1em; display: inline-block; }
+        .copyright { flex-basis: 100%; text-align: center; padding-top: 20px; border-top: 1px solid #333; margin-top: 20px; font-size: 0.75em; color: #666; line-height: 1.4; }
 
-        .chatbot-container {
-            background-color: var(--color-background-light);
-            border: 1px solid var(--color-accent-gold);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            max-width: 350px;
-            margin: 40px auto 0;
-            padding: 20px;
-            text-align: left;
-        }
-        .chat-header {
-            background-color: var(--color-accent-gold);
-          
-            color: var(--color-background-dark);
-            padding: 10px;
-            margin: -20px -20px 20px -20px;
-            font-family: var(--font-serif);
-            font-weight: 700;
-            text-align: center;
-            font-size: 1.2em;
-        }
-        #chat-history {
-            max-height: 250px;
-            overflow-y: auto;
-            padding-right: 10px;
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-        }
-        .bot-message, .client-message {
-            margin-bottom: 10px;
-            padding: 8px 12px;
-            border-radius: 15px;
-            max-width: 80%;
-            font-size: 0.9em;
-        }
-        .bot-message {
-            background-color: #EEE;
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-        }
-        .client-message {
-            background-color: var(--color-accent-gold);
-            color: var(--color-background-dark);
-            margin-left: auto;
-            text-align: right;
-            border-bottom-right-radius: 2px;
-        }
-        /* UKRYWAMY PRZYCISKI OPCJI, ABY WPROWADZANIE TEKSTU DZIAŁAŁO DYNAMICZNIE */
-        .chat-options {
-             display: none !important; 
-        }
-        .chat-options button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 8px;
-          border: 1px solid var(--color-accent-gold);
-            background-color: transparent;
-            color: var(--color-text-dark);
-            cursor: pointer;
-            font-weight: 700;
-        }
-        .chat-options button:hover {
-            background-color: var(--color-accent-gold);
-            color: var(--color-background-dark);
-        }
-        #chat-input-area {
-            display: flex;
-            gap: 5px;
-            margin-top: 15px;
-        }
-        #chat-input-area input {
-            flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #CCC;
-            font-family: var(--font-sans); 
-        }
-        .bot-message a {
-            color: var(--color-accent-gold);
-            font-weight: 700;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-        #chat-input-area button {
-            background-color: var(--color-accent-gold);
-            color: var(--color-background-dark);
-            border: none;
-            padding: 10px 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        #chat-input-area button:hover {
-            background-color: #9E8045;
-        }
+        .chatbot-container {
+            background-color: var(--color-background-light);
+            border: 1px solid var(--color-accent-gold);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            max-width: 350px;
+            margin: 40px auto 0;
+            padding: 20px;
+            text-align: left;
+        }
+        .chat-header {
+            background-color: var(--color-accent-gold);
+            color: var(--color-background-dark);
+            padding: 10px;
+            margin: -20px -20px 20px -20px;
+            font-family: var(--font-serif);
+            font-weight: 700;
+            text-align: center;
+            font-size: 1.2em;
+        }
+        #chat-history {
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .bot-message, .client-message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+            font-size: 0.9em;
+        }
+        .bot-message {
+            background-color: #EEE;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+        .client-message {
+            background-color: var(--color-accent-gold);
+            color: var(--color-background-dark);
+            margin-left: auto;
+            text-align: right;
+            border-bottom-right-radius: 2px;
+        }
+        /* UKRYWAMY PRZYCISKI OPCJI, ABY WPROWADZANIE TEKSTU DZIAŁAŁO DYNAMICZNIE */
+        .chat-options {
+             display: none !important; 
+        }
+        .chat-options button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 8px;
+            border: 1px solid var(--color-accent-gold);
+            background-color: transparent;
+            color: var(--color-text-dark);
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .chat-options button:hover {
+            background-color: var(--color-accent-gold);
+            color: var(--color-background-dark);
+        }
+        #chat-input-area {
+            display: flex;
+            gap: 5px;
+            margin-top: 15px;
+        }
+        #chat-input-area input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #CCC;
+            font-family: var(--font-sans); 
+        }
+        .bot-message a {
+            color: var(--color-accent-gold);
+            font-weight: 700;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        #chat-input-area button {
+            background-color: var(--color-accent-gold);
+            color: var(--color-background-dark);
+            border: none;
+            padding: 10px 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #chat-input-area button:hover {
+            background-color: #9E8045;
+        }
 
-        .collection-layout {
-            display: flex;
-            gap: 30px;
-            padding-top: 40px;
-        }
-        #filter-sidebar {
-            flex: 0 0 250px;
-            padding: 20px;
-            background-color: #ECECE4;
-            border-right: 1px solid #DDD;
-        }
-        #filter-sidebar h4 {
-            color: var(--color-accent-gold);
-            text-transform: uppercase;
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 1em;
-        }
-        .filter-group {
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #CCC;
-        }
-        .filter-group label {
-            display: block;
-            margin-bottom: 8px;
-            cursor: pointer;
-            font-size: 0.95em;
-        }
-       #product-list-wrapper {
-            /* POPRAWKA DLA KOMPUTERA: */
+        .collection-layout {
+            display: flex;
+            gap: 30px;
+            padding-top: 40px;
+        }
+        #filter-sidebar {
+            flex: 0 0 250px;
+            padding: 20px;
+            background-color: #ECECE4;
+            border-right: 1px solid #DDD;
+        }
+        #filter-sidebar h4 {
+            color: var(--color-accent-gold);
+            text-transform: uppercase;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1em;
+        }
+        .filter-group {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #CCC;
+        }
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 0.95em;
+        }
+      #product-list-wrapper {
+            /* NOWA POPRAWKA: To jest poprawny sposób, aby kolumna zajęła resztę miejsca */
             flex: 1;
-            min-width: 0; 
+            min-width: 0; /* Ważna reguła zapobiegająca "wypychaniu" przez zawartość */
         }
-        #sort-options {
-            margin-bottom: 20px;
-            text-align: right;
-        }
-        #sort-options label {
-            font-weight: 700;
-            margin-right: 10px;
-        }
-        #sort-options select {
-            padding: 8px;
-            border: 1px solid #AAA;
-        }
-        #product-grid {
+        #sort-options {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        #sort-options label {
+            font-weight: 700;
+            margin-right: 10px;
+        }
+        #sort-options select {
+            padding: 8px;
+            border: 1px solid #AAA;
+        }
+        #product-grid {
             display: grid;
-            /* KOMPUTER: 3 kolumny */
+            /* ZMIANA: Sztywne 3 kolumny */
             grid-template-columns: repeat(3, 1fr);
             gap: 25px;
         }
-        .product-card {
-            background-color: #FFFFFF;
-            border: 1px solid #E0E0E0;
-            padding: 20px 15px;
-            text-align: center;
-            transition: box-shadow 0.3s, transform 0.3s;
-        }
-        .product-card:hover {
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transform: translateY(-3px);
-        }
-        .product-card h3 {
-            font-family: var(--font-sans);
-            font-size: 1.1em;
-            font-weight: 700;
-            color: var(--color-text-dark);
-            margin-top: 10px;
-            margin-bottom: 5px;
-        }
-        .product-card .brand {
-            font-family: var(--font-serif);
-            color: var(--color-accent-gold);
-            font-size: 1.3em;
-            font-weight: 900;
-            margin-bottom: 10px;
-        }
-        .product-card .price {
-            font-size: 1.4em;
-            font-weight: 700;
-            color: var(--color-accent-gold);
-            margin: 10px 0;
-        }
-        .product-card .btn-add {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background-color: var(--color-text-dark);
-            color: var(--color-text-light);
-            text-decoration: none;
-            text-transform: uppercase;
-            font-weight: 700;
-            transition: background-color 0.3s;
-            cursor: pointer;
-            border: none;
-            font-family: var(--font-sans); 
-            font-size: 1em; 
-        }
-        .product-card .btn-add:hover {
-            background-color: var(--color-accent-gold);
-            color: var(--color-text-dark);
-        }
+        .product-card {
+            background-color: #FFFFFF;
+            border: 1px solid #E0E0E0;
+            padding: 20px 15px;
+            text-align: center;
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+        .product-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+        .product-card h3 {
+            font-family: var(--font-sans);
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--color-text-dark);
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        .product-card .brand {
+            font-family: var(--font-serif);
+            color: var(--color-accent-gold);
+            font-size: 1.3em;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+        .product-card .price {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--color-accent-gold);
+            margin: 10px 0;
+        }
+        .product-card .btn-add {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: var(--color-text-dark);
+            color: var(--color-text-light);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 700;
+            transition: background-color 0.3s;
+            cursor: pointer;
+            border: none;
+            font-family: var(--font-sans); 
+            font-size: 1em; 
+        }
+        .product-card .btn-add:hover {
+            background-color: var(--color-accent-gold);
+            color: var(--color-text-dark);
+        }
 
-        /* ... reszta twoich stylów ... */
-        
-        #konto-page { 
-            background-color: var(--color-background-light); 
-            color: var(--color-text-dark); 
-            padding-bottom: 0; 
-        }
-        .auth-section {
-            padding: 80px 0;
-            text-align: center;
-        }
-        .auth-container {
-            display: flex;
-            justify-content: center;
-            gap: 60px;
-            max-width: 1000px;
-            margin: 40px auto;
-        }
-        .auth-form {
-            background-color: #F0F0F0;
-            padding: 40px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            width: 45%;
-            text-align: left;
-            transition: all 0.3s;
-        }
-        .auth-form:hover {
-             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
-        .auth-form h2 {
-            text-align: center;
-            color: var(--color-accent-gold);
-            margin-bottom: 30px;
-            font-size: 1.8em;
-        }
-        .form-group {
-            margin-bottom: 20px; 
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 400;
-            color: var(--color-text-dark);
-            font-size: 0.95em;
-        }
-        .form-group input, .form-group select, .form-group textarea { 
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #AAA;
-            background-color: white; 
-            color: var(--color-text-dark);
-            font-size: 1em;
-            box-sizing: border-box;
-            transition: border-color 0.3s;
-            font-family: var(--font-sans);
-        }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { 
-            border-color: var(--color-accent-gold);
-            outline: none;
-            box-shadow: 0 0 5px rgba(192, 160, 76, 0.5);
-        }
-        .forgot-password {
-            font-size: 0.9em;
-            text-align: right;
-            margin-top: 15px;
-        }
-        .forgot-password a {
-            color: var(--color-text-dark);
-            text-decoration: underline;
-        }
-        .btn-auth {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            margin-top: 20px;
-            background-color: var(--color-accent-gold);
-            color: var(--color-background-dark);
-            border: none;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        #user-dashboard {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-        .dashboard-header {
-            background-color: var(--color-accent-gold);
-            color: var(--color-background-dark);
-            padding: 20px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .dashboard-header h2 {
-            margin: 0;
-            font-size: 1.8em;
-        }
-        .dashboard-header button {
-            background: var(--color-background-dark);
-            color: var(--color-accent-gold);
-            border: none;
-            padding: 10px 20px;
-            text-transform: uppercase;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .dashboard-header button:hover {
-            background: #444;
-        }
-        .dashboard-content {
-            display: flex;
-            gap: 30px;
-            margin-top: 30px;
-        }
-        .dashboard-nav {
-            flex: 0 0 220px;
-            background-color: #ECECE4;
-            padding: 20px;
-        }
-        .dashboard-nav a {
-            display: block;
-            padding: 12px 10px;
-            text-decoration: none;
-            color: var(--color-text-dark);
-            border-bottom: 1px dashed #CCC;
-            transition: background-color 0.2s, color 0.2s;
-            cursor: pointer;
-        }
-        .dashboard-nav a:hover, .dashboard-nav a.active {
-            background-color: var(--color-accent-gold);
-            color: var(--color-background-dark);
-            font-weight: 700;
-        }
-        .dashboard-main {
-            flex-grow: 1;
-            background-color: #FFFFFF;
-            padding: 30px;
-            border: 1px solid #EEE;
-        }
-        .order-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .order-table th, .order-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #EEE;
-        }
-        .order-table th {
-            background-color: #F5F5F5;
-            color: var(--color-text-dark);
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.85em;
-        }
+        #konto-page { 
+            background-color: var(--color-background-light); 
+            color: var(--color-text-dark); 
+            padding-bottom: 0; 
+        }
+        .auth-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+        .auth-form {
+            background-color: #F0F0F0;
+            padding: 40px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            width: 45%;
+            text-align: left;
+            transition: all 0.3s;
+        }
+        .auth-form:hover {
+             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        .auth-form h2 {
+            text-align: center;
+            color: var(--color-accent-gold);
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+        .form-group {
+            margin-bottom: 20px; 
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 400;
+            color: var(--color-text-dark);
+            font-size: 0.95em;
+        }
+        .form-group input, .form-group select, .form-group textarea { 
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #AAA;
+            background-color: white; 
+            color: var(--color-text-dark);
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+            font-family: var(--font-sans);
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { 
+            border-color: var(--color-accent-gold);
+            outline: none;
+            box-shadow: 0 0 5px rgba(192, 160, 76, 0.5);
+        }
+        .forgot-password {
+            font-size: 0.9em;
+            text-align: right;
+            margin-top: 15px;
+        }
+        .forgot-password a {
+            color: var(--color-text-dark);
+            text-decoration: underline;
+        }
+        .btn-auth {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            background-color: var(--color-accent-gold);
+            color: var(--color-background-dark);
+            border: none;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        #user-dashboard {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .dashboard-header {
+            background-color: var(--color-accent-gold);
+            color: var(--color-background-dark);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dashboard-header h2 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+        .dashboard-header button {
+            background: var(--color-background-dark);
+            color: var(--color-accent-gold);
+            border: none;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .dashboard-header button:hover {
+            background: #444;
+        }
+        .dashboard-content {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .dashboard-nav {
+            flex: 0 0 220px;
+            background-color: #ECECE4;
+            padding: 20px;
+        }
+        .dashboard-nav a {
+            display: block;
+            padding: 12px 10px;
+            text-decoration: none;
+            color: var(--color-text-dark);
+            border-bottom: 1px dashed #CCC;
+            transition: background-color 0.2s, color 0.2s;
+            cursor: pointer;
+        }
+        .dashboard-nav a:hover, .dashboard-nav a.active {
+            background-color: var(--color-accent-gold);
+            color: var(--color-background-dark);
+            font-weight: 700;
+        }
+        .dashboard-main {
+            flex-grow: 1;
+            background-color: #FFFFFF;
+            padding: 30px;
+            border: 1px solid #EEE;
+        }
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .order-table th, .order-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #EEE;
+        }
+        .order-table th {
+            background-color: #F5F5F5;
+            color: var(--color-text-dark);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85em;
+        }
 
-        #admin-page .container {
-            padding-top: 50px;
-            padding-bottom: 50px;
-        }
-        #admin-page .dashboard-content { 
-             max-width: 1200px;
-             margin: 40px auto;
-        }
-        .admin-layout {
-            display: flex;
-            gap: 40px;
-            align-items: flex-start;
-        }
-        .admin-form-container {
-            flex: 1;
-            padding: 30px;
-            background-color: #F0F0F0;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 120px; 
-        }
-        .admin-list-container {
-            flex: 2;
-        }
-        .admin-product-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .admin-product-table th, .admin-product-table td {
-            padding: 10px;
-            border: 1px solid #DDD;
-            text-align: left;
-            font-size: 0.9em;
-        }
-        .admin-product-table th {
-            background-color: #333;
-            color: var(--color-accent-gold);
-        }
-        .admin-product-table .btn-admin-edit, .admin-product-table .btn-admin-delete {
-            padding: 5px 10px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9em;
-            margin-right: 5px;
-        }
-        .btn-admin-edit {
-            background-color: #3498db;
-            color: white;
-        }
-        .btn-admin-delete {
-            background-color: #e74c3c;
-            color: white;
-        }
-        .btn-admin-clear {
-            background-color: #95a5a6;
-            color: #1A1A1A;
-            margin-top: 10px;
-            padding: 8px;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-        }
+        #admin-page .container {
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+        #admin-page .dashboard-content { 
+             max-width: 1200px;
+             margin: 40px auto;
+        }
+        .admin-layout {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+        .admin-form-container {
+            flex: 1;
+            padding: 30px;
+            background-color: #F0F0F0;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 120px; 
+        }
+        .admin-list-container {
+            flex: 2;
+        }
+        .admin-product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .admin-product-table th, .admin-product-table td {
+            padding: 10px;
+            border: 1px solid #DDD;
+            text-align: left;
+            font-size: 0.9em;
+        }
+        .admin-product-table th {
+            background-color: #333;
+            color: var(--color-accent-gold);
+        }
+        .admin-product-table .btn-admin-edit, .admin-product-table .btn-admin-delete {
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-right: 5px;
+        }
+        .btn-admin-edit {
+            background-color: #3498db;
+            color: white;
+        }
+        .btn-admin-delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .btn-admin-clear {
+            background-color: #95a5a6;
+            color: #1A1A1A;
+            margin-top: 10px;
+            padding: 8px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
 
-        .stats-card-container {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
-        }
-        .stats-card h4 {
-            margin: 0 0 10px 0;
-            font-size: 1.1em;
-            color: #555;
-            text-transform: none;
-            letter-spacing: 0;
-        }
-        .stats-card .stat-value {
-            font-family: var(--font-serif);
-            font-size: 2.5em;
-            font-weight: 900;
-            color: var(--color-text-dark);
-        }
+        .stats-card-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        .stats-card h4 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+            color: #555;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+        .stats-card .stat-value {
+            font-family: var(--font-serif);
+            font-size: 2.5em;
+            font-weight: 900;
+            color: var(--color-text-dark);
+        }
 
-        .advantage-section {
-            background-color: #ECECE4;
-            padding: 60px 0;
-            margin-top: 40px;
-            border-top: 3px solid var(--color-accent-gold);
-        }
-        .advantage-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-            justify-content: center;
-            margin-top: 30px;
-        }
-        .advantage-item {
-            background-color: var(--color-background-light);
-            border: 1px solid #DDD;
-            padding: 25px;
-            flex: 1 1 calc(33% - 40px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            min-width: 250px;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-        .advantage-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-        }
-        .advantage-item h4 {
-            color: var(--color-accent-gold);
-            font-size: 1.1em;
-            margin-top: 0;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-        }
-        .advantage-item .icon {
-            font-size: 2em;
-            color: var(--color-accent-gold);
-            margin-bottom: 10px;
-            display: block;
-  S   }
+        .advantage-section {
+            background-color: #ECECE4;
+            padding: 60px 0;
+            margin-top: 40px;
+            border-top: 3px solid var(--color-accent-gold);
+        }
+        .advantage-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .advantage-item {
+            background-color: var(--color-background-light);
+            border: 1px solid #DDD;
+            padding: 25px;
+            flex: 1 1 calc(33% - 40px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            min-width: 250px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .advantage-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        .advantage-item h4 {
+            color: var(--color-accent-gold);
+            font-size: 1.1em;
+            margin-top: 0;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        .advantage-item .icon {
+            font-size: 2em;
+            color: var(--color-accent-gold);
+            margin-bottom: 10px;
+            display: block;
+        }
 
-        .text-page-content {
-            padding: 50px 0 80px 0;
-            line-height: 1.8;
-            font-size: 1.1em;
-        }
-        .text-page-content h3 {
-            color: var(--color-accent-gold);
-            margin-top: 40px;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-            letter-spacing: 1px;
-            text-transform: none;
-        }
-        .text-page-content h4 {
-            color: var(--color-text-dark);
-            margin-top: 25px;
-            margin-bottom: 10px;
-            font-size: 1.2em;
-            letter-spacing: 0.5px;
-            text-transform: none;
-            font-weight: 700;
-        }
-        .text-page-content p, .text-page-content ul {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .text-page-content ul {
-            padding-left: 20px;
-            list-style: disc;
-        }
+        .text-page-content {
+            padding: 50px 0 80px 0;
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+        .text-page-content h3 {
+            color: var(--color-accent-gold);
+            margin-top: 40px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            letter-spacing: 1px;
+            text-transform: none;
+        }
+        .text-page-content h4 {
+            color: var(--color-text-dark);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            letter-spacing: 0.5px;
+            text-transform: none;
+            font-weight: 700;
+        }
+        .text-page-content p, .text-page-content ul {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .text-page-content ul {
+            padding-left: 20px;
+            list-style: disc;
+        }
 
-        #koszyk-page .container {
-            padding-top: 50px;
-            padding-bottom: 80px;
-        }
-        .koszyk-layout {
-            display: flex;
-            gap: 40px;
-            flex-wrap: wrap;
-        }
-        #koszyk-lista {
-            flex: 2;
-            min-width: 300px;
-        }
-        #koszyk-formularz {
-            flex: 1;
-            min-width: 300px;
-            background-color: #F0F0F0;
-            padding: 30px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 120px;
-        }
-        .koszyk-item {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            border-bottom: 1px solid #EEE;
-            padding: 20px 0;
-        }
-        .koszyk-item-img {
-            width: 80px;
-            height: 80px;
-            background-color: #F0F0F0;
-            border: 1px solid #DDD;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #AAA;
-            font-size: 0.8em;
-            text-align: center;
-        }
-        .koszyk-item-info {
-            flex-grow: 1;
-        }
-        .koszyk-item-info h4 {
-            margin: 0;
-            font-size: 1.1em;
-            font-family: var(--font-sans);
-            text-transform: none;
-            letter-spacing: 0;
-        }
-        .koszyk-item-info .brand {
-            font-family: var(--font-serif);
-            color: var(--color-accent-gold);
-            font-weight: 700;
-        }
-        .koszyk-item-cena {
-            font-size: 1.2em;
-            font-weight: 700;
-            color: var(--color-text-dark);
-            min-width: 100px;
-            text-align: right;
-        }
-        .koszyk-ilosc input {
-            width: 50px;
-            padding: 5px;
-            text-align: center;
-            border: 1px solid #CCC;
-        }
-        .btn-usun {
-            background: none;
-            border: none;
-            color: #C00;
-            font-size: 1.2em;
-            cursor: pointer;
-            padding: 5px;
-        }
-        #koszyk-podsumowanie {
-            text-align: right;
-            margin-top: 20px;
-            border-top: 2px solid #333;
-            padding-top: 20px;
-        }
-        #koszyk-podsumowanie h3 {
-            font-size: 1.8em;
-            color: var(--color-accent-gold);
-source_code
-            margin: 0;
-        }
-        #pusty-koszyk-info {
-            text-align: center;
-            padding: 80px 20px;
-            background-color: #F9F9F9;
-            border: 1px dashed #CCC;
-        }
-        #pusty-koszyk-info .btn-main {
-            font-size: 1em;
-            padding: 12px 30px;
-        }
-        
-        /* =================================
-                MEDIA QUERIES (RESPONSYWNOŚĆ)
-          ================================= */
-
-        /* === TABLET === */
-        @media (max-width: 1024px) {
+        #koszyk-page .container {
+            padding-top: 50px;
+            padding-bottom: 80px;
+        }
+        .koszyk-layout {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        #koszyk-lista {
+            flex: 2;
+            min-width: 300px;
+        }
+        #koszyk-formularz {
+            flex: 1;
+            min-width: 300px;
+            background-color: #F0F0F0;
+            padding: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 120px;
+        }
+        .koszyk-item {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            border-bottom: 1px solid #EEE;
+            padding: 20px 0;
+        }
+        .koszyk-item-img {
+            width: 80px;
+            height: 80px;
+            background-color: #F0F0F0;
+            border: 1px solid #DDD;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #AAA;
+            font-size: 0.8em;
+            text-align: center;
+        }
+        .koszyk-item-info {
+            flex-grow: 1;
+        }
+        .koszyk-item-info h4 {
+            margin: 0;
+            font-size: 1.1em;
+            font-family: var(--font-sans);
+            text-transform: none;
+            letter-spacing: 0;
+        }
+        .koszyk-item-info .brand {
+            font-family: var(--font-serif);
+            color: var(--color-accent-gold);
+            font-weight: 700;
+        }
+        .koszyk-item-cena {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--color-text-dark);
+            min-width: 100px;
+            text-align: right;
+        }
+        .koszyk-ilosc input {
+            width: 50px;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #CCC;
+        }
+        .btn-usun {
+            background: none;
+            border: none;
+            color: #C00;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 5px;
+        }
+        #koszyk-podsumowanie {
+            text-align: right;
+            margin-top: 20px;
+            border-top: 2px solid #333;
+            padding-top: 20px;
+        }
+        #koszyk-podsumowanie h3 {
+            font-size: 1.8em;
+            color: var(--color-accent-gold);
+            margin: 0;
+        }
+        #pusty-koszyk-info {
+            text-align: center;
+            padding: 80px 20px;
+            background-color: #F9F9F9;
+            border: 1px dashed #CCC;
+        }
+        #pusty-koszyk-info .btn-main {
+            font-size: 1em;
+            padding: 12px 30px;
+        }
+     @media (max-width: 1024px) {
             header nav { display: none; }
             .footer-content { flex-wrap: wrap; justify-content: space-around; }
             .footer-links, .footer-contact { flex-basis: 45%; margin-bottom: 30px; }
-            
-            /* UKŁAD: 2 Kolumny */
+            /* POPRAWKA: Sztywno ustawia 2 kolumny na tabletach i telefonach */
             #product-grid { grid-template-columns: repeat(2, 1fr); }
-            
             .dashboard-content { flex-direction: column; }
             .dashboard-nav { flex: 1 1 100%; }
             .admin-layout { flex-direction: column; } 
             #koszyk-formularz { position: static; } 
         }
-        
-        /* === TELEFON (Większy) === */
-        @media (max-width: 768px) {
-            .container { padding: 0 15px; }
-            h1, h2, h3 { letter-spacing: 1px; }
-            .hero-content h1 { font-size: 3em; letter-spacing: 5px; }
-            .hero-slogan { font-size: 1em; }
-            .hero-section { padding: 120px 15px 80px 15px; }
-            .values-section .value-cards { flex-direction: column; gap: 20px; }
-            .values-section .card { flex-basis: 100%; padding: 20px; }
-            .detail-section .content-2col { flex-direction: column; gap: 30px; }
-            .detail-section .image-mock { display: none; }
-            .footer-links, .footer-contact { flex-basis: 100%; text-align: center; }
-            .footer-links a { display: inline-block; margin: 0 10px 5px 10px; }
-            .auth-container { flex-direction: column; gap: 30px; }
-            #pomoc-page .container > div { flex-direction: column; }
-            .chatbot-container { max-width: 100%; }
-            .advantage-list { flex-direction: column; gap: 20px; }
-            .advantage-item { flex: 1 1 100%; }
-            .dashboard-header { flex-direction: column; text-align: center; gap: 10px; }
-            .stats-card-container { flex-direction: column; } 
-
-            /* Układ sklepu przechodzi w kolumnę */
-            .collection-layout { flex-direction: column; gap: 15px; }
-            #filter-sidebar { flex-basis: 100%; border-right: none; border-bottom: 1px solid #DDD; }
-            #product-list-wrapper { width: 100% !important; } /* Reset szerokości na 100% */
-        }
-
-        /* === TELEFON (Mały) === */
-        @media (max-width: 480px) {
-            .hero-content h1 { font-size: 2em; }
-            .btn-main { padding: 12px 40px; font-size: 0.9em; }
-            .mini-footer { flex-direction: column; text-align: center; }
-            .mini-footer p { margin-bottom: 10px; }
-            .mini-footer .social-icons { margin: 10px 0; }
-            #side-menu.open { width: 100%; }
-            #side-menu a { font-size: 16px; }
-
-            /* === POPRAWKA KARTY PRODUKTU DLA TELEFONU === */
-            /* (Szerokość 100% jest już ustawiona w 768px) */
-            
+     
+        @media (max-width: 480px) {
+            .hero-content h1 { font-size: 2em; }
+            .btn-main { padding: 12px 40px; font-size: 0.9em; }
+            .mini-footer { flex-direction: column; text-align: center; }
+            .mini-footer p { margin-bottom: 10px; }
+            .mini-footer .social-icons { margin: 10px 0; }
+            #side-menu.open { width: 100%; }
+            #side-menu a { font-size: 16px; }
+       /* === POPRAWKA KARTY PRODUKTU DLA TELEFONU === */
+           /* Resetuje szerokość kontenera na mobilce */
+            #product-list-wrapper {
+            	width: 100% !important;
+            }
             /* Zmniejszamy odstępy siatki */
             #product-grid {
             	gap: 10px !important;
@@ -879,7 +850,7 @@ source_code
             .product-card .brand { font-size: 1em; }
             .product-card h3 { font-size: 0.85em; line-height: 1.2; }
             .product-card .price { font-size: 1.1em; margin: 5px 0; }
-            
+           
             /* Zmniejszamy odstęp między przyciskami */
             .product-card div[style*="display:flex"] {
             	gap: 5px !important; /* Mniejszy odstęp między przyciskami */
@@ -888,117 +859,117 @@ source_code
             .product-card .btn-add {
             	font-size: 0.75em !important; /* Bardzo mała czcionka */
             	padding: 8px 5px !important; /* Bardzo mały padding */
-                flex-grow: 1;
-                flex-basis: 50%;
+                flex-grow: 1;
+                flex-basis: 50%;
             }
-        }
-    </style>
+        }
+    </style>
 </head>
 <body>
 
-    <div id="side-menu">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        
-        <div id="user-panel-side">
-            </div>
+    <div id="side-menu">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        
+        <div id="user-panel-side">
+            </div>
 
-        <h3 style="color: var(--color-accent-gold); margin-top: 20px; margin-bottom: 30px;">NAWIGACJA</h3>
-        
-        <a id="nav-koszyk-side" onclick="closeNav(); showPage('koszyk-page');">Mój Koszyk (<span class="cart-counter">0</span>)</a>
-        <a id="nav-kolekcja-side" onclick="closeNav(); showPage('kolekcja-page');">Odkryj Kolekcję</a>
-        <a id="nav-onas-side" onclick="closeNav(); showPage('onas-page');">Nasza Misja (O Nas)</a>
-        <a id="nav-regulamin-side" onclick="closeNav(); showPage('regulamin-page');">Regulamin i Zasady</a>
-        <a id="nav-polityka-side" onclick="closeNav(); showPage('polityka-page');">Polityka Prywatności</a>
-        <a id="nav-zwroty-side" onclick="closeNav(); showPage('zwroty-page');">Zwroty i Reklamacje</a>
-        <a onclick="closeNav(); showPage('pomoc-page');">Wsparcie i FAQ</a>
-        <a id="nav-konto-side" onclick="closeNav(); showPage('konto-page');">Konto Klienta</a> 
-        
-        <div style="margin-top: 50px; font-size: 0.9em; color: rgba(255, 255, 255, 0.5);"><p>Tel: 532 116 720</p><p>E-mail: kontakt@premiumflakon.pl</p></div>
-    </div>
+        <h3 style="color: var(--color-accent-gold); margin-top: 20px; margin-bottom: 30px;">NAWIGACJA</h3>
+        
+        <a id="nav-koszyk-side" onclick="closeNav(); showPage('koszyk-page');">Mój Koszyk (<span class="cart-counter">0</span>)</a>
+        <a id="nav-kolekcja-side" onclick="closeNav(); showPage('kolekcja-page');">Odkryj Kolekcję</a>
+        <a id="nav-onas-side" onclick="closeNav(); showPage('onas-page');">Nasza Misja (O Nas)</a>
+        <a id="nav-regulamin-side" onclick="closeNav(); showPage('regulamin-page');">Regulamin i Zasady</a>
+        <a id="nav-polityka-side" onclick="closeNav(); showPage('polityka-page');">Polityka Prywatności</a>
+        <a id="nav-zwroty-side" onclick="closeNav(); showPage('zwroty-page');">Zwroty i Reklamacje</a>
+        <a onclick="closeNav(); showPage('pomoc-page');">Wsparcie i FAQ</a>
+        <a id="nav-konto-side" onclick="closeNav(); showPage('konto-page');">Konto Klienta</a> 
+        
+        <div style="margin-top: 50px; font-size: 0.9em; color: rgba(255, 255, 255, 0.5);"><p>Tel: 532 116 720</p><p>E-mail: kontakt@premiumflakon.pl</p></div>
+    </div>
 
-    <div id="landing-page" class="page-section active">
-        <div class="hero-section">
-            <div class="menu-toggle" onclick="openNav()">&#9776;</div> 
-            <div class="hero-content">
-                <h1><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
-                <p class="hero-slogan">Autentyczność. Luksus. Ekskluzywność.</p>
-                <p>Twój autoryzowany butik luksusowych perfum. <br>**100% Gwarancji Oryginalności.** **Kultowe Zapachy Świata.**</p>
-                <a onclick="showPage('kolekcja-page');" class="btn-main">Odkryj Pełną Kolekcję &rarr;</a>
-            </div>
-        </div>
-        
-        <div class="values-section">
-            <div class="container">
-                <h2 style="color: var(--color-accent-gold); margin-bottom: 20px;">Gwarancja PREMIUM FLAKON</h2>
-                <div class="value-cards">
-                    <div class="card"><a onclick="showPage('onas-page');" style="color: inherit; text-decoration: none;"><h3>Autentyczność</h3><p>Gwarantujemy 100% oryginalności.</p></a></div>
-                    <div class="card"><a onclick="showPage('onas-page');" style="color: inherit; text-decoration: none;"><h3>Kontrolowany Sourcing</h3><p>Bezpośrednia współpraca z oficjalnymi dystrybutorami.</p></a></div>
-                    <div class="card"><a onclick="showPage('pomoc-page');" style="color: inherit; text-decoration: none;"><h3>Szybka Realizacja</h3><p>Dyskretna, zabezpieczona wysyłka w 24 godziny.</p></a></div>
-                </div>
-            </div>
-        </div>
-        
-        <div id="sourcing" class="detail-section">
-            <div class="container content-2col">
-                <div class="text-content">
-                    <h2 style="color: var(--color-accent-gold);">Rygorystyczny Proces Sourcingu</h2>
-                    <p style="font-size: 1.1em;">W świecie perfum luksusowych, autentyczność to podstawa...</p>
-                    <p>Każdy flakon w naszej ofercie przechodzi wieloetapową weryfikację. Współpracujemy wyłącznie z **autoryzowanymi dystrybutorami** marek niszowych i luksusowych, co pozwala nam eliminować ryzyko produktów z niepewnych źródeł.</p>
-                    <p>Nasze magazyny spełniają rygorystyczne normy dotyczące temperatury i wilgotności. Zapachy są chronione przed światłem i wahaniami termicznymi, co **gwarantuje zachowanie ich pierwotnej kompozycji i trwałości** aż do momentu dostawy do klienta.</p>
-                    <p style="font-weight: bold; color: var(--color-accent-gold);">Kupujesz pewność. <a onclick="showPage('onas-page');" style="color: var(--color-text-light); text-decoration: underline;">Czytaj więcej o nas.</a></p>
-                </div>
-                <div class="image-mock" style="background-image: url('https://picsum.photos/id/21/500/400'); background-size: cover; background-position: center;"></div>
-            </div>
-        </div>
-        
-        <div id="paleta" class="detail-section">
-            <div class="container content-2col" style="flex-direction: row-reverse;">
-                <div class="text-content">
-                    <h2 style="color: var(--color-accent-gold);">Ekskluzywna Kuratela Zapachów</h2>
-                    <p style="font-size: 1.1em;">Nie jesteśmy hurtownią. Jesteśmy butikiem z wyselekcjonowaną ofertą...</p>
-                    <p>Nasza kolekcja to rezultat głębokiej wiedzy i pasji do perfumiarstwa. Wybieramy wyłącznie te kompozycje, które wyróżniają się **unikalnym składem, historią i mistrzowskim wykonaniem**. Wierzymy, że luksus to doświadczenie, nie tylko cena.</p>
-                    <p>W **PREMIUM FLAKON** znajdziesz rzadkie, trudno dostępne edycje oraz absolutne bestsellery niszowych domów perfumeryjnych. Jeśli szukasz czegoś wyjątkowego, co podkreśli Twój styl, nasza kuratela jest dla Ciebie.</p>
-                    <p style="font-weight: bold; color: var(--color-accent-gold);">Najlepsze z najlepszych – gotowe do odkrycia. <a onclick="showPage('kolekcja-page');" style="color: var(--color-text-light); text-decoration: underline;">Przejdź do katalogu.</a></p>
-                </div>
-                <div class="image-mock" style="background-image: url('https://picsum.photos/id/40/500/400'); background-size: cover; background-position: center;"></div>
-            </div>
-        </div>
-        
-        <div class="mini-footer container">
-            <p>&copy; 2025 PREMIUM FLAKON. Wszelkie prawa zastrzeżone.</p>
-            <div class="social-icons">
-                <span>Znajdziesz nas na:</span>
-                <a href="#" target="_blank" title="Facebook">&#9733; FB</a> 
-                <a href="#" target="_blank" title="Instagram">&#9733; IG</a>
-                <a href="#" target="_blank" title="TikTok">&#9733; TikTok</a>
-            </div>
-            <a onclick="showPage('pomoc-page');">Potrzebujesz Pomocy? &rarr;</a>
-        </div>
-    </div>
+    <div id="landing-page" class="page-section active">
+        <div class="hero-section">
+            <div class="menu-toggle" onclick="openNav()">&#9776;</div> 
+            <div class="hero-content">
+                <h1><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
+                <p class="hero-slogan">Autentyczność. Luksus. Ekskluzywność.</p>
+                <p>Twój autoryzowany butik luksusowych perfum. <br>**100% Gwarancji Oryginalności.** **Kultowe Zapachy Świata.**</p>
+                <a onclick="showPage('kolekcja-page');" class="btn-main">Odkryj Pełną Kolekcję &rarr;</a>
+            </div>
+        </div>
+        
+        <div class="values-section">
+            <div class="container">
+                <h2 style="color: var(--color-accent-gold); margin-bottom: 20px;">Gwarancja PREMIUM FLAKON</h2>
+                <div class="value-cards">
+                    <div class="card"><a onclick="showPage('onas-page');" style="color: inherit; text-decoration: none;"><h3>Autentyczność</h3><p>Gwarantujemy 100% oryginalności.</p></a></div>
+                    <div class="card"><a onclick="showPage('onas-page');" style="color: inherit; text-decoration: none;"><h3>Kontrolowany Sourcing</h3><p>Bezpośrednia współpraca z oficjalnymi dystrybutorami.</p></a></div>
+                    <div class="card"><a onclick="showPage('pomoc-page');" style="color: inherit; text-decoration: none;"><h3>Szybka Realizacja</h3><p>Dyskretna, zabezpieczona wysyłka w 24 godziny.</p></a></div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="sourcing" class="detail-section">
+            <div class="container content-2col">
+                <div class="text-content">
+                    <h2 style="color: var(--color-accent-gold);">Rygorystyczny Proces Sourcingu</h2>
+                    <p style="font-size: 1.1em;">W świecie perfum luksusowych, autentyczność to podstawa...</p>
+                    <p>Każdy flakon w naszej ofercie przechodzi wieloetapową weryfikację. Współpracujemy wyłącznie z **autoryzowanymi dystrybutorami** marek niszowych i luksusowych, co pozwala nam eliminować ryzyko produktów z niepewnych źródeł.</p>
+                    <p>Nasze magazyny spełniają rygorystyczne normy dotyczące temperatury i wilgotności. Zapachy są chronione przed światłem i wahaniami termicznymi, co **gwarantuje zachowanie ich pierwotnej kompozycji i trwałości** aż do momentu dostawy do klienta.</p>
+                    <p style="font-weight: bold; color: var(--color-accent-gold);">Kupujesz pewność. <a onclick="showPage('onas-page');" style="color: var(--color-text-light); text-decoration: underline;">Czytaj więcej o nas.</a></p>
+                </div>
+                <div class="image-mock" style="background-image: url('https://picsum.photos/id/21/500/400'); background-size: cover; background-position: center;"></div>
+            </div>
+        </div>
+        
+        <div id="paleta" class="detail-section">
+            <div class="container content-2col" style="flex-direction: row-reverse;">
+                <div class="text-content">
+                    <h2 style="color: var(--color-accent-gold);">Ekskluzywna Kuratela Zapachów</h2>
+                    <p style="font-size: 1.1em;">Nie jesteśmy hurtownią. Jesteśmy butikiem z wyselekcjonowaną ofertą...</p>
+                    <p>Nasza kolekcja to rezultat głębokiej wiedzy i pasji do perfumiarstwa. Wybieramy wyłącznie te kompozycje, które wyróżniają się **unikalnym składem, historią i mistrzowskim wykonaniem**. Wierzymy, że luksus to doświadczenie, nie tylko cena.</p>
+                    <p>W **PREMIUM FLAKON** znajdziesz rzadkie, trudno dostępne edycje oraz absolutne bestsellery niszowych domów perfumeryjnych. Jeśli szukasz czegoś wyjątkowego, co podkreśli Twój styl, nasza kuratela jest dla Ciebie.</p>
+                    <p style="font-weight: bold; color: var(--color-accent-gold);">Najlepsze z najlepszych – gotowe do odkrycia. <a onclick="showPage('kolekcja-page');" style="color: var(--color-text-light); text-decoration: underline;">Przejdź do katalogu.</a></p>
+                </div>
+                <div class="image-mock" style="background-image: url('https://picsum.photos/id/40/500/400'); background-size: cover; background-position: center;"></div>
+            </div>
+        </div>
+        
+        <div class="mini-footer container">
+            <p>&copy; 2025 PREMIUM FLAKON. Wszelkie prawa zastrzeżone.</p>
+            <div class="social-icons">
+                <span>Znajdziesz nas na:</span>
+                <a href="#" target="_blank" title="Facebook">&#9733; FB</a> 
+                <a href="#" target="_blank" title="Instagram">&#9733; IG</a>
+                <a href="#" target="_blank" title="TikTok">&#9733; TikTok</a>
+            </div>
+            <a onclick="showPage('pomoc-page');">Potrzebujesz Pomocy? &rarr;</a>
+        </div>
+    </div>
 
-    <div id="kolekcja-page" class="page-section">
-        <header>
-            <div class="container">
-                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
-                <nav id="nav-kolekcja-header">
-                    <a id="link-koszyk-kolekcja" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
-                    <a id="link-kolekcja" onclick="showPage('kolekcja-page');">Kolekcja</a>
-                    <a id="link-onas-kolekcja" onclick="showPage('onas-page');">O Nas</a>
-                    <a id="link-regulamin-kolekcja" onclick="showPage('regulamin-page');">Regulamin</a>
-                    <a id="link-polityka-kolekcja" onclick="showPage('polityka-page');">Polityka</a>
-                    <a id="link-zwroty-kolekcja" onclick="showPage('zwroty-page');">Zwroty</a>
-                    <a id="link-pomoc-kolekcja" onclick="showPage('pomoc-page');">Pomoc</a>
-                    <a id="link-konto-kolekcja" onclick="showPage('konto-page');">Konto</a>
-                </nav>
-                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
-            </div>
-        </header>
+    <div id="kolekcja-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
+                <nav id="nav-kolekcja-header">
+                    <a id="link-koszyk-kolekcja" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                    <a id="link-kolekcja" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas-kolekcja" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin-kolekcja" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-polityka-kolekcja" onclick="showPage('polityka-page');">Polityka</a>
+                    <a id="link-zwroty-kolekcja" onclick="showPage('zwroty-page');">Zwroty</a>
+                    <a id="link-pomoc-kolekcja" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto-kolekcja" onclick="showPage('konto-page');">Konto</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
 
-        <section id="kolekcja" class="collection-section container">
-            <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">EKSKLUZYWNY</span> KATALOG ZAPACHÓW</h2>
-            
-            <div class="collection-layout">
-                
+        <section id="kolekcja" class="collection-section container">
+            <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">EKSKLUZYWNY</span> KATALOG ZAPACHÓW</h2>
+            
+            <div class="collection-layout">
+                
                                 <div id="filter-sidebar">
                     <h4>FILTRUJ WYNIKI</h4>
                     
@@ -1015,9 +986,9 @@ source_code
                         <h4>Kategoria</h4>
                         <label><input type="checkbox" data-filter="category" value="Męskie" onchange="applyFilters()"> Męskie</label>
                         <label><input type="checkbox" data-filter="category" value="Damskie" onchange="applyFilters()"> Damskie</label>
-I                     <label><input type="checkbox" data-filter="category" value="Unisex" onchange="applyFilters()"> Unisex</label>
+                        <label><input type="checkbox" data-filter="category" value="Unisex" onchange="applyFilters()"> Unisex</label>
                     </div>
-                </div>                                 <div id="product-list-wrapper">
+                </div>                                 <div id="product-list-wrapper">
                     <div id="sort-options">
                         <label for="sort-by">Sortuj według:</label>
                         <select id="sort-by" onchange="applyFilters()">
@@ -1030,417 +1001,414 @@ I                     <label><input type="checkbox" data-filter="categ
                     <div id="product-grid">
                         <p id="no-products" style="text-align: center; display: block; padding: 40px; border: 1px solid #CCC; background-color: #EEE;">Ładowanie produktów z Supabase...</p>
                     </div>
-              _ </div>_
+                </div>                 
             </div>
-        </section>
-        <footer id="kolekcja-stopka"></footer>
-    </div>
-    
-    <div id="product-page" class="page-section">
-        <header>
-            <div class="container">
-                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
-                <nav>
-                    <a onclick="showPage('kolekcja-page')">Powrót do kolekcji</a>
-                </nav>
-                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
-            </div>
-      S </header>
+        </section>
+        <footer id="kolekcja-stopka"></footer>
+    </div>
+    
+    <div id="product-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
+                <nav>
+                    <a onclick="showPage('kolekcja-page')">Powrót do kolekcji</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
 
-        <section class="container" style="padding-top:40px; padding-bottom:80px;">
-            <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start;">
-                <div style="display:flex; flex-direction:column; gap:10px;">
-                    <div id="detail-image" style="flex:1; min-width:260px; min-height:320px; background-color:#f3f3f3; border:1px solid #ddd; background-size:cover; background-position:center;"></div>
-                    <div id="detail-thumbnails" style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;"></div>
-                </div>
-                <div style="flex:2; min-width:260px;">
-                    <div style="margin-bottom:10px;"><span id="detail-brand" class="brand"></span></div>
-                    <h2 id="detail-name" style="margin-top:0;"></h2>
-                    <div class="price" id="detail-price" style="margin-bottom:15px;"></div>
-                    <p id="detail-description" style="color:#333; line-height:1.6;"></p>
+        <section class="container" style="padding-top:40px; padding-bottom:80px;">
+            <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start;">
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <div id="detail-image" style="flex:1; min-width:260px; min-height:320px; background-color:#f3f3f3; border:1px solid #ddd; background-size:cover; background-position:center;"></div>
+                    <div id="detail-thumbnails" style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;"></div>
+                </div>
+                <div style="flex:2; min-width:260px;">
+                    <div style="margin-bottom:10px;"><span id="detail-brand" class="brand"></span></div>
+                    <h2 id="detail-name" style="margin-top:0;"></h2>
+                    <div class="price" id="detail-price" style="margin-bottom:15px;"></div>
+                    <p id="detail-description" style="color:#333; line-height:1.6;"></p>
 
-                    <h4 style="margin-top:20px; color:var(--color-accent-gold);">Specyfikacja</h4>
-                    <table id="detail-specs" style="width:100%; border-collapse:collapse; margin-top:10px;">
-                   </table>
+                    <h4 style="margin-top:20px; color:var(--color-accent-gold);">Specyfikacja</h4>
+                    <table id="detail-specs" style="width:100%; border-collapse:collapse; margin-top:10px;">
+                   </table>
 
-                    <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
-                        <button class="btn-main" onclick="addToCartFromDetail()">Dodaj do koszyka</button>
-                        <button class="btn-main" style="background:#333; color:#fff;" onclick="showPage('kolekcja-page')">Powrót</button>
-                        <button id="detail-edit-btn" class="btn-admin-edit" style="display:none; align-self:flex-start;" onclick="editProductFromDetail()">Edytuj (Admin)</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <footer></footer>
-    </div>
+                    <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
+                        <button class="btn-main" onclick="addToCartFromDetail()">Dodaj do koszyka</button>
+                        <button class="btn-main" style="background:#333; color:#fff;" onclick="showPage('kolekcja-page')">Powrót</button>
+                        <button id="detail-edit-btn" class="btn-admin-edit" style="display:none; align-self:flex-start;" onclick="editProductFromDetail()">Edytuj (Admin)</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer></footer>
+    </div>
 
-    <div id="onas-page" class="page-section">
-        <header>
-            <div class="container">
-                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
-                <nav id="nav-onas-header">
-                    <a id="link-koszyk-onas" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
-                    <a id="link-kolekcja-onas" onclick="showPage('kolekcja-page');">Kolekcja</a>
-                    <a id="link-onas" onclick="showPage('onas-page');">O Nas</a>
-                    <a id="link-regulamin-onas" onclick="showPage('regulamin-page');">Regulamin</a>
-                    <a id="link-polityka-onas" onclick="showPage('polityka-page');">Polityka</a>
-                    <a id="link-zwroty-onas" onclick="showPage('zwroty-page');">Zwroty</a>
-S                 <a id="link-pomoc-onas" onclick="showPage('pomoc-page');">Pomoc</a>
-                    <a id="link-konto-onas" onclick="showPage('konto-page');">Konto</a>
-                </nav>
-                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
-            </div>
-        </header>
+    <div id="onas-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
+                <nav id="nav-onas-header">
+                    <a id="link-koszyk-onas" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                    <a id="link-kolekcja-onas" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin-onas" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-polityka-onas" onclick="showPage('polityka-page');">Polityka</a>
+                    <a id="link-zwroty-onas" onclick="showPage('zwroty-page');">Zwroty</a>
+                    <a id="link-pomoc-onas" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto-onas" onclick="showPage('konto-page');">Konto</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
 
-        <section class="about-content container">
-            <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">NASZA</span> FILOZOFIA I MISJA</h2>
-            <p style="font-size: 1.2em; text-align: center; max-width: 800px; margin: 0 auto 50px;">Jesteśmy dedykowanym butikiem, stworzonym z pasji do autentycznej, niszowej perfumerii. Nasza misja to transparentność i gwarancja luksusu.</p>
-            
-            <h3>Działalność PREMIUM FLAKON</h3>
-            <p>**PREMIUM FLAKON** to platforma powstała w celu dostarczania klientom w Polsce wyłącznie **100% oryginalnych perfum luksusowych** w najkrótszym łańcuchu dostaw. Działamy jako wyspecjalizowany butik online, koncentrujący się na autentyczności, globalnym sourcingu i eksperckiej selekcji. Obejmujemy **Warmińsko-Mazurskie (Kętrzyn)** jako naszą bazę operacyjną, skąd realizujemy wysyłki na całą Polskę.</p>
-            
-            <div class="advantage-section">
-                <div class="container" style="max-width: 1000px;">
-                    <h2 style="text-align: center; color: var(--color-text-dark); margin-bottom: 40px;"><span class="gold-text">DLACZEGO</span> PREMIUM FLAKON?</h2>
-                    <p style="text-align: center; color: #666; font-size: 1.1em;">Nasze cztery kluczowe filary, które odróżniają nas od standardowej drogerii.</p>
-                    <div class="advantage-list">
-                        
-                        <div class="advantage-item">
-                            <span class="icon">&#10003;</span>
-                            <h4>Gwarancja 100% Oryginalności</h4>
-                            <p>Współpracujemy tylko z autoryzowanymi dystrybutorami. Każdy flakon to potwierdzona autentyczność.</p>
-                        </div>
-                        <div class="advantage-item">
-                            <span class="icon">&#9733;</span>
-                            <h4>Ekskluzywna Selekcja Niszowa</h4>
-                            <p>Zamiast tysięcy pozycji, oferujemy kuratelę najlepszych i najrzadszych zapachów świata.</p>
-                        </div>
-                        <div class="advantage-item">
-                            <span class="icon">&#9888;</span>
-                            <h4>Rygorystyczny Sourcing</h4>
-                            <p>Kontrola pochodzenia i warunków przechowywania eliminuje wahania jakości i chroni kompozycję.</p>
-                        </div>
-                        <div class="advantage-item">
-                            <span class="icon">&#9992;</span>
-                            <h4>Dyskretna Dostawa w 24h</h4>
-                            <p>Paczki są starannie zabezpieczone i wysyłane z naszej siedziby w Kętrzynie w 24 godziny.</p>
-                        </div>
-                    </div>
-                </div>
-source_code
-            </div>
+        <section class="about-content container">
+            <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">NASZA</span> FILOZOFIA I MISJA</h2>
+            <p style="font-size: 1.2em; text-align: center; max-width: 800px; margin: 0 auto 50px;">Jesteśmy dedykowanym butikiem, stworzonym z pasji do autentycznej, niszowej perfumerii. Nasza misja to transparentność i gwarancja luksusu.</p>
+            
+            <h3>Działalność PREMIUM FLAKON</h3>
+            <p>**PREMIUM FLAKON** to platforma powstała w celu dostarczania klientom w Polsce wyłącznie **100% oryginalnych perfum luksusowych** w najkrótszym łańcuchu dostaw. Działamy jako wyspecjalizowany butik online, koncentrujący się na autentyczności, globalnym sourcingu i eksperckiej selekcji. Obejmujemy **Warmińsko-Mazurskie (Kętrzyn)** jako naszą bazę operacyjną, skąd realizujemy wysyłki na całą Polskę.</p>
+            
+            <div class="advantage-section">
+                <div class="container" style="max-width: 1000px;">
+                    <h2 style="text-align: center; color: var(--color-text-dark); margin-bottom: 40px;"><span class="gold-text">DLACZEGO</span> PREMIUM FLAKON?</h2>
+                    <p style="text-align: center; color: #666; font-size: 1.1em;">Nasze cztery kluczowe filary, które odróżniają nas od standardowej drogerii.</p>
+                    <div class="advantage-list">
+                        
+                        <div class="advantage-item">
+                            <span class="icon">&#10003;</span>
+                            <h4>Gwarancja 100% Oryginalności</h4>
+                            <p>Współpracujemy tylko z autoryzowanymi dystrybutorami. Każdy flakon to potwierdzona autentyczność.</p>
+                        </div>
+                        <div class="advantage-item">
+                            <span class="icon">&#9733;</span>
+                            <h4>Ekskluzywna Selekcja Niszowa</h4>
+                            <p>Zamiast tysięcy pozycji, oferujemy kuratelę najlepszych i najrzadszych zapachów świata.</p>
+                        </div>
+                        <div class="advantage-item">
+                            <span class="icon">&#9888;</span>
+                            <h4>Rygorystyczny Sourcing</h4>
+                            <p>Kontrola pochodzenia i warunków przechowywania eliminuje wahania jakości i chroni kompozycję.</p>
+                        </div>
+                        <div class="advantage-item">
+                            <span class="icon">&#9992;</span>
+                            <h4>Dyskretna Dostawa w 24h</h4>
+                            <p>Paczki są starannie zabezpieczone i wysyłane z naszej siedziby w Kętrzynie w 24 godziny.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <h3>Jak Powstała Działalność: Historia Autentyczności</h3>
-            <p>Pomysł na **PREMIUM FLAKON** zrodził się z frustracji dostępnością niezweryfikowanych produktów na rynku. Zamiast akceptować szarą strefę, zdecydowaliśmy się stworzyć transparentną platformę, która daje absolutną pewność oryginalności. Nasza działalność opiera się na **współpracy bezpośrednio z autoryzowanymi dystrybutorami** i audytach pochodzenia. Eliminujemy ryzyko podróbek i gwarantujemy najwyższą jakość przechowywania, co ma kluczowe znaczenie dla trwałości i kompozycji zapachu.</p>
-        </section>
-        <footer id="onas-stopka"></footer>
-    </div>
+            <h3>Jak Powstała Działalność: Historia Autentyczności</h3>
+            <p>Pomysł na **PREMIUM FLAKON** zrodził się z frustracji dostępnością niezweryfikowanych produktów na rynku. Zamiast akceptować szarą strefę, zdecydowaliśmy się stworzyć transparentną platformę, która daje absolutną pewność oryginalności. Nasza działalność opiera się na **współpracy bezpośrednio z autoryzowanymi dystrybutorami** i audytach pochodzenia. Eliminujemy ryzyko podróbek i gwarantujemy najwyższą jakość przechowywania, co ma kluczowe znaczenie dla trwałości i kompozycji zapachu.</p>
+        </section>
+        <footer id="onas-stopka"></footer>
+    </div>
 
-    <div id="pomoc-page" class="page-section">
-        <header>
-            <div class="container">
-                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
-                <nav id="nav-pomoc-header">
-                    <a id="link-koszyk-pomoc" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
-                    <a id="link-kolekcja-pomoc" onclick="showPage('kolekcja-page');">Kolekcja</a>
-                    <a id="link-onas-pomoc" onclick="showPage('onas-page');">O Nas</a>
-                    <a id="link-regulamin-pomoc" onclick="showPage('regulamin-page');">Regulamin</a>
-                    <a id="link-polityka-pomoc" onclick="showPage('polityka-page');">Polityka</a>
-                    <a id="link-zwroty-pomoc" onclick="showPage('zwroty-page');">Zwroty</a>
-                    <a id="link-pomoc" onclick="showPage('pomoc-page');">Pomoc</a>
-                    <a id="link-konto-pomoc" onclick="showPage('konto-page');">Konto</a>
-                </nav>
-                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
-            </div>
-        </header>
-        
-        <section class="container" style="padding-top: 50px; padding-bottom: 50px;">
-            <h2 style="margin-bottom: 40px; text-align: center;"><span class="gold-text">WSPARCIE</span> I POMOC</h2>
-            <div style="display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start;">
-                
-                <div style="flex: 1; min-width: 300px;">
-                    <h3><span class="gold-text">Bot</span> Wsparcia PREMIUM</h3>
-                    <p>Nasz automatyczny asystent pomoże Ci znaleźć odpowiedzi na najczęściej zadawane pytania. Możesz też wpisać swoje pytanie poniżej:</p>
-                    <div class="chatbot-container">
-                        <div class="chat-header">Asystent PremiumFlakon</div>
-                        <div id="chat-history">
-                            <div class="bot-message">Witaj! Jestem Bot Wsparcia. Jak mogę Ci pomóc?</div>
-S                   </div>
-                        <div id="chat-options" class="chat-options">
-                            </div>
-                        <div id="chat-input-area">
-                            <input type="text" id="user-input" placeholder="Wpisz: Gwarancja, Dostawa, Zwroty..." data-ph-index="0"> 
-                            <button onclick="sendChatMessage()">Wyślij</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="contact-section" style="flex: 1; min-width: 300px;">
-                    <h3><span class="gold-text">Szczegóły</span> Kontaktu</h3>
-                    <p>Jeśli Bot nie odpowiedział na Twoje pytania, skontaktuj się z nami bezpośrednio:</p>
-                    <div class="contact-box" style="margin-top: 20px;">
-                        <h4>Kontakt Telefoniczny</h4>
-                        <strong class="gold-text">Numer Telefonu:</strong><p><a href="tel:532116720">532 116 720</a></p>
-                    </div>
-                    <div class="contact-box" style="margin-top: 20px;">
-                        <h4>Kontakt E-mail</h4>
-                    s   <strong class="gold-text">Adres E-mail:</strong><p><a href="mailto:kontakt@premiumflakon.pl">kontakt@premiumflakon.pl</a></p>
-                    </div>
-                    <div class="contact-box" style="margin-top: 20px;">
-                        <h4>Adres Siedziby</h4>
-                      s   <strong class="gold-text">Lokalizacja:</strong><p>ul. Perfumowa 1, 11-400 Kętrzyn</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-source_code
-        
-        <footer id="pomoc-stopka"></footer>
-    </div>
-    
-    <div id="konto-page" class="page-section">
-        <header>
-            <div class="container">
-                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
-                <nav id="nav-konto-header">
-                    <a id="link-koszyk-konto" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
-                    <a id="link-kolekcja-konto" onclick="showPage('kolekcja-page');">Kolekcja</a>
-                    <a id="link-onas-konto" onclick="showPage('onas-page');">O Nas</a>
-                    <a id="link-regulamin-konto" onclick="showPage('regulamin-page');">Regulamin</a>
-                    <a id="link-polityka-konto" onclick="showPage('polityka-page');">Polityka</a>
-                    <a id="link-zwroty-konto" onclick="showPage('zwroty-page');">Zwroty</a>
-                    <a id="link-pomoc-konto" onclick="showPage('pomoc-page');">Pomoc</a>
-                    <a id="link-konto" onclick="showPage('konto-page');">Konto</a>
-s             </nav>
-                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
-            </div>
-        </header>
+    <div id="pomoc-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
+                <nav id="nav-pomoc-header">
+                    <a id="link-koszyk-pomoc" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                    <a id="link-kolekcja-pomoc" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas-pomoc" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin-pomoc" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-polityka-pomoc" onclick="showPage('polityka-page');">Polityka</a>
+                    <a id="link-zwroty-pomoc" onclick="showPage('zwroty-page');">Zwroty</a>
+                    <a id="link-pomoc" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto-pomoc" onclick="showPage('konto-page');">Konto</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
+        
+        <section class="container" style="padding-top: 50px; padding-bottom: 50px;">
+            <h2 style="margin-bottom: 40px; text-align: center;"><span class="gold-text">WSPARCIE</span> I POMOC</h2>
+            <div style="display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start;">
+                
+                <div style="flex: 1; min-width: 300px;">
+                    <h3><span class="gold-text">Bot</span> Wsparcia PREMIUM</h3>
+                    <p>Nasz automatyczny asystent pomoże Ci znaleźć odpowiedzi na najczęściej zadawane pytania. Możesz też wpisać swoje pytanie poniżej:</p>
+                    <div class="chatbot-container">
+                        <div class="chat-header">Asystent PremiumFlakon</div>
+                        <div id="chat-history">
+                            <div class="bot-message">Witaj! Jestem Bot Wsparcia. Jak mogę Ci pomóc?</div>
+                        </div>
+                        <div id="chat-options" class="chat-options">
+                            </div>
+                        <div id="chat-input-area">
+                            <input type="text" id="user-input" placeholder="Wpisz: Gwarancja, Dostawa, Zwroty..." data-ph-index="0"> 
+                            <button onclick="sendChatMessage()">Wyślij</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="contact-section" style="flex: 1; min-width: 300px;">
+                    <h3><span class="gold-text">Szczegóły</span> Kontaktu</h3>
+                    <p>Jeśli Bot nie odpowiedział na Twoje pytania, skontaktuj się z nami bezpośrednio:</p>
+                    <div class="contact-box" style="margin-top: 20px;">
+                        <h4>Kontakt Telefoniczny</h4>
+                        <strong class="gold-text">Numer Telefonu:</strong><p><a href="tel:532116720">532 116 720</a></p>
+                    </div>
+                    <div class="contact-box" style="margin-top: 20px;">
+                        <h4>Kontakt E-mail</h4>
+                        <strong class="gold-text">Adres E-mail:</strong><p><a href="mailto:kontakt@premiumflakon.pl">kontakt@premiumflakon.pl</a></p>
+                    </div>
+                    <div class="contact-box" style="margin-top: 20px;">
+                        <h4>Adres Siedziby</h4>
+                        <strong class="gold-text">Lokalizacja:</strong><p>ul. Perfumowa 1, 11-400 Kętrzyn</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <footer id="pomoc-stopka"></footer>
+    </div>
+    
+    <div id="konto-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
+                <nav id="nav-konto-header">
+                    <a id="link-koszyk-konto" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                    <a id="link-kolekcja-konto" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas-konto" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin-konto" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-polityka-konto" onclick="showPage('polityka-page');">Polityka</a>
+                    <a id="link-zwroty-konto" onclick="showPage('zwroty-page');">Zwroty</a>
+                    <a id="link-pomoc-konto" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto" onclick="showPage('konto-page');">Konto</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
 
-        <section class="auth-section container" id="konto-content">
-             </section>
+        <section class="auth-section container" id="konto-content">
+             </section>
 
-        <footer id="konto-stopka"></footer>
-    </div>
-    
-    <div id="regulamin-page" class="page-section">
-        <header>
-            <div class="container">
-                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
-                <nav id="nav-regulamin-header">
-                    <a id="link-koszyk-regulamin" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
-                    <a id="link-kolekcja-regulamin" onclick="showPage('kolekcja-page');">Kolekcja</a>
-                    <a id="link-onas-regulamin" onclick="showPage('onas-page');">O Nas</a>
-                    <a id="link-regulamin" onclick="showPage('regulamin-page');">Regulamin</a>
-                    <a id="link-polityka-regulamin" onclick="showPage('polityka-page');">Polityka</a>
-                    <a id="link-zwroty-regulamin" onclick="showPage('zwroty-page');">Zwroty</a>
-                    <a id="link-pomoc-regulamin" onclick="showPage('pomoc-page');">Pomoc</a>
-s                 <a id="link-konto-regulamin" onclick="showPage('konto-page');">Konto</a>
-                </nav>
-                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
-            </div>
-        </header>
-        <section class="container text-page-content">
-            <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">REGULAMIN</span> SPRZEDAŻY I ZASADY SKLEPU</h2>
-            <p style="text-align: center; color: #666; font-size: 1.1em; max-width: 900px; margin: 0 auto 50px;">Aktualna wersja obowiązująca od 01.01.2025 r.</p>
-            <h3>§ 1. Postanowienia Ogólne</h3>
-            <p>Niniejszy regulamin określa zasady dokonywania zakupów w sklepie internetowym **PREMIUM FLAKON**, dostępnym pod adresem premiumflakon.pl. Sprzedawcą jest [Nazwa firmy, NIP, adres - do uzupełnienia].</p>
-            <ul>
-                <li>Definicje: Użyte w regulaminie terminy oznaczają: Klient, Sprzedawca, Sklep, Towar (perfumy luksusowe).</li>
-                <li>Zakres: Regulamin dotyczy umów sprzedaży Towarów zawieranych na odległość.</li>
-            </ul>
-            <h3>§ 2. Zamówienia i Ceny</h3>
-            <h4>2.1. Składanie Zamówień</h4>
-            <p>Zamówienia można składać 24 godziny na dobę poprzez witrynę Sklepu. Do złożenia zamówienia wymagana jest rejestracja konta Klienta lub złożenie zamówienia bez rejestracji.</p>
-            <ul>
-                <li>Potwierdzenie: Po złożeniu zamówienia Klient otrzymuje e-mail z podsumowaniem i potwierdzeniem przyjęcia zamówienia do realizacji.</li>
-                <li>Płatność: Klient zobowiązany jest dokonać płatności w terminie 3 dni roboczych od dnia złożenia zamówienia.</li>
-            </ul>
-            
-            <h4>2.2. Ceny Produktów</h4>
-            <p>Wszystkie ceny podane w Sklepie są cenami brutto (zawierają podatek VAT) i są wyrażone w polskich złotych (PLN).</p>
-            <ul>
-                <li>Cena wiążąca: Wiążąca dla Klienta i Sprzedawcy jest cena Towaru obowiązująca w chwili złożenia zamówienia.</li>
-                <li>Koszty Dostawy: Koszty dostawy są doliczane do ceny Towaru i są widoczne w koszyku przed finalizacją transakcji.</li>
-            </ul>
-            <h3>§ 3. Dostawa i Czas Realizacji</h3>
-            <p>Dostawa Towarów jest ograniczona do terytorium Rzeczypospolitej Polskiej.</p>
-            <ul>
-                <li>Czas Realizacji: Zamówienia są realizowane w ciągu **24 godzin** od momentu zaksięgowania pełnej płatności.</li>
-                <li>Metody Dostawy: Przesyłki realizowane są za pośrednictwem kuriera (DPD/Inpost) lub Paczkomatów.</li>
-                <li>Odbiór Przesyłki: W momencie odbioru Towaru Klient powinien sprawdzić stan przesyłki. W przypadku uszkodzenia należy sporządzić protokół szkody.</li>
-            </ul>
-            <h3>§ 4. Gwarancja Oryginalności i Jakość</h3>
-            <p>Sprzedawca gwarantuje, że wszystkie oferowane Towary są **w 100% oryginalne** i pochodzą z autoryzowanego źródła dystrybucji.</p>
-            <ul>
-                <li>Sourcing: Towary są przechowywane w kontrolowanych warunkach, co zapewnia ich niezmienioną kompozycję i jakość.</li>
-                <li>Brak Wymiany: Perfumy są produktem higienicznym i chemicznym; Sprzedawca nie akceptuje zwrotów Towaru z naruszonym fabrycznym opakowaniem.</li>
-            </ul>
-            <h3>§ 5. Prawo Odstąpienia od Umowy (Zwroty)</h3>
-            <p>Klient będący konsumentem ma prawo odstąpić od umowy sprzedaży w terminie 14 dni bez podania jakiejkolwiek przyczyny.</p>
-            <ul>
-                <li>Wyjątek: Prawo odstąpienia od umowy nie przysługuje w odniesieniu do Towaru dostarczanego w zapieczętowanym opakowaniu, jeżeli opakowanie to zostało otwarte po dostarczeniu (Art. 38 pkt 5 ustawy o prawach konsumenta).</li>
-                <li>Procedura: Aby skorzystać z prawa odstąpienia, należy poinformować Sprzedawcę pisemnie przed upływem 14 dni i odesłać nieużywany Towar w nienaruszonym stanie.</li>
-            </ul>
-        </section>
-        <footer id="regulamin-stopka"></footer>
-    </div>
+        <footer id="konto-stopka"></footer>
+    </div>
+    
+    <div id="regulamin-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
+                <nav id="nav-regulamin-header">
+                    <a id="link-koszyk-regulamin" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                    <a id="link-kolekcja-regulamin" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas-regulamin" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-polityka-regulamin" onclick="showPage('polityka-page');">Polityka</a>
+                    <a id="link-zwroty-regulamin" onclick="showPage('zwroty-page');">Zwroty</a>
+                    <a id="link-pomoc-regulamin" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto-regulamin" onclick="showPage('konto-page');">Konto</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
+        <section class="container text-page-content">
+            <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">REGULAMIN</span> SPRZEDAŻY I ZASADY SKLEPU</h2>
+            <p style="text-align: center; color: #666; font-size: 1.1em; max-width: 900px; margin: 0 auto 50px;">Aktualna wersja obowiązująca od 01.01.2025 r.</p>
+            <h3>§ 1. Postanowienia Ogólne</h3>
+            <p>Niniejszy regulamin określa zasady dokonywania zakupów w sklepie internetowym **PREMIUM FLAKON**, dostępnym pod adresem premiumflakon.pl. Sprzedawcą jest [Nazwa firmy, NIP, adres - do uzupełnienia].</p>
+            <ul>
+                <li>Definicje: Użyte w regulaminie terminy oznaczają: Klient, Sprzedawca, Sklep, Towar (perfumy luksusowe).</li>
+                <li>Zakres: Regulamin dotyczy umów sprzedaży Towarów zawieranych na odległość.</li>
+            </ul>
+            <h3>§ 2. Zamówienia i Ceny</h3>
+            <h4>2.1. Składanie Zamówień</h4>
+            <p>Zamówienia można składać 24 godziny na dobę poprzez witrynę Sklepu. Do złożenia zamówienia wymagana jest rejestracja konta Klienta lub złożenie zamówienia bez rejestracji.</p>
+            <ul>
+                <li>Potwierdzenie: Po złożeniu zamówienia Klient otrzymuje e-mail z podsumowaniem i potwierdzeniem przyjęcia zamówienia do realizacji.</li>
+                <li>Płatność: Klient zobowiązany jest dokonać płatności w terminie 3 dni roboczych od dnia złożenia zamówienia.</li>
+            </ul>
+            
+            <h4>2.2. Ceny Produktów</h4>
+            <p>Wszystkie ceny podane w Sklepie są cenami brutto (zawierają podatek VAT) i są wyrażone w polskich złotych (PLN).</p>
+            <ul>
+                <li>Cena wiążąca: Wiążąca dla Klienta i Sprzedawcy jest cena Towaru obowiązująca w chwili złożenia zamówienia.</li>
+                <li>Koszty Dostawy: Koszty dostawy są doliczane do ceny Towaru i są widoczne w koszyku przed finalizacją transakcji.</li>
+            </ul>
+            <h3>§ 3. Dostawa i Czas Realizacji</h3>
+            <p>Dostawa Towarów jest ograniczona do terytorium Rzeczypospolitej Polskiej.</p>
+            <ul>
+                <li>Czas Realizacji: Zamówienia są realizowane w ciągu **24 godzin** od momentu zaksięgowania pełnej płatności.</li>
+                <li>Metody Dostawy: Przesyłki realizowane są za pośrednictwem kuriera (DPD/Inpost) lub Paczkomatów.</li>
+                <li>Odbiór Przesyłki: W momencie odbioru Towaru Klient powinien sprawdzić stan przesyłki. W przypadku uszkodzenia należy sporządzić protokół szkody.</li>
+            </ul>
+            <h3>§ 4. Gwarancja Oryginalności i Jakość</h3>
+            <p>Sprzedawca gwarantuje, że wszystkie oferowane Towary są **w 100% oryginalne** i pochodzą z autoryzowanego źródła dystrybucji.</p>
+            <ul>
+                <li>Sourcing: Towary są przechowywane w kontrolowanych warunkach, co zapewnia ich niezmienioną kompozycję i jakość.</li>
+                <li>Brak Wymiany: Perfumy są produktem higienicznym i chemicznym; Sprzedawca nie akceptuje zwrotów Towaru z naruszonym fabrycznym opakowaniem.</li>
+            </ul>
+            <h3>§ 5. Prawo Odstąpienia od Umowy (Zwroty)</h3>
+            <p>Klient będący konsumentem ma prawo odstąpić od umowy sprzedaży w terminie 14 dni bez podania jakiejkolwiek przyczyny.</p>
+            <ul>
+                <li>Wyjątek: Prawo odstąpienia od umowy nie przysługuje w odniesieniu do Towaru dostarczanego w zapieczętowanym opakowaniu, jeżeli opakowanie to zostało otwarte po dostarczeniu (Art. 38 pkt 5 ustawy o prawach konsumenta).</li>
+                <li>Procedura: Aby skorzystać z prawa odstąpienia, należy poinformować Sprzedawcę pisemnie przed upływem 14 dni i odesłać nieużywany Towar w nienaruszonym stanie.</li>
+            </ul>
+        </section>
+        <footer id="regulamin-stopka"></footer>
+    </div>
 
-    <div id="polityka-page" class="page-section">
-        <header>
-            <div class="container">
-                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
-                <nav id="nav-polityka-header">
-                    <a id="link-koszyk-polityka" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
-                    <a id="link-kolekcja-polityka" onclick="showPage('kolekcja-page');">Kolekcja</a>
-                    <a id="link-onas-polityka" onclick="showPage('onas-page');">O Nas</a>
-                    <a id="link-regulamin-polityka" onclick="showPage('regulamin-page');">Regulamin</a>
-                    <a id="link-polityka" onclick="showPage('polityka-page');">Polityka</a>
-                    <a id="link-zwroty-polityka" onclick="showPage('zwroty-page');">Zwroty</a>
-                    <a id="link-pomoc-polityka" onclick="showPage('pomoc-page');">Pomoc</a>
-                    <a id="link-konto-polityka" onclick="showPage('konto-page');">Konto</a>
-                </nav>
-                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
-            </div>
-        </header>
-        <section class="container text-page-content">
-            <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">POLITYKA</span> PRYWATNOŚCI</h2>
-            <p style="text-align: center; color: #666; font-size: 1.1em; max-width: 900px; margin: 0 auto 50px;">Ochrona Twoich danych jest dla nas priorytetem. Niniejsza Polityka reguluje zasady przetwarzania danych osobowych.</p>
-            <h3>§ 1. Administrator Danych Osobowych</h3>
-            <p>Administratorem Twoich danych osobowych jest [Nazwa firmy, Adres Siedziby - do uzupełnienia], kontakt możliwy poprzez e-mail: iod@premiumflakon.pl.</p>
-            <h3>§ 2. Cel i Podstawy Przetwarzania Danych</h3>
-            <p>Twoje dane osobowe (imię, nazwisko, adres e-mail, adres dostawy, numer telefonu) są przetwarzane w celu:</p>
-            <ul>
-                <li>**Realizacji zamówień** (podstawa: niezbędność do wykonania umowy Art. 6 ust. 1 lit. b RODO).</li>
-  S           <li>**Obsługi konta Klienta** (podstawa: zgoda na przetwarzanie Art. 6 ust. 1 lit. a RODO).</li>
-                <li>**Marketingu bezpośredniego** (podstawa: prawnie uzasadniony interes Administratora Art. 6 ust. 1 lit. f RODO, w przypadku wcześniej wyrażonej zgody).</li>
-            </ul>
-            <h3>§ 3. Odbiorcy Danych</h3>
-            <p>Twoje dane mogą być udostępniane podmiotom, z którymi współpracujemy, w celu realizacji zamówienia, w tym:</p>
-            <ul>
-                <li>Firmom kurierskim i operatorom pocztowym.</li>
-                <li>Podmiotom obsługującym płatności elektroniczne.</li>
-                <li>Podmiotom świadczącym usługi księgowe i prawne.</li>
-            </ul>
-            <h3>§ 4. Prawa Osoby, Której Dane Dotyczą</h3>
-            <p>Przysługuje Ci prawo do:</p>
-            <ul>
-                <li>Dostępu do swoich danych.</li>
-                <li>Sprostowania, usunięcia lub ograniczenia przetwarzania danych.</li>
-                <li>Wniesienia sprzeciwu wobec przetwarzania.</li>
-                <li>Przenoszenia danych.</li>
-                <li>Wniesienia skargi do organu nadzorczego (Prezesa UODO).</li>
-            </ul>
-            
-            <p>Wycofanie zgody na przetwarzanie danych nie ma wpływu na zgodność z prawem przetwarzania, którego dokonano na podstawie zgody przed jej wycofaniem.</p>
-        </section>
-        <footer id="polityka-stopka"></footer>
-    </div>
+    <div id="polityka-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
+                <nav id="nav-polityka-header">
+                    <a id="link-koszyk-polityka" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                    <a id="link-kolekcja-polityka" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas-polityka" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin-polityka" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-polityka" onclick="showPage('polityka-page');">Polityka</a>
+                    <a id="link-zwroty-polityka" onclick="showPage('zwroty-page');">Zwroty</a>
+                    <a id="link-pomoc-polityka" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto-polityka" onclick="showPage('konto-page');">Konto</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
+        <section class="container text-page-content">
+            <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">POLITYKA</span> PRYWATNOŚCI</h2>
+            <p style="text-align: center; color: #666; font-size: 1.1em; max-width: 900px; margin: 0 auto 50px;">Ochrona Twoich danych jest dla nas priorytetem. Niniejsza Polityka reguluje zasady przetwarzania danych osobowych.</p>
+            <h3>§ 1. Administrator Danych Osobowych</h3>
+            <p>Administratorem Twoich danych osobowych jest [Nazwa firmy, Adres Siedziby - do uzupełnienia], kontakt możliwy poprzez e-mail: iod@premiumflakon.pl.</p>
+            <h3>§ 2. Cel i Podstawy Przetwarzania Danych</h3>
+            <p>Twoje dane osobowe (imię, nazwisko, adres e-mail, adres dostawy, numer telefonu) są przetwarzane w celu:</p>
+            <ul>
+                <li>**Realizacji zamówień** (podstawa: niezbędność do wykonania umowy Art. 6 ust. 1 lit. b RODO).</li>
+                <li>**Obsługi konta Klienta** (podstawa: zgoda na przetwarzanie Art. 6 ust. 1 lit. a RODO).</li>
+                <li>**Marketingu bezpośredniego** (podstawa: prawnie uzasadniony interes Administratora Art. 6 ust. 1 lit. f RODO, w przypadku wcześniej wyrażonej zgody).</li>
+            </ul>
+            <h3>§ 3. Odbiorcy Danych</h3>
+            <p>Twoje dane mogą być udostępniane podmiotom, z którymi współpracujemy, w celu realizacji zamówienia, w tym:</p>
+            <ul>
+                <li>Firmom kurierskim i operatorom pocztowym.</li>
+                <li>Podmiotom obsługującym płatności elektroniczne.</li>
+                <li>Podmiotom świadczącym usługi księgowe i prawne.</li>
+            </ul>
+            <h3>§ 4. Prawa Osoby, Której Dane Dotyczą</h3>
+            <p>Przysługuje Ci prawo do:</p>
+            <ul>
+                <li>Dostępu do swoich danych.</li>
+                <li>Sprostowania, usunięcia lub ograniczenia przetwarzania danych.</li>
+                <li>Wniesienia sprzeciwu wobec przetwarzania.</li>
+                <li>Przenoszenia danych.</li>
+                <li>Wniesienia skargi do organu nadzorczego (Prezesa UODO).</li>
+            </ul>
+            
+            <p>Wycofanie zgody na przetwarzanie danych nie ma wpływu na zgodność z prawem przetwarzania, którego dokonano na podstawie zgody przed jej wycofaniem.</p>
+        </section>
+        <footer id="polityka-stopka"></footer>
+    </div>
 
-    <div id="zwroty-page" class="page-section">
-        <header>
-            <div class="container">
-                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
-                <nav id="nav-zwroty-header">
-                    <a id="link-koszyk-zwroty" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
-                    <a id="link-kolekcja-zwroty" onclick="showPage('kolekcja-page');">Kolekcja</a>
-                    <a id="link-onas-zwroty" onclick="showPage('onas-page');">O Nas</a>
-                    <a id="link-regulamin-zwroty" onclick="showPage('regulamin-page');">Regulamin</a>
-s               <a id="link-polityka-zwroty" onclick="showPage('polityka-page');">Polityka</a>
-                    <a id="link-zwroty" onclick="showPage('zwroty-page');">Zwroty</a>
-                    <a id="link-pomoc-zwroty" onclick="showPage('pomoc-page');">Pomoc</a>
-                    <a id="link-konto-zwroty" onclick="showPage('konto-page');">Konto</a>
-                </nav>
-                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
-            </div>
-        </header>
-        <section class="container text-page-content">
-            <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">ZWROTY</span> I REKLAMACJE</h2>
-            <p style="text-align: center; color: #666; font-size: 1.1em; max-width: 900px; margin: 0 auto 50px;">Szczegółowe informacje dotyczące odstąpienia od umowy i procedur reklamacyjnych.</p>
-s         <h3>§ 1. Prawo Odstąpienia od Umowy (Zwroty)</h3>
-            <p>Jako konsument masz prawo odstąpić od umowy zakupu bez podawania przyczyny w terminie 14 dni od dnia otrzymania przesyłki.</p>
-            
-            <h4>1.1. Warunki Zwrotu Produktów Higienicznych</h4>
-            <p>Zgodnie z Art. 38 pkt 5 ustawy o prawach konsumenta, **perfumy są towarem dostarczanym w zapieczętowanym opakowaniu** i stanowią produkt higieniczny. Prawo odstąpienia od umowy **nie przysługuje**, jeżeli opakowanie fabryczne (folia, plomba, zabezpieczenie) zostało naruszone lub usunięte.</p>
-            <ul>
-                <li>Zwracany Towar musi być nieużywany i znajdować się w stanie nienaruszonym (fabrycznie zapakowany).</li>
-                <li>Zwrot pieniędzy następuje w terminie 14 dni od otrzymania oświadczenia o odstąpieniu, pod warunkiem zwrotu nienaruszonego towaru.</li>
-s         </ul>
-            <h3>§ 2. Procedura Reklamacyjna (Wady Produktu)</h3>
-            <p>Reklamacje z tytułu wad produktu (np. uszkodzony atomizer, wada butelki) są rozpatrywane na podstawie przepisów o rękojmi.</p>
-            <h4>2.1. Zgłoszenie Reklamacji</h4>
-            <p>W celu złożenia reklamacji prosimy o kontakt e-mailowy na adres **reklamacje@premiumflakon.pl** z załączeniem:</p>
-            <ul>
-                <li>Dowodu zakupu (paragon lub faktura).</li>
-                <li>Dokładnego opisu wady i okoliczności jej powstania.</li>
-s             <li>Zdjęć lub filmu ilustrującego wadę.</li>
-            </ul>
-            <h4>2.2. Rozpatrzenie i Termin</h4>
-            <p>Reklamacja zostanie rozpatrzona w terminie 14 dni od daty jej otrzymania. O wyniku postępowania Klient zostanie poinformowany drogą mailową.</p>
-            
-            <p style="margin-top: 40px; font-weight: bold;">Adres do zwrotów i reklamacji: PREMIUM FLAKON, ul. Perfumowa 1, 11-400 Kętrzyn.</p>
-        </section>
-        <footer id="zwroty-stopka"></footer>
-    </div>
+    <div id="zwroty-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
+                <nav id="nav-zwroty-header">
+                    <a id="link-koszyk-zwroty" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                    <a id="link-kolekcja-zwroty" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas-zwroty" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin-zwroty" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-polityka-zwroty" onclick="showPage('polityka-page');">Polityka</a>
+                    <a id="link-zwroty" onclick="showPage('zwroty-page');">Zwroty</a>
+                    <a id="link-pomoc-zwroty" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto-zwroty" onclick="showPage('konto-page');">Konto</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
+        <section class="container text-page-content">
+            <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">ZWROTY</span> I REKLAMACJE</h2>
+            <p style="text-align: center; color: #666; font-size: 1.1em; max-width: 900px; margin: 0 auto 50px;">Szczegółowe informacje dotyczące odstąpienia od umowy i procedur reklamacyjnych.</p>
+            <h3>§ 1. Prawo Odstąpienia od Umowy (Zwroty)</h3>
+            <p>Jako konsument masz prawo odstąpić od umowy zakupu bez podawania przyczyny w terminie 14 dni od dnia otrzymania przesyłki.</p>
+            
+            <h4>1.1. Warunki Zwrotu Produktów Higienicznych</h4>
+            <p>Zgodnie z Art. 38 pkt 5 ustawy o prawach konsumenta, **perfumy są towarem dostarczanym w zapieczętowanym opakowaniu** i stanowią produkt higieniczny. Prawo odstąpienia od umowy **nie przysługuje**, jeżeli opakowanie fabryczne (folia, plomba, zabezpieczenie) zostało naruszone lub usunięte.</p>
+            <ul>
+                <li>Zwracany Towar musi być nieużywany i znajdować się w stanie nienaruszonym (fabrycznie zapakowany).</li>
+                <li>Zwrot pieniędzy następuje w terminie 14 dni od otrzymania oświadczenia o odstąpieniu, pod warunkiem zwrotu nienaruszonego towaru.</li>
+            </ul>
+            <h3>§ 2. Procedura Reklamacyjna (Wady Produktu)</h3>
+            <p>Reklamacje z tytułu wad produktu (np. uszkodzony atomizer, wada butelki) są rozpatrywane na podstawie przepisów o rękojmi.</p>
+            <h4>2.1. Zgłoszenie Reklamacji</h4>
+            <p>W celu złożenia reklamacji prosimy o kontakt e-mailowy na adres **reklamacje@premiumflakon.pl** z załączeniem:</p>
+            <ul>
+                <li>Dowodu zakupu (paragon lub faktura).</li>
+                <li>Dokładnego opisu wady i okoliczności jej powstania.</li>
+                <li>Zdjęć lub filmu ilustrującego wadę.</li>
+            </ul>
+            <h4>2.2. Rozpatrzenie i Termin</h4>
+            <p>Reklamacja zostanie rozpatrzona w terminie 14 dni od daty jej otrzymania. O wyniku postępowania Klient zostanie poinformowany drogą mailową.</p>
+            
+            <p style="margin-top: 40px; font-weight: bold;">Adres do zwrotów i reklamacji: PREMIUM FLAKON, ul. Perfumowa 1, 11-400 Kętrzyn.</p>
+        </section>
+        <footer id="zwroty-stopka"></footer>
+    </div>
 
-    <div id="admin-page" class="page-section">
-        <header>
-            <div class="container">
-                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
-                <nav id="nav-admin-header">
-                    <a onclick="showPage('kolekcja-page');">Podgląd sklepu</a>
-                    <a onclick="logoutUser(); showPage('landing-page');">Wyloguj Admina</a>
-                </nav>
-                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
-            </div>
-        </header>
-        
-        <section id="admin-content" class="container">
-             </section>
+    <div id="admin-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
+                <nav id="nav-admin-header">
+                    <a onclick="showPage('kolekcja-page');">Podgląd sklepu</a>
+                    <a onclick="logoutUser(); showPage('landing-page');">Wyloguj Admina</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
+        
+        <section id="admin-content" class="container">
+             </section>
 
-        <footer id="admin-stopka"></footer>
-    </div>
+        <footer id="admin-stopka"></footer>
+    </div>
 
-    <div id="koszyk-page" class="page-section">
-        <header>
-            <div class="container">
-                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
-                <nav id="nav-koszyk-header">
-                    <a id="link-koszyk" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
-                    <a id="link-kolekcja-koszyk" onclick="showPage('kolekcja-page');">Kolekcja</a>
-                    <a id="link-onas-koszyk" onclick="showPage('onas-page');">O Nas</a>
-                    <a id="link-regulamin-koszyk" onclick="showPage('regulamin-page');">Regulamin</a>
-                    <a id="link-pomoc-koszyk" onclick="showPage('pomoc-page');">Pomoc</a>
-                    <a id="link-konto-koszyk" onclick="showPage('konto-page');">Konto</a>
-                </nav>
-                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
-            </div>
-        </header>
-        
-        <section class="container">
-            <h2 style="margin-bottom: 40px; text-align: center;">TWÓJ <span class="gold-text">KOSZYK</span></h2>
-            
-            <div class="koszyk-layout">
-                <div id="koszyk-lista">
-                    </div>
-                
-                <div id="koszyk-formularz-container">
-                    </div>
-            </div>
-        </section>
-        
-        <footer id="koszyk-stopka"></footer>
-source_code
-    </div>
+    <div id="koszyk-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">PREMIUM</span> FLAKON</a></h1>
+                <nav id="nav-koszyk-header">
+                    <a id="link-koszyk" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                    <a id="link-kolekcja-koszyk" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas-koszyk" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin-koszyk" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-pomoc-koszyk" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto-koszyk" onclick="showPage('konto-page');">Konto</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
+        
+        <section class="container">
+            <h2 style="margin-bottom: 40px; text-align: center;">TWÓJ <span class="gold-text">KOSZYK</span></h2>
+            
+            <div class="koszyk-layout">
+                <div id="koszyk-lista">
+                    </div>
+                
+                <div id="koszyk-formularz-container">
+                    </div>
+            </div>
+        </section>
+        
+        <footer id="koszyk-stopka"></footer>
+    </div>
 
 
-    <template id="auth-template">
-        <h2 style="color: var(--color-text-dark); margin-bottom: 20px; font-size: 2.2em;">Zarządzaj swoim <span class="gold-text">Kontem</span></h2>
-        <p style="color: #666; max-width: 700px; margin: 0 auto 50px;">Zaloguj się, aby śledzić zamówienia, zarządzać ulubionymi zapachami i korzystać ze specjalnych ofert.</p>
-        
-        <div class="auth-container">
-            <div class="auth-form">
-                <h2>Logowanie</h2>
-               <form onsubmit="loginUser(); return false;">
+    <template id="auth-template">
+        <h2 style="color: var(--color-text-dark); margin-bottom: 20px; font-size: 2.2em;">Zarządzaj swoim <span class="gold-text">Kontem</span></h2>
+        <p style="color: #666; max-width: 700px; margin: 0 auto 50px;">Zaloguj się, aby śledzić zamówienia, zarządzać ulubionymi zapachami i korzystać ze specjalnych ofert.</p>
+        
+        <div class="auth-container">
+            <div class="auth-form">
+                <h2>Logowanie</h2>
+               <form onsubmit="loginUser(); return false;">
                     <div class="form-group">
                         <label for="login-email">Adres E-mail</label>
                         <input type="email" id="login-email" placeholder="Wpisz e-mail..." required>
@@ -1452,506 +1420,504 @@ source_code
                     <button type="submit" class="btn-auth">ZALOGUJ SIĘ</button>
                     <div class="forgot-password"><a href="#">Nie pamiętasz hasła?</a></div>
                 </form>
-            </div>
-            
-            <div class="auth-form">
-                <h2>Nowe Konto</h2>
-                <form onsubmit="registerUser(); return false;"> 
-                    <div class="form-group">
-                        <label for="register-username">Nazwa użytkownika (login)</label>
-                        <input type="text" id="register-username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-email">Adres E-mail</label>
-                        <input type="email" id="register-email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-password">Hasło</label>
-                        <input type="password" id="register-password" required>
-                    </div>
-                s     <button type="submit" class="btn-auth">UTWÓRZ KONTO</button>
-                    <p style="margin-top: 20px; font-size: 0.8em; color: #666; text-align: center;">Tworząc konto, akceptujesz <a onclick="showPage('regulamin-page');" style="color: var(--color-accent-gold); cursor: pointer;">Regulamin</a>.</p>
-                </form>
-            </div>
-        </div>
-    </template>
+            </div>
+            
+            <div class="auth-form">
+                <h2>Nowe Konto</h2>
+                <form onsubmit="registerUser(); return false;"> 
+                    <div class="form-group">
+                        <label for="register-username">Nazwa użytkownika (login)</label>
+                        <input type="text" id="register-username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Adres E-mail</label>
+                        <input type="email" id="register-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Hasło</label>
+                        <input type="password" id="register-password" required>
+                    </div>
+                    <button type="submit" class="btn-auth">UTWÓRZ KONTO</button>
+                    <p style="margin-top: 20px; font-size: 0.8em; color: #666; text-align: center;">Tworząc konto, akceptujesz <a onclick="showPage('regulamin-page');" style="color: var(--color-accent-gold); cursor: pointer;">Regulamin</a>.</p>
+                </form>
+            </div>
+        </div>
+    </template>
 
-    <template id="dashboard-template">
-        <div id="user-dashboard">
-            <div class="dashboard-header">
-                <h2>Witaj, <span id="user-name-display" class="gold-text">Kliencie!</span></h2>
-                <button onclick="logoutUser();">Wyloguj &rarr;</button>
-            </div>
-            <div class="dashboard-content">
-                <div class="dashboard-nav">
-                    <a id="nav-orders" class="active" onclick="showDashboardContent('orders')">Twoje Zamówienia</a>
-                    <a id="nav-address" onclick="showDashboardContent('address')">Adresy Dostawy</a>
-                    <a id="nav-profile" onclick="showDashboardContent('profile')">Edytuj Profil</a>
-                    <a onclick="showPage('kolekcja-page')">Przejdź do Sklepu</a>
-                </div>
-                <div id="dashboard-main" class="dashboard-main">
-                     </div>
-            </div>
-        </div>
-    </template>
+    <template id="dashboard-template">
+        <div id="user-dashboard">
+            <div class="dashboard-header">
+                <h2>Witaj, <span id="user-name-display" class="gold-text">Kliencie!</span></h2>
+                <button onclick="logoutUser();">Wyloguj &rarr;</button>
+            </div>
+            <div class="dashboard-content">
+                <div class="dashboard-nav">
+                    <a id="nav-orders" class="active" onclick="showDashboardContent('orders')">Twoje Zamówienia</a>
+                    <a id="nav-address" onclick="showDashboardContent('address')">Adresy Dostawy</a>
+                    <a id="nav-profile" onclick="showDashboardContent('profile')">Edytuj Profil</a>
+                    <a onclick="showPage('kolekcja-page')">Przejdź do Sklepu</a>
+                </div>
+                <div id="dashboard-main" class="dashboard-main">
+                     </div>
+            </div>
+        </div>
+    </template>
 
-    <template id="admin-template">
-        <div id="admin-dashboard-container"> <div class="dashboard-header">
-                <h2>Panel <span class="gold-text">Administratora</span></h2>
-                <button onclick="logoutUser();">Wyloguj &rarr;</button>
-            </div>
-            <div class="dashboard-content">
-                <div class="dashboard-nav">
-                    <a id="nav-admin-stats" class="active" onclick="showAdminContent('stats')">Statystyki</a>
-                    <a id="nav-admin-products" onclick="showAdminContent('products')">Zarządzaj Produktami</a>
-                    <a onclick="showPage('kolekcja-page')">Podgląd Sklepu</a>
-                </div>
-                <div id="admin-main" class="dashboard-main">
-                     </div>
-            </div>
-        </div>
-    </template>
-source_code
+    <template id="admin-template">
+        <div id="admin-dashboard-container"> <div class="dashboard-header">
+                <h2>Panel <span class="gold-text">Administratora</span></h2>
+                <button onclick="logoutUser();">Wyloguj &rarr;</button>
+            </div>
+            <div class="dashboard-content">
+                <div class="dashboard-nav">
+                    <a id="nav-admin-stats" class="active" onclick="showAdminContent('stats')">Statystyki</a>
+                    <a id="nav-admin-products" onclick="showAdminContent('products')">Zarządzaj Produktami</a>
+                    <a onclick="showPage('kolekcja-page')">Podgląd Sklepu</a>
+                </div>
+                <div id="admin-main" class="dashboard-main">
+                     </div>
+            </div>
+        </div>
+    </template>
 
-    <template id="admin-stats-template">
-        <h3>Przegląd Sklepu</h3>
-        <div class="stats-card-container">
-            <div class="stats-card">
-                <h4>Aktywni użytkownicy (symulacja)</h4>
-                <div id="stats-active-users" class="stat-value">...</div>
-            </div>
-            <div class="stats-card">
-                <h4>Łączny przychód (z bazy)</h4>
-                <div id="stats-total-revenue" class="stat-value">...</div>
-            </div>
-            <div class="stats-card">
-                <h4>Liczba zamówień (z bazy)</h4>
-                <div id="stats-total-orders" class="stat-value">...</div>
-            </div>
-        </div>
+    <template id="admin-stats-template">
+        <h3>Przegląd Sklepu</h3>
+        <div class="stats-card-container">
+            <div class="stats-card">
+                <h4>Aktywni użytkownicy (symulacja)</h4>
+                <div id="stats-active-users" class="stat-value">...</div>
+            </div>
+            <div class="stats-card">
+                <h4>Łączny przychód (z bazy)</h4>
+                <div id="stats-total-revenue" class="stat-value">...</div>
+            </div>
+            <div class="stats-card">
+                <h4>Liczba zamówień (z bazy)</h4>
+                <div id="stats-total-orders" class="stat-value">...</div>
+            </div>
+        </div>
 
-        <h3 style="margin-top: 40px;">Wszystkie Złożone Zamówienia</h3>
-        <table class="order-table">
-            <thead>
-                <tr>
-                    <th>ID Zamówienia</th>
-                    <th>Data</th>
-                    <th>Email Klienta</th>
-s                 <th>Przedmioty</th>
-                    <th>Suma</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="admin-orders-list-body">
-                 </tbody>
-        </table>
-    </template>
+        <h3 style="margin-top: 40px;">Wszystkie Złożone Zamówienia</h3>
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th>ID Zamówienia</th>
+                    <th>Data</th>
+                    <th>Email Klienta</th>
+                    <th>Przedmioty</th>
+                    <th>Suma</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="admin-orders-list-body">
+                 </tbody>
+        </table>
+    </template>
 
-    <template id="admin-products-template">
-        <h2 style="text-align: center; margin-bottom: 40px;">ZARZĄDZANIE <span class="gold-text">PRODUKTAMI</span></h2>
-        
-        <div class="admin-layout">
-            <div id="admin-form-container" class="admin-form-container">
-                <h3 id="admin-form-title" style="color: var(--color-accent-gold); text-align: center;">Dodaj Nowy Produkt</h3>
-                
-                <form id="admin-product-form" onsubmit="handleAdminFormSubmit(event)">
-                    <input type="hidden" id="admin-product-id">
-                    
-                    <div class="form-group">
-                        <label for="admin-brand">Marka</label>
-                        <input type="text" id="admin-brand" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="admin-name">Nazwa Produktu (np. Aventus (EDP 100ml))</label>
-                        <input type="text" id="admin-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="admin-price">Cena (tylko liczba, np. 1250)</label>
-                        <input type="number" id="admin-price" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="admin-category">Kategoria</label>
-                        <select id="admin-category" required>
-                            <option value="Męskie">Męskie</option>
-                            <option value="Damskie">Damskie</option>
-                            <option value="Unisex">Unisex</option>
-                        </select>
-                s   </div>
+    <template id="admin-products-template">
+        <h2 style="text-align: center; margin-bottom: 40px;">ZARZĄDZANIE <span class="gold-text">PRODUKTAMI</span></h2>
+        
+        <div class="admin-layout">
+            <div id="admin-form-container" class="admin-form-container">
+                <h3 id="admin-form-title" style="color: var(--color-accent-gold); text-align: center;">Dodaj Nowy Produkt</h3>
+                
+                <form id="admin-product-form" onsubmit="handleAdminFormSubmit(event)">
+                    <input type="hidden" id="admin-product-id">
+                    
+                    <div class="form-group">
+                        <label for="admin-brand">Marka</label>
+                        <input type="text" id="admin-brand" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-name">Nazwa Produktu (np. Aventus (EDP 100ml))</label>
+                        <input type="text" id="admin-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-price">Cena (tylko liczba, np. 1250)</label>
+                        <input type="number" id="admin-price" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-category">Kategoria</label>
+                        <select id="admin-category" required>
+                            <option value="Męskie">Męskie</option>
+                            <option value="Damskie">Damskie</option>
+                            <option value="Unisex">Unisex</option>
+                        </select>
+                    </div>
 
-                    <div class="form-group">
-                        <label for="admin-description">Opis produktu</label>
-                        <textarea id="admin-description" rows="4"></textarea>
-                    </div>
+                    <div class="form-group">
+                        <label for="admin-description">Opis produktu</label>
+                        <textarea id="admin-description" rows="4"></textarea>
+                    </div>
 
-                    <div class="form-group">
-s                   <label>Specyfikacja (klucz → wartość)</label>
-                        <div id="admin-specs-list"></div>
-                        <button type="button" class="btn-admin-clear" onclick="addSpecField()">Dodaj pole specyfikacji</button>
-                    </div>
+                    <div class="form-group">
+                        <label>Specyfikacja (klucz → wartość)</label>
+                        <div id="admin-specs-list"></div>
+                        <button type="button" class="btn-admin-clear" onclick="addSpecField()">Dodaj pole specyfikacji</button>
+                    </div>
 
-                    <div class="form-group">
-                        <label for="admin-images">Zdjęcia produktu (max 5)</label>
-                        <input type="file" id="admin-images" accept="image/*" multiple>
-                        <div id="admin-image-previews" style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;"></div>
-                        <small style="color:#666;">Wgrywane obrazy zapisywane są lokalnie w przeglądarce jako data URL (localStorage).</small>
-                    </div>
-                    
-                    <button type="submit" class="btn-auth">Zapisz Produkt</button>
-                    <button type="button" class="btn-admin-clear" onclick="clearAdminForm()">Wyczyść formularz</button>
-                </form>
-            </div>
+                    <div class="form-group">
+                        <label for="admin-images">Zdjęcia produktu (max 5)</label>
+                        <input type="file" id="admin-images" accept="image/*" multiple>
+                        <div id="admin-image-previews" style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;"></div>
+                        <small style="color:#666;">Wgrywane obrazy zapisywane są lokalnie w przeglądarce jako data URL (localStorage).</small>
+                    </div>
+                    
+                    <button type="submit" class="btn-auth">Zapisz Produkt</button>
+                    <button type="button" class="btn-admin-clear" onclick="clearAdminForm()">Wyczyść formularz</button>
+                </form>
+            </div>
 
-            <div class="admin-list-container">
-                <h3>Obecna Baza Produktów</h3>
-                <table class="admin-product-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Marka</th>
-                            <th>Nazwa</th>
-                            <th>Cena</th>
-                            <th>Kategoria</th>
-source_code
-                            <th>Akcje</th>
-                        </tr>
-                    </thead>
-                    <tbody id="admin-product-list-body">
-                         </tbody>
-                </table>
-            </div>
-        </div>
-    </template>
+            <div class="admin-list-container">
+                <h3>Obecna Baza Produktów</h3>
+                <table class="admin-product-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Marka</th>
+                            <th>Nazwa</th>
+                            <th>Cena</th>
+                            <th>Kategoria</th>
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-product-list-body">
+                         </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
 
 
 <script>
-    // ===============================================
-    // === KROK 1: INICJALIZACJA KLIENTA SUPABASE ===
-    // ===============================================
-    // WAŻNE: Klucze brane z Twojego kodu. Upewnij się, że tabela 'orders' istnieje i ma włączone RLS dla anon.
-    const SUPABASE_URL = 'https://dtgwyrvbqpefrcjdnqqv.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0Z3d5cnZicXBlZnJjamRucXF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwMTU3MjIsImV4cCI6MjA3NzU5MTcyMn0.WObj9HRon0hYM9m9JC-ty1bE1DXxzwQ7RmkfValxJCs';
-    
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    console.log('Klient Supabase zainicjalizowany.');
+    // ===============================================
+    // === KROK 1: INICJALIZACJA KLIENTA SUPABASE ===
+    // ===============================================
+    // WAŻNE: Klucze brane z Twojego kodu. Upewnij się, że tabela 'orders' istnieje i ma włączone RLS dla anon.
+    const SUPABASE_URL = 'https://dtgwyrvbqpefrcjdnqqv.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0Z3d5cnZicXBlZnJjamRucXF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwMTU3MjIsImV4cCI6MjA3NzU5MTcyMn0.WObj9HRon0hYM9m9JC-ty1bE1DXxzwQ7RmkfValxJCs';
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('Klient Supabase zainicjalizowany.');
 
-    // ===============================================
-    // === KLUCZE LOCALSTORAGE & MOCK DATA (zachowane dla fallbacku) ===
-    // ===============================================
-    const LS_PRODUCTS_KEY = 'pf_products';
-    const LS_USERS_KEY = 'pf_users';
-    const LS_SESSION_KEY = 'pf_currentUser';
-    const LS_ORDERS_KEY = 'pf_orders'; 
-    const LS_CART_KEY = 'pf_cart';
-    
-    const initialProductsData = [
-        { id: 'PF101', brand: 'Creed', name: 'Aventus (EDP 100ml)', category: 'Męskie', price: 1250, description: '...', specs: [], images: [] },
-        { id: 'PF102', brand: 'Parfums de Marly', name: 'Layton (EDP 75ml)', category: 'Unisex', price: 899, description: '...', specs: [], images: [] },
-        { id: 'PF103', brand: 'Tom Ford', name: 'Tuscan Leather (EDP 50ml)', category: 'Unisex', price: 720, description: '...', specs: [], images: [] },
-        { id: 'PF104', brand: 'Frederic Malle', name: 'Portrait of a Lady (EDP 50ml)', category: 'Damskie', price: 1100, description: '...', specs: [], images: [] },
-        { id: 'PF105', brand: 'Kilian', name: 'Love, Don\'t Be Shy (EDP 50ml)', category: 'Damskie', price: 980, description: '...', specs: [], images: [] },
-    ];
-    const initialOrdersData = [
-        { id: '2025/08/01', date: '20.08.2025', email: 'michal@premium.pl', items: 'Aventus (100ml)', total: 1250, status: 'Wysłane' },
-        { id: '2025/07/15', date: '15.07.2025', email: 'michal@premium.pl', items: 'Layton (75ml)', total: 899, status: 'Oczekuje' },
-    ];
+    // ===============================================
+    // === KLUCZE LOCALSTORAGE & MOCK DATA (zachowane dla fallbacku) ===
+    // ===============================================
+    const LS_PRODUCTS_KEY = 'pf_products';
+    const LS_USERS_KEY = 'pf_users';
+    const LS_SESSION_KEY = 'pf_currentUser';
+    const LS_ORDERS_KEY = 'pf_orders'; 
+    const LS_CART_KEY = 'pf_cart';
+    
+    const initialProductsData = [
+        { id: 'PF101', brand: 'Creed', name: 'Aventus (EDP 100ml)', category: 'Męskie', price: 1250, description: '...', specs: [], images: [] },
+        { id: 'PF102', brand: 'Parfums de Marly', name: 'Layton (EDP 75ml)', category: 'Unisex', price: 899, description: '...', specs: [], images: [] },
+        { id: 'PF103', brand: 'Tom Ford', name: 'Tuscan Leather (EDP 50ml)', category: 'Unisex', price: 720, description: '...', specs: [], images: [] },
+        { id: 'PF104', brand: 'Frederic Malle', name: 'Portrait of a Lady (EDP 50ml)', category: 'Damskie', price: 1100, description: '...', specs: [], images: [] },
+        { id: 'PF105', brand: 'Kilian', name: 'Love, Don\'t Be Shy (EDP 50ml)', category: 'Damskie', price: 980, description: '...', specs: [], images: [] },
+    ];
+    const initialOrdersData = [
+        { id: '2025/08/01', date: '20.08.2025', email: 'michal@premium.pl', items: 'Aventus (100ml)', total: 1250, status: 'Wysłane' },
+        { id: '2025/07/15', date: '15.07.2025', email: 'michal@premium.pl', items: 'Layton (75ml)', total: 899, status: 'Oczekuje' },
+    ];
 
-    let activeUserInterval = null;
-    let adminImageData = [];
-    let currentDetailProductId = null; 
-    let activeUser = null; // ZMIANA: Globalny obiekt użytkownika
-    
-    // ===============================================
-    // === NOWA LOGIKA AUTORYZACJI UŻYTKOWNIKA/ADMINA (Supabase Auth) ===
-    // ===============================================
+    let activeUserInterval = null;
+    let adminImageData = [];
+    let currentDetailProductId = null; 
+    let activeUser = null; // ZMIANA: Globalny obiekt użytkownika
+    
+    // ===============================================
+    // === NOWA LOGIKA AUTORYZACJI UŻYTKOWNIKA/ADMINA (Supabase Auth) ===
+    // ===============================================
 
-    /** * Sprawdza sesję w Supabase i synchronizuje ją z LocalStorage/globalną zmienną.
-     * Zmienia 'activeUser' i aktualizuje widok konta.
-     */
-    async function syncUserSession() {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-            console.error('Błąd pobierania sesji:', error);
-            activeUser = null;
-        } else if (session) {
-            const user = session.user;
-            // Sprawdzenie, czy user_metadata.is_admin jest ustawione na true
-            const isAdmin = user.user_metadata && user.user_metadata.is_admin === true; 
-            
-            activeUser = {
-                email: user.email,
-                id: user.id,
-                username: user.user_metadata.username || user.email.split('@')[0],
-                isAdmin: isAdmin,
-                token: session.access_token
-            };
-            localStorage.setItem(LS_SESSION_KEY, JSON.stringify(activeUser));
-            console.log('Sesja zalogowana. Admin:', isAdmin);
-        } else {
-            activeUser = null;
-            localStorage.removeItem(LS_SESSION_KEY);
-            console.log('Użytkownik wylogowany.');
-        }
-        updateSideMenu(); // Odświeżenie widoku w menu
-    }
-    
-    /** Funkcja logowania użytkownika/admina */
-    async function loginUser() {
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
+    /** * Sprawdza sesję w Supabase i synchronizuje ją z LocalStorage/globalną zmienną.
+     * Zmienia 'activeUser' i aktualizuje widok konta.
+     */
+    async function syncUserSession() {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+            console.error('Błąd pobierania sesji:', error);
+            activeUser = null;
+        } else if (session) {
+            const user = session.user;
+            // Sprawdzenie, czy user_metadata.is_admin jest ustawione na true
+            const isAdmin = user.user_metadata && user.user_metadata.is_admin === true; 
+            
+            activeUser = {
+                email: user.email,
+                id: user.id,
+                username: user.user_metadata.username || user.email.split('@')[0],
+                isAdmin: isAdmin,
+                token: session.access_token
+            };
+            localStorage.setItem(LS_SESSION_KEY, JSON.stringify(activeUser));
+            console.log('Sesja zalogowana. Admin:', isAdmin);
+        } else {
+            activeUser = null;
+            localStorage.removeItem(LS_SESSION_KEY);
+            console.log('Użytkownik wylogowany.');
+        }
+        updateSideMenu(); // Odświeżenie widoku w menu
+    }
+    
+    /** Funkcja logowania użytkownika/admina */
+    async function loginUser() {
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
 
-        const { error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password,
-        });
+        const { error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password,
+        });
 
-        if (error) {
-            alert(`Błąd logowania: ${error.message}`);
-            return;
-        }
+        if (error) {
+            alert(`Błąd logowania: ${error.message}`);
+            return;
+        }
 
-        await syncUserSession(); 
-        
-        if (activeUser && activeUser.isAdmin) {
-            alert(`Witaj, Administratorze ${activeUser.username}! Przekierowuję do panelu.`);
-            showPage('admin-page');
-        } else if (activeUser) {
-            alert(`Witaj, ${activeUser.username}! Zalogowano pomyślnie.`);
-            showPage('konto-page');
-        } else {
-             // W rzadkich przypadkach, gdy logowanie się powiodło, ale activeUser jest nullem
-             alert('Zalogowano pomyślnie. Proszę odświeżyć stronę lub spróbować ponownie, jeśli panel się nie załadował.'); 
-        }
-    }
+        await syncUserSession(); 
+        
+        if (activeUser && activeUser.isAdmin) {
+            alert(`Witaj, Administratorze ${activeUser.username}! Przekierowuję do panelu.`);
+            showPage('admin-page');
+        } else if (activeUser) {
+            alert(`Witaj, ${activeUser.username}! Zalogowano pomyślnie.`);
+            showPage('konto-page');
+        } else {
+             // W rzadkich przypadkach, gdy logowanie się powiodło, ale activeUser jest nullem
+             alert('Zalogowano pomyślnie. Proszę odświeżyć stronę lub spróbować ponownie, jeśli panel się nie załadował.'); 
+        }
+    }
 
-    /** Funkcja wylogowania (w tym admina) */
-    async function logoutUser() {
-        const { error } = await supabase.auth.signOut();
-        
-        if (error) {
-            console.error('Błąd wylogowania:', error);
-            alert('Wystąpił błąd podczas wylogowywania.');
-        } else {
-            alert('Wylogowano pomyślnie.');
-            activeUser = null;
-            localStorage.removeItem(LS_SESSION_KEY);
-            updateSideMenu();
-            showPage('landing-page');
-        }
-    }
+    /** Funkcja wylogowania (w tym admina) */
+    async function logoutUser() {
+        const { error } = await supabase.auth.signOut();
+        
+        if (error) {
+            console.error('Błąd wylogowania:', error);
+            alert('Wystąpił błąd podczas wylogowywania.');
+        } else {
+            alert('Wylogowano pomyślnie.');
+            activeUser = null;
+            localStorage.removeItem(LS_SESSION_KEY);
+            updateSideMenu();
+            showPage('landing-page');
+        }
+    }
 
-    /** Rejestracja nowego użytkownika */
-    async function registerUser() {
-        const username = document.getElementById('register-username').value;
-        const email = document.getElementById('register-email').value;
-        const password = document.getElementById('register-password').value;
-        
-        const { error } = await supabase.auth.signUp({
-            email: email,
-            password: password,
-            options: {
-                data: { username: username, is_admin: false } // Domyślnie: is_admin: false
-            }
-        });
+    /** Rejestracja nowego użytkownika */
+    async function registerUser() {
+        const username = document.getElementById('register-username').value;
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        
+        const { error } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+                data: { username: username, is_admin: false } // Domyślnie: is_admin: false
+            }
+        });
 
-        if (error) {
-            alert(`Błąd rejestracji: ${error.message}`);
-            return;
-        }
-        
-        alert('Konto utworzone! Sprawdź swoją skrzynkę mailową, aby potwierdzić rejestrację i się zalogować.');
-S       // Wyczyść formularz
-        document.getElementById('register-username').value = '';
-        document.getElementById('register-email').value = '';
-        document.getElementById('register-password').value = '';
-        
-        // Przełącz na widok logowania
-        document.getElementById('login-email').value = email;
-    }
-    
-    function getIsLoggedIn() { return activeUser !== null; }
-    function getCurrentUser() { return activeUser; }
-    function isCurrentUserAdmin() { return activeUser && activeUser.isAdmin === true; }
-    function getUserName() { return activeUser ? activeUser.username : 'Kliencie'; }
-    
-    // Nasłuchiwacz zmian stanu autoryzacji (automatyczna synchronizacja)
-    supabase.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
-            syncUserSession();
-        }
-    });
-    
-    // ===============================================
-    // === LOGIKA POBIERANIA DANYCH Z SUPABASE (NAPRAWIONA) ===
-    // ===============================================
-    
-    /** Funkcja pomocnicza do parsowania tablic z Supabase */
-    function parsePostgresArray(value) {
-        if (Array.isArray(value)) return value;
-        if (typeof value === 'string' && value.startsWith('{') && value.endsWith('}')) {
-            // Usuwa nawiasy klamrowe, dzieli, usuwa cudzysłowy
-            return value.slice(1, -1).split(',').map(item => item.trim().replace(/^"|"$/g, ''));
-        }
-        return [];
-    }
+        if (error) {
+            alert(`Błąd rejestracji: ${error.message}`);
+            return;
+        }
+        
+        alert('Konto utworzone! Sprawdź swoją skrzynkę mailową, aby potwierdzić rejestrację i się zalogować.');
+        // Wyczyść formularz
+        document.getElementById('register-username').value = '';
+        document.getElementById('register-email').value = '';
+        document.getElementById('register-password').value = '';
+        
+        // Przełącz na widok logowania
+        document.getElementById('login-email').value = email;
+    }
+    
+    function getIsLoggedIn() { return activeUser !== null; }
+    function getCurrentUser() { return activeUser; }
+    function isCurrentUserAdmin() { return activeUser && activeUser.isAdmin === true; }
+    function getUserName() { return activeUser ? activeUser.username : 'Kliencie'; }
+    
+    // Nasłuchiwacz zmian stanu autoryzacji (automatyczna synchronizacja)
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
+            syncUserSession();
+        }
+    });
+    
+    // ===============================================
+    // === LOGIKA POBIERANIA DANYCH Z SUPABASE (NAPRAWIONA) ===
+    // ===============================================
+    
+    /** Funkcja pomocnicza do parsowania tablic z Supabase */
+    function parsePostgresArray(value) {
+        if (Array.isArray(value)) return value;
+        if (typeof value === 'string' && value.startsWith('{') && value.endsWith('}')) {
+            // Usuwa nawiasy klamrowe, dzieli, usuwa cudzysłowy
+            return value.slice(1, -1).split(',').map(item => item.trim().replace(/^"|"$/g, ''));
+        }
+        return [];
+    }
 
-    /** Pobiera listę produktów z Supabase (główne źródło danych) */
-    async function getProductsFromSupabase() {
-        const { data, error } = await supabase
-            .from('products')
-            .select('id, brand, name, price, category, description, specs, images') // Wymieniamy kolumny jawnie
-            .order('id', { ascending: true });
-S
-        if (error) {
-            console.error('Błąd pobierania produktów z Supabase (fallback do mocków):', error);
-            return getProductsFromStorage().length > 0 ? getProductsFromStorage() : initialProductsData;
-        }
-        
-        return data.map(p => ({
-            // ZMIANA: id musi być stringiem, jeśli jest liczbowe w bazie, konwertujemy
-            id: p.id ? p.id.toString() : `prod_${Math.random().toString(36).substring(2, 9)}`, 
-            brand: p.brand || 'Brak marki',
-            name: p.name || 'Brak nazwy',
-            price: parseFloat(p.price) || 0,
-            category: p.category || 'Unisex',
-            description: p.description || 'Brak opisu produktu.',
-            specs: p.specs || [], // Powinno być tablicą obiektów JSONB w bazie
-            images: parsePostgresArray(p.images) // Array of Data URLs/URLs
-        }));
-    }
+    /** Pobiera listę produktów z Supabase (główne źródło danych) */
+    async function getProductsFromSupabase() {
+        const { data, error } = await supabase
+            .from('products')
+            .select('id, brand, name, price, category, description, specs, images') // Wymieniamy kolumny jawnie
+            .order('id', { ascending: true });
 
-    /** ZMODYFIKOWANA: Funkcja ładowana przy starcie: Pobiera z Supabase i synchronizuje z LocalStorage */
-    async function fetchProductsFromSupabase() {
-        const products = await getProductsFromSupabase();
-        
-        const noProductsEl = document.getElementById('no-products');
-        
-        if (products.length > 0) {
-            localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(products)); 
-            if (noProductsEl) noProductsEl.style.display = 'none';
-        } else if (noProductsEl) {
-            noProductsEl.textContent = 'Brak produktów w bazie.';
-            noProductsEl.style.display = 'block';
-        }
-        
-        // KLUCZOWA NAPRAWA: Wywołanie applyFilters, aby wyrenderować produkty po ich pobraniu
-        applyFilters(); 
-    }
+        if (error) {
+            console.error('Błąd pobierania produktów z Supabase (fallback do mocków):', error);
+            return getProductsFromStorage().length > 0 ? getProductsFromStorage() : initialProductsData;
+        }
+        
+        return data.map(p => ({
+            // ZMIANA: id musi być stringiem, jeśli jest liczbowe w bazie, konwertujemy
+            id: p.id ? p.id.toString() : `prod_${Math.random().toString(36).substring(2, 9)}`, 
+            brand: p.brand || 'Brak marki',
+            name: p.name || 'Brak nazwy',
+            price: parseFloat(p.price) || 0,
+            category: p.category || 'Unisex',
+            description: p.description || 'Brak opisu produktu.',
+            specs: p.specs || [], // Powinno być tablicą obiektów JSONB w bazie
+            images: parsePostgresArray(p.images) // Array of Data URLs/URLs
+        }));
+    }
 
-    /** Prawdziwe pobieranie zamówień z Supabase. */
-    async function fetchOrdersFromSupabase() {
-        // ZAPYTANIE DO SUPABASE
-        const { data, error } = await supabase
-            .from('orders')
-            .select('id, order_date, customer_email, order_details, total_amount, status')
-            .order('order_date', { ascending: false });
-S
-        if (error) {
-            console.error('Błąd pobierania zamówień z Supabase:', error.message);
-            // Zwraca mockowe dane jako fallback w przypadku błędu Supabase
-            return initialOrdersData.sort((a, b) => new Date(b.date) - new Date(a.date));
-        }
-        
-        // Mapowanie danych z bazy do oczekiwanego formatu (orders -> order_details musi być mapowane)
-        return data.map(o => ({
-            id: o.id || o.order_date.substring(0, 10), 
-            date: new Date(o.order_date).toLocaleDateString(),
-            email: o.customer_email,
-            // Zakładamy, że order_details to JSONB zawierający listę produktów z name i quantity
-s           items: o.order_details.map(d => `${d.name} (x${d.quantity})`).join(', '), 
-            total: o.total_amount,
-            status: o.status
-        }));
-    }
+    /** ZMODYFIKOWANA: Funkcja ładowana przy starcie: Pobiera z Supabase i synchronizuje z LocalStorage */
+    async function fetchProductsFromSupabase() {
+        const products = await getProductsFromSupabase();
+        
+        const noProductsEl = document.getElementById('no-products');
+        
+        if (products.length > 0) {
+            localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(products)); 
+            if (noProductsEl) noProductsEl.style.display = 'none';
+        } else if (noProductsEl) {
+            noProductsEl.textContent = 'Brak produktów w bazie.';
+            noProductsEl.style.display = 'block';
+        }
+        
+        // KLUCZOWA NAPRAWA: Wywołanie applyFilters, aby wyrenderować produkty po ich pobraniu
+        applyFilters(); 
+    }
+
+    /** Prawdziwe pobieranie zamówień z Supabase. */
+    async function fetchOrdersFromSupabase() {
+        // ZAPYTANIE DO SUPABASE
+        const { data, error } = await supabase
+            .from('orders')
+            .select('id, order_date, customer_email, order_details, total_amount, status')
+            .order('order_date', { ascending: false });
+
+        if (error) {
+            console.error('Błąd pobierania zamówień z Supabase:', error.message);
+            // Zwraca mockowe dane jako fallback w przypadku błędu Supabase
+            return initialOrdersData.sort((a, b) => new Date(b.date) - new Date(a.date));
+        }
+        
+        // Mapowanie danych z bazy do oczekiwanego formatu (orders -> order_details musi być mapowane)
+        return data.map(o => ({
+            id: o.id || o.order_date.substring(0, 10), 
+            date: new Date(o.order_date).toLocaleDateString(),
+            email: o.customer_email,
+            // Zakładamy, że order_details to JSONB zawierający listę produktów z name i quantity
+            items: o.order_details.map(d => `${d.name} (x${d.quantity})`).join(', '), 
+            total: o.total_amount,
+            status: o.status
+        }));
+    }
 
 
-    // ===============================================
-    // === LOGIKA ADMINISTRACYJNA (SUPABASE CRUD) ===
-    // ===============================================
+    // ===============================================
+    // === LOGIKA ADMINISTRACYJNA (SUPABASE CRUD) ===
+    // ===============================================
 
-    function getProductsFromStorage() {
-        const raw = JSON.parse(localStorage.getItem(LS_PRODUCTS_KEY) || '[]');
-        if (raw.length === 0) return initialProductsData; 
-        return raw;
-    }
-S
-    function saveProductsToStorage(products) {
-        localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(products));
-    }
+    function getProductsFromStorage() {
+        const raw = JSON.parse(localStorage.getItem(LS_PRODUCTS_KEY) || '[]');
+        if (raw.length === 0) return initialProductsData; 
+        return raw;
+    }
 
-    /** UZUPELNIONA: Obsługuje zapis/edycję produktu do Supabase */
-    async function handleAdminFormSubmit(event) {
-        event.preventDefault();
-        
-        const productId = document.getElementById('admin-product-id').value;
-        
-        const productData = {
-            brand: document.getElementById('admin-brand').value,
-            name: document.getElementById('admin-name').value,
-            price: parseFloat(document.getElementById('admin-price').value), // Używamy float dla ceny
-            category: document.getElementById('admin-category').value,
-            description: document.getElementById('admin-description').value,
-            specs: readSpecsFromForm(), // JSONB object array
-            images: adminImageData.slice() // Array of Data URLs/URLs
-        };
+    function saveProductsToStorage(products) {
+        localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(products));
+    }
 
-        let response;
-        const table = 'products';
+    /** UZUPELNIONA: Obsługuje zapis/edycję produktu do Supabase */
+    async function handleAdminFormSubmit(event) {
+        event.preventDefault();
+        
+        const productId = document.getElementById('admin-product-id').value;
+        
+        const productData = {
+            brand: document.getElementById('admin-brand').value,
+            name: document.getElementById('admin-name').value,
+            price: parseFloat(document.getElementById('admin-price').value), // Używamy float dla ceny
+            category: document.getElementById('admin-category').value,
+            description: document.getElementById('admin-description').value,
+            specs: readSpecsFromForm(), // JSONB object array
+            images: adminImageData.slice() // Array of Data URLs/URLs
+        };
 
-        if (productId) {
-            // TRYB EDYCJI: UPDATE
-            response = await supabase
-                .from(table)
-                .update(productData)
-                .eq('id', productId)
-                .select();
+        let response;
+        const table = 'products';
 
-        } else {
-            // TRYB DODAWANIA: INSERT
-            response = await supabase
-                .from(table)
-                .insert([productData])
-                .select();
-        }
-s
-        if (response.error) {
-            alert(`Błąd operacji w Supabase: ${response.error.message}. Sprawdź uprawnienia RLS i schemat tabeli!`);
-            console.error(response.error);
-            return;
-        }
+        if (productId) {
+            // TRYB EDYCJI: UPDATE
+            response = await supabase
+                .from(table)
+                .update(productData)
+                .eq('id', productId)
+                .select();
 
-        alert(productId ? 'Produkt zaktualizowany!' : 'Nowy produkt dodany!');
-        
-        clearAdminForm();
-        await fetchProductsFromSupabase(); // Odśwież dane
-        renderAdminProductList();        
-    }
+        } else {
+            // TRYB DODAWANIA: INSERT
+            response = await supabase
+                .from(table)
+                .insert([productData])
+                .select();
+        }
 
-    /** UZUPELNIONA: Usuwa produkt z Supabase */
-    async function deleteProduct(productId) {
-        if (!confirm('Czy na pewno chcesz trwale usunąć ten produkt?')) {
-            return;
-        }
-        
-        const { error } = await supabase
-            .from('products')
-            .delete()
-            .eq('id', productId);
+        if (response.error) {
+            alert(`Błąd operacji w Supabase: ${response.error.message}. Sprawdź uprawnienia RLS i schemat tabeli!`);
+            console.error(response.error);
+            return;
+        }
 
-        if (error) {
-            alert(`Błąd usuwania: ${error.message}. Sprawdź uprawnienia RLS!`);
-            return;
-        }
-        
-        alert('Produkt usunięty z bazy.');
-        
-        await fetchProductsFromSupabase();
-        renderAdminProductList();    
-    }
+        alert(productId ? 'Produkt zaktualizowany!' : 'Nowy produkt dodany!');
+        
+        clearAdminForm();
+        await fetchProductsFromSupabase(); // Odśwież dane
+        renderAdminProductList();        
+    }
 
-    /** UZUPELNIONA: Renderuje listę produktów w panelu admina */
-    function renderAdminProductList() {
-        const listBody = document.getElementById('admin-product-list-body');
+    /** UZUPELNIONA: Usuwa produkt z Supabase */
+    async function deleteProduct(productId) {
+        if (!confirm('Czy na pewno chcesz trwale usunąć ten produkt?')) {
+            return;
+        }
+        
+        const { error } = await supabase
+            .from('products')
+            .delete()
+            .eq('id', productId);
+
+        if (error) {
+            alert(`Błąd usuwania: ${error.message}. Sprawdź uprawnienia RLS!`);
+            return;
+        }
+        
+        alert('Produkt usunięty z bazy.');
+        
+        await fetchProductsFromSupabase();
+        renderAdminProductList();    
+    }
+
+    /** UZUPELNIONA: Renderuje listę produktów w panelu admina */
+    function renderAdminProductList() {
+        const listBody = document.getElementById('admin-product-list-body');
         if (!listBody) return;
         const products = getProductsFromStorage();
         listBody.innerHTML = '';
