@@ -3168,41 +3168,7 @@
           renderAdminImagePreviews();
         }
 
-        // --- LOGIKA CHAT, INICJALIZACJA STRONY I ZDARZEŃ ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // === INICJALIZACJA BAZ ===
-            initializeProductStorage();
-            initializeOrderStorage(); // NOWOŚĆ
-            
-            // Wstrzykiwanie Stopki
-            const fullFooterContent = `
-                <div class="container footer-content">
-                    <div class="footer-links">
-                        <h4>Informacje</h4>
-                        <a onclick="showPage('polityka-page');">Polityka Prywatności</a>
-                        <a onclick="showPage('regulamin-page');">Regulamin Sprzedaży</a>
-                        <a onclick="showPage('zwroty-page');">Zwroty i Reklamacje</a>
-                    </div>
-                    <div class="footer-links">
-                        <h4>PREMIUM FLAKON</h4>
-                        <a onclick="showPage('kolekcja-page');">Katalog Zapachów</a>
-                        <a onclick="showPage('onas-page');">O Naszej Misji</a>
-                        <a onclick="showPage('pomoc-page');">Wsparcie i FAQ</a>
-                        <a onclick="showPage('konto-page');">Moje Konto Klienta</a>
-                    </div>
-                    <div class="footer-contact">
-                        <h4>&iquest; Masz Pytanie?</h4>
-                        <strong class="gold-text">TELEFON:</strong> <a href="tel:532116720">532 116 720</a>
-                        <strong class="gold-text">E-MAIL:</strong> <a href="mailto:kontakt@premiumflakon.pl">kontakt@premiumflakon.pl</a>
-                    </div>
-                    <div class="copyright">
-                        <p>&copy; 2025 PREMIUM FLAKON. Wszelkie prawa zastrzeżone.</p>
-                    </div>
-                </div>
-            `;
-            document.querySelectorAll('footer').forEach(footer => {
-                footer.innerHTML = fullFooterContent;
-            });
+        // --- LOGIKA CHAT, INICJALIZACJA STRONY I ZDARZEŃ --
             
             applyFilters();
 
