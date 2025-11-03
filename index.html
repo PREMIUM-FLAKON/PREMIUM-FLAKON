@@ -2035,7 +2035,7 @@
         /** Dodaje produkt do koszyka */
         function addToCart(productId) {
             const products = getProductsFromStorage();
-            const productToAdd = products.find(p => p.id === productId);
+            const productToAdd = products.find(p => String(p.id) === String(productId));
             if (!productToAdd) {
                 console.error('Nie znaleziono produktu o ID:', productId);
                 return;
@@ -2703,9 +2703,9 @@
                     <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category}</p>
                     <div class="price">${product.price} PLN</div>
                     <div style="display:flex; gap:8px; margin-top:10px;">
-                        ${product.id ?
+                       ${product.id ?
                             // 1. Jeśli ID ISTNIEJE (przyciski aktywne)
-                  _       `
+                            `
                             <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
                             <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:10px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
                             ` :
@@ -3290,9 +3290,9 @@
 
         // --- LOGIKA CHAT, INICJALIZACJA STRONY I ZDARZEŃ ---
         
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => { // <-- DODAJ 'async'
             // === INICJALIZACJA BAZ ===
-            initializeProductStorage();
+            await initializeProductStorage(); // <-- DODAJ 'await'
             initializeOrderStorage(); // NOWOŚĆ
             
             // Wstrzykiwanie Stopki
