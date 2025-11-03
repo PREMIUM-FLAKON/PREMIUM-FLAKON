@@ -2686,7 +2686,7 @@
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 
-               card.innerHTML = `
+              card.innerHTML = `
                     <div style="height: 140px; background-color: #F8F8F4; border: 1px dashed #CCC; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}'); background-size: cover; background-position: center;">
                     </div>
                     <div class="brand">${product.brand}</div>
@@ -2694,21 +2694,22 @@
                     <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category}</p>
                     <div class="price">${product.price} PLN</div>
                     
-                                        <div style="display:flex; gap:8px; margin-top:10px;">
+                    <div style="display:flex; gap:8px; margin-top:10px;">
                         ${product.id ?
-                            // Jeśli produkt ma ID, pokaż normalne przyciski
+                            // === TO JEST POPRAWNA KOLEJNOŚĆ ===
+                            // 1. Co pokazać, jeśli ID ISTNIEJE (przyciski aktywne)
                             `
                             <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
                             <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:10px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
                             ` :
-                            // Jeśli produkt NIE MA ID, pokaż przyciski nieaktywne
-                            `
+                            // 2. Co pokazać, jeśli ID NIE ISTNIEJE (przyciski wyłączone)
+          _                 `
                             <button class="btn-add" style="background:#CCC; color:#666;" disabled>DO KOSZYKA</button>
                             <button class="btn-add" style="background:transparent; color:#CCC; border:1px solid #CCC; width:auto; padding:10px;" disabled title="Produkt chwilowo niedostępny (brak ID)">SZCZEGÓŁY</button>
                             `
                         }
-                    </div>
-                                    `;
+      _             </div>
+                `;
                 grid.appendChild(card);
             });
         }
