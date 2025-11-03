@@ -3036,7 +3036,7 @@
         }
 
         function renderProductDetail(productId) {
-            const p = getProductsFromStorage().find(x => x.id === productId);
+            const p = getProductsFromStorage().find(x => String(x.id) === String(productId));
             if (!p) {
                 alert('Produkt nieznaleziony');
                 showPage('kolekcja-page');
