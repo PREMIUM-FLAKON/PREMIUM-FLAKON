@@ -2669,15 +2669,23 @@
         }
 
         // --- LOGIKA KOLEKCJI (FRONTEND) ---
-      function renderProducts(products) {
+     function renderProducts(products) {
             const grid = document.getElementById('product-grid');
             if (!grid) return; 
             
-            grid.innerHTML = '';
-            const noProducts = document.getElementById('no-products');
+            // === POCZĄTEK POPRAWKI ===
+            // 1. Najpierw znajdź element 'no-products', KIEDY JESZCZE ISTNIEJE
+            const noProducts = document.getElementById('no-products'); 
+            
+            // 2. Dopiero teraz wyczyść siatkę
+            grid.innerHTML = ''; 
+            // === KONIEC POPRAWKI ===
             
             if (products.length === 0) {
-                if (noProducts) noProducts.style.display = 'block';
+                if (noProducts) {
+                    noProducts.style.display = 'block';
+                    grid.appendChild(noProducts); // Ważne: dodaj go z powrotem!
+                }
                 return;
             }
             if (noProducts) noProducts.style.display = 'none';
