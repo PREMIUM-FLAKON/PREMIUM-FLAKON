@@ -1066,8 +1066,7 @@
 
                     <h4 style="margin-top:20px; color:var(--color-accent-gold);">Specyfikacja</h4>
                     <table id="detail-specs" style="width:100%; border-collapse:collapse; margin-top:10px;">
-                      <!-- wypełniane dynamicznie -->
-                    </table>
+                      </table>
 
                     <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
                       <button class="btn-main" onclick="addToCartFromDetail()">Dodaj do koszyka</button>
@@ -2024,7 +2023,10 @@
         /** Aktualizuje wszystkie liczniki koszyka na stronie */
         function updateCartCounters() {
             const cart = getCart();
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            let totalItems = 0;
+            if (Array.isArray(cart)) {
+                totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+            }
             
             const counters = document.querySelectorAll('.cart-counter');
             counters.forEach(counter => {
@@ -2035,17 +2037,25 @@
         /** Dodaje produkt do koszyka */
         function addToCart(productId) {
             const products = getProductsFromStorage();
+            // === POPRAWKA BŁĘDU TYPÓW (Liczba vs Tekst) ===
             const productToAdd = products.find(p => String(p.id) === String(productId));
+            
             if (!productToAdd) {
                 console.error('Nie znaleziono produktu o ID:', productId);
+                alert('Błąd: Nie można dodać do koszyka, nie znaleziono produktu.');
                 return;
             }
 
             let cart = getCart();
-            const existingItem = cart.find(item => item.id === productId);
+            if (!Array.isArray(cart)) { // Zabezpieczenie przed uszkodzonymi danymi
+                 cart = [];
+            }
+            
+            // === POPRAWKA BŁĘDU TYPÓW (Liczba vs Tekst) ===
+            const existingItem = cart.find(item => String(item.id) === String(productId));
 
             if (existingItem) {
-                existingItem.quantity++;
+                existingItem.quantity = (existingItem.quantity || 0) + 1;
             } else {
                 cart.push({
                     id: productToAdd.id,
@@ -2063,7 +2073,9 @@
         /** Zmienia ilość produktu w koszyku */
         function updateCartQuantity(productId, newQuantity) {
             let cart = getCart();
-            const itemToUpdate = cart.find(item => item.id === productId);
+            if (!Array.isArray(cart)) cart = [];
+            
+            const itemToUpdate = cart.find(item => String(item.id) === String(productId));
             
             if (itemToUpdate) {
                 const quantity = parseInt(newQuantity, 10);
@@ -2071,7 +2083,7 @@
                     itemToUpdate.quantity = quantity;
                 } else {
                     // Jeśli ilość to 0 lub mniej, usuń przedmiot
-                    cart = cart.filter(item => item.id !== productId);
+                    cart = cart.filter(item => String(item.id) !== String(productId));
                 }
                 saveCart(cart);
                 renderCartPage(); // Przerenderuj koszyk
@@ -2084,7 +2096,9 @@
                 return;
             }
             let cart = getCart();
-            cart = cart.filter(item => item.id !== productId);
+            if (!Array.isArray(cart)) cart = [];
+            
+            cart = cart.filter(item => String(item.id) !== String(productId));
             saveCart(cart);
             renderCartPage(); // Przerenderuj koszyk
         }
@@ -2098,7 +2112,7 @@
 
             const cart = getCart();
             
-            if (cart.length === 0) {
+            if (!Array.isArray(cart) || cart.length === 0) {
                 // POKAŻ INFO O PUSTYM KOSZYKU
                 listContainer.innerHTML = `
                     <div id="pusty-koszyk-info">
@@ -2114,7 +2128,7 @@
                 let sumaCalkowita = 0;
 
                 cart.forEach(item => {
-                    const itemTotal = item.price * item.quantity;
+                    const itemTotal = (item.price || 0) * (item.quantity || 0);
                     sumaCalkowita += itemTotal;
                     
                     listHTML += `
@@ -2201,7 +2215,7 @@
             trescMaila += "ZAMÓWIONE PRODUKTY:\n\n";
 
             cart.forEach(item => {
-                const itemSuma = item.price * item.quantity;
+                const itemSuma = (item.price || 0) * (item.quantity || 0);
                 sumaCalkowita += itemSuma;
                 trescMaila += `Produkt: ${item.brand} - ${item.name}\n`;
                 trescMaila += `Ilość: ${item.quantity}\n`;
@@ -2379,8 +2393,8 @@
                 // === TRYB EDYCJI ===
                 let products = getProductsFromStorage();
                 const updatedProducts = products.map(p => {
-                    if (p.id === productId) {
-                        return { ...p, ...productData };
+                    if (String(p.id) === String(productId)) { // Poprawka String()
+                        return { ...p, ...productData, id: p.id }; // Zachowaj oryginalne ID
                     }
                     return p;
                 });
@@ -2407,7 +2421,7 @@
         /** Wypełnia formularz admina danymi do edycji */
         function populateAdminForm(productId) {
             const products = getProductsFromStorage();
-            const productToEdit = products.find(p => p.id === productId);
+            const productToEdit = products.find(p => String(p.id) === String(productId)); // Poprawka String()
             if (!productToEdit) return;
 
             document.getElementById('admin-product-id').value = productToEdit.id;
@@ -2451,23 +2465,23 @@
 
 
         function deleteProduct(productId) {
-    if (!confirm('Czy na pewno chcesz trwale usunąć ten produkt? Tej akcji nie można cofnąć.')) {
-        return;
-    }
+            if (!confirm('Czy na pewno chcesz trwale usunąć ten produkt? Tej akcji nie można cofnąć.')) {
+                return;
+            }
 
-    let products = getProductsFromStorage();
-    const filteredProducts = products.filter(p => p.id !== productId);
-    
-    // Zapisz zmienioną listę do LocalStorage
-    localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(filteredProducts));
-    
-    // NOWOŚĆ: Usuń również z Supabase
-    deleteProductFromSupabase(productId); 
-    
-    alert('Produkt usunięty.');
-    renderAdminProductList(); 
-    applyFilters(); // Odśwież widok sklepu
-}
+            let products = getProductsFromStorage();
+            const filteredProducts = products.filter(p => String(p.id) !== String(productId)); // Poprawka String()
+            
+            // Zapisz zmienioną listę do LocalStorage
+            localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(filteredProducts));
+            
+            // NOWOŚĆ: Usuń również z Supabase
+            deleteProductFromSupabase(productId); 
+            
+            alert('Produkt usunięty.');
+            renderAdminProductList(); 
+            applyFilters(); // Odśwież widok sklepu
+        }
 
         // --- FUNKCJE NAWIGACJI ---
         function highlightNavLink(activePageId) {
@@ -2626,7 +2640,7 @@
                                 <td>${order.id}</td>
                                 <td>${order.date}</td>
                                 <td>${order.items}</td>
-                                <td>${order.total.toFixed(2)} PLN</td>
+                                <td>${(order.total || 0).toFixed(2)} PLN</td>
                                 <td><strong style="color: ${statusColor};">${order.status}</strong></td>
                             </tr>
                         `;
@@ -2669,53 +2683,53 @@
         }
 
         // --- LOGIKA KOLEKCJI (FRONTEND) ---
-   function renderProducts(products) {
-            const grid = document.getElementById('product-grid');
-            if (!grid) return; 
-            
-            // Poprawiona kolejność ładowania
-            const noProducts = document.getElementById('no-products'); 
-            grid.innerHTML = ''; 
-            
-            if (products.length === 0) {
-                if (noProducts) {
-                    noProducts.style.display = 'block';
-                    grid.appendChild(noProducts); 
-                }
-                return;
-            }
-            if (noProducts) noProducts.style.display = 'none';
+       function renderProducts(products) {
+            const grid = document.getElementById('product-grid');
+            if (!grid) return; 
+            
+            // Poprawiona kolejność ładowania
+            const noProducts = document.getElementById('no-products'); 
+            grid.innerHTML = ''; 
+            
+            if (products.length === 0) {
+                if (noProducts) {
+                    noProducts.style.display = 'block';
+                    grid.appendChild(noProducts); 
+                }
+                return;
+            }
+            if (noProducts) noProducts.style.display = 'none';
 
-            products.forEach(product => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                
-                // === OTO POPRAWIONA, CZYSTA WERSJA BEZ TAGÓW <br> ===
-                card.innerHTML = `
-                    <div style="height: 140px; background-color: #F8F8F4; border: 1px dashed #CCC; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}'); background-size: cover; background-position: center;">
-                    </div>
-                    <div class="brand">${product.brand}</div>
-                    <h3>${product.name || 'Brak Nazwy'}</h3>
-                    <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category}</p>
-                    <div class="price">${product.price} PLN</div>
-                    <div style="display:flex; gap:8px; margin-top:10px;">
-                        ${product.id ?
-                            // 1. Jeśli ID ISTNIEJE (przyciski aktywne)
-                            `
-                            <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
-                            <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:10px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
-                            ` :
-                            // 2. Jeśli ID NIE ISTNIEJE (przyciski wyłączone)
-                            `
-                            <button class="btn-add" style="background:#CCC; color:#666;" disabled>DO KOSZYKA</button>
-                            <button class="btn-add" style="background:transparent; color:#CCC; border:1px solid #CCC; width:auto; padding:10px;" disabled title="Produkt chwilowo niedostępny (brak ID)">SZCZEGÓŁY</button>
-                            `
-                        }
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                
+                // === TUTAJ JEST POPRAWIONY KOD (BEZ BŁĘDU '_') ===
+                card.innerHTML = `
+                    <div style="height: 140px; background-color: #F8F8F4; border: 1px dashed #CCC; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}'); background-size: cover; background-position: center;">
+                    </div>
+                    <div class="brand">${product.brand}</div>
+                    <h3>${product.name || 'Brak Nazwy'}</h3>
+                    <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category}</p>
+                    <div class="price">${product.price} PLN</div>
+                    <div style="display:flex; gap:8px; margin-top:10px;">
+                        ${product.id ?
+                            // 1. Jeśli ID ISTNIEJE (przyciski aktywne)
+                            `
+                            <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
+                            <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:10px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
+                            ` :
+                            // 2. Jeśli ID NIE ISTNIEJE (przyciski wyłączone)
+                            `
+                            <button class="btn-add" style="background:#CCC; color:#666;" disabled>DO KOSZYKA</button>
+                            <button class="btn-add" style="background:transparent; color:#CCC; border:1px solid #CCC; width:auto; padding:10px;" disabled title="Produkt chwilowo niedostępny (brak ID)">SZCZEGÓŁY</button>
+                            `
+                        }
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
         function applyFilters() {
             let filteredProducts = getProductsFromStorage();
             
@@ -3039,7 +3053,9 @@
         }
 
         function renderProductDetail(productId) {
+            // === POPRAWKA BŁĘDU TYPÓW (Liczba vs Tekst) ===
             const p = getProductsFromStorage().find(x => String(x.id) === String(productId));
+            
             if (!p) {
                 alert('Produkt nieznaleziony');
                 showPage('kolekcja-page');
@@ -3286,10 +3302,10 @@
 
         // --- LOGIKA CHAT, INICJALIZACJA STRONY I ZDARZEŃ ---
         
-        document.addEventListener('DOMContentLoaded', async () => { // <-- DODAJ 'async'
+        document.addEventListener('DOMContentLoaded', async () => { // <-- POPRAWKA ASYNC
             // === INICJALIZACJA BAZ ===
-            await initializeProductStorage(); // <-- DODAJ 'await'
-            initializeOrderStorage(); // NOWOŚĆ
+            await initializeProductStorage(); // <-- POPRAWKA AWAIT
+            initializeOrderStorage(); 
             
             // Wstrzykiwanie Stopki
             const fullFooterContent = `
@@ -3321,7 +3337,7 @@
                 footer.innerHTML = fullFooterContent;
             });
             
-            applyFilters();
+            applyFilters(); // Uruchom po pobraniu danych
 
             document.addEventListener('pageShow', (e) => {
 
