@@ -1677,13 +1677,22 @@
                 return;
             }
             
-            try {
-                // Upsert: wstawia, jeśli nie istnieje; aktualizuje, jeśli ID już istnieje
-                const { error } = await supabase
-                    .from('produkty') // <-- UŻYJ NAZWY SWOJEJ TABELI PRODUKTÓW
-                    .upsert(products, { onConflict: 'id' }); 
-                
-                if (error) throw error;
+          try {
+                // ZMIANA: Mapujemy obiekty z {id: ...} na {ID: ...} przed wysłaniem do Supabase
+            const productsForSupabase = products.map(p => {
+                const { id, ...rest } = p; // Dzielimy obiekt: 'id' i reszta pól
+                return {
+                    ID: id,  // Zmieniamy nazwę klucza 'id' na 'ID'
+                    ...rest  // Dodajemy resztę pól (brand, name, price etc.)
+                };
+            });
+
+                // Upsert: wstawia, jeśli nie istnieje; aktualizuje, jeśli ID już istnieje
+                const { error } = await supabase
+                    .from('produkty') // <-- UŻYJ NAZWY SWOJEJ TABELI PRODUKTÓW
+                    .upsert(productsForSupabase, { onConflict: 'ID' }); // <-- ZMIANA
+                
+                if (error) throw error;
                 console.log("Produkty pomyślnie zsynchronizowane z Supabase.");
             } catch (e) {
                 console.error("Błąd zapisu do Supabase:", e.message);
@@ -1697,10 +1706,10 @@
             if (!supabase || !isCurrentUserAdmin()) return;
             
             try {
-                const { error } = await supabase
-                    .from('produkty') // <-- UŻYJ NAZWY SWOJEJ TABELI PRODUKTÓW
-                    .delete()
-                    .eq('id', productId);
+               const { error } = await supabase
+                    .from('produkty') // <-- UŻYJ NAZWY SWOJEJ TABELI PRODUKTÓW
+                    .delete()
+                    .eq('ID', productId);
                     
                 if (error) throw error;
                 console.log(`Produkt ${productId} usunięty z Supabase.`);
@@ -1939,10 +1948,10 @@
         function getProductsFromStorage() {
             const raw = JSON.parse(localStorage.getItem(LS_PRODUCTS_KEY) || '[]');
             
-            // Poprawka: Mapujemy 'p.productid' (zamiast p.id) do pola 'id'
-            return raw.map(p => ({
-                id: p.productid, // <-- TUTAJ JEST KLUCZOWA ZMIANA
-                brand: p.brand || '',
+           // Poprawka: Mapujemy 'p.ID' (z Supabase) do pola 'id' (dla JavaScriptu)
+            return raw.map(p => ({
+                id: p.ID, // <-- ZMIANA: Pobieramy z kolumny 'ID' z Supabase
+                brand: p.brand || '',
                 name: p.name || '',
                 price: typeof p.price === 'number' ? p.price : parseFloat(p.price) || 0,
                 category: p.category || '',
