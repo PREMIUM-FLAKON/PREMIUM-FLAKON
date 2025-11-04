@@ -2655,54 +2655,69 @@
 
         // --- LOGIKA KOLEKCJI (FRONTEND) ---
        function renderProducts(products) {
-            const grid = document.getElementById('product-grid');
-            if (!grid) return; 
-            
-            const noProducts = document.getElementById('no-products'); 
-            grid.innerHTML = ''; 
-            
-            if (products.length === 0) {
-                if (noProducts) {
-                    noProducts.style.display = 'block';
-                    grid.appendChild(noProducts); 
-                }
-                return;
-            }
-            if (noProducts) noProducts.style.display = 'none';
+            const grid = document.getElementById('product-grid');
+            if (!grid) return; 
+            
+            const noProducts = document.getElementById('no-products'); 
+            grid.innerHTML = ''; 
+            
+            if (products.length === 0) {
+                if (noProducts) {
+                    noProducts.style.display = 'block';
+                    grid.appendChild(noProducts); 
+                }
+                return;
+            }
+            if (noProducts) noProducts.style.display = 'none';
 
-            products.forEach(product => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                
-                // === ZAKTUALIZOWANY KOD KARTY PRODUKTU ===
-               card.innerHTML = `
-                    <div style="height: 220px; width: 140px; margin-left: auto; margin-right: auto; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}'); background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #FFFFFF;">
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+
+                // === NOWA SEKCJA: DYNAMICZNY PRZYCISK ADMINA ===
+                let adminControls = ''; // Domyślnie pusty
+                if (isCurrentUserAdmin()) {
+                    // Jeśli zalogowany jest admin, dodaj przycisk usuwania
+                    adminControls = `
+                        <button class="btn-admin-delete" 
+                                style="width: 100%; margin-top: 8px; padding: 8px; font-size: 0.9em;" 
+                                onclick="deleteProduct('${product.id}')">
+                            Usuń (Admin)
+                        </button>
+                    `;
+                }
+                // === KONIEC NOWEJ SEKCJI ===
+                
+                // === ZAKTUALIZOWANY KOD KARTY PRODUKTU ===
+                card.innerHTML = `
+                    <div style="height: 220px; width: 140px; margin-left: auto; margin-right: auto; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}'); background-size: contain; background-position: center; background-repeat: no-repeat;">
                     </div>
-                    <div class="brand">${product.brand}</div>
-                    <h3>${product.name || 'Brak Nazwy'}</h3>
-                    <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category}</p>
-                    
-                    <p style="font-size: 0.8em; color: #AAA; margin-top: 0; margin-bottom: 8px; font-family: monospace;">ID: ${product.id}</p>
-                    
-                    <div class="price">${product.price} PLN</div>
-                    <div style="display:flex; gap:8px; margin-top:10px;">
-                        ${product.id ?
-                            // 1. Jeśli ID ISTNIEJE (przyciski aktywne)
-                            `
-                            <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
-                            <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:10px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
-                            ` :
-                            // 2. Jeśli ID NIE ISTNIEJE (przyciski wyłączone)
-                            `
-                            <button class="btn-add" style="background:#CCC; color:#666;" disabled>DO KOSZYKA</button>
-                            <button class="btn-add" style="background:transparent; color:#CCC; border:1px solid #CCC; width:auto; padding:10px;" disabled title="Produkt chwilowo niedostępny (brak ID)">SZCZEGÓŁY</button>
-                            `
-                        }
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
+                    <div class="brand">${product.brand}</div>
+                    <h3>${product.name || 'Brak Nazwy'}</h3>
+                    <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category}</p>
+                    
+                    <p style="font-size: 0.8em; color: #AAA; margin-top: 0; margin-bottom: 8px; font-family: monospace;">ID: ${product.id}</p>
+                    
+                    <div class="price">${product.price} PLN</div>
+                    <div style="display:flex; gap:8px; margin-top:10px;">
+                        ${product.id ?
+                            // 1. Jeśli ID ISTNIEJE (przyciski aktywne)
+                            `
+                            <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
+                            <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:10px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
+                            ` :
+                            // 2. Jeśli ID NIE ISTNIEJE (przyciski wyłączone)
+                            `
+                            <button class="btn-add" style="background:#CCC; color:#666;" disabled>DO KOSZYKA</button>
+                            <button class="btn-add" style="background:transparent; color:#CCC; border:1px solid #CCC; width:auto; padding:10px;" disabled title="Produkt chwilowo niedostępny (brak ID)">SZCZEGÓŁY</button>
+                            `
+                        }
+                    </div>
+                    ${adminControls}
+                `;
+                grid.appendChild(card);
+            });
+        }
         function applyFilters() {
             let filteredProducts = getProductsFromStorage();
             
