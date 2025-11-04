@@ -1652,49 +1652,38 @@
     // ### KROK 3: DODANIE NOWEGO KLUCZA DLA KOSZYKA ###
     const LS_CART_KEY = 'pf_cart';
         
-        // // --- POCZĄTKOWA BAZA PRODUKTÓW (TYLKO DLA INICJALIZACJI) ---
-        const initialProductsData = [
-            { id: 'PF101', brand: 'Creed', name: 'Aventus (EDP 100ml)', category: 'Męskie', price: 1250,
-              description: 'Klasyczny Aventus — nuty ananasa, brzozy i ambry. Ikona męskiej elegancji.',
-              specs: [{ key: 'Pojemność', value: '100 ml' }, { key: 'Typ', value: 'EDP' }, { key: 'Trwałość', value: '8-10 h' }],
-              images: ['https://picsum.photos/seed/pf101/800/600']
-            },
-            { id: 'PF102', brand: 'Parfums de Marly', name: 'Layton (EDP 75ml)', category: 'Unisex', price: 899,
-              description: 'Layton — bogata, orientalno-aromatyczna kompozycja, intensywna i elegancka.',
-              specs: [{ key: 'Pojemność', value: '75 ml' }, { key: 'Typ', value: 'EDP' }, { key: 'Nuty', value: 'Drzewne, kwiatowe' }],
-              images: ['https://picsum.photos/seed/pf102/800/600']
-            },
-            { id: 'PF103', brand: 'Tom Ford', name: 'Tuscan Leather (EDP 50ml)', category: 'Unisex', price: 720,
-              description: 'Tuscan Leather — skórzana, intensywna i głęboka kompozycja od Tom Ford.',
-              specs: [{ key: 'Pojemność', value: '50 ml' }, { key: 'Typ', value: 'EDP' }, { key: 'Styl', value: 'Wieczorowy' }],
-              images: ['https://picsum.photos/seed/pf103/800/600']
-            },
-            { id: 'PF104', brand: 'Frederic Malle', name: 'Portrait of a Lady (EDP 50ml)', category: 'Damskie', price: 1100,
-              description: 'Portret damy — szyprowo-kwiatowa kompozycja o wyrafinowanym charakterze.',
-              specs: [{ key: 'Pojemność', value: '50 ml' }, { key: 'Typ', value: 'EDP' }, { key: 'Dominanta', value: 'Róża, paczula' }],
-              images: ['https://picsum.photos/seed/pf104/800/600']
-            },
-            { id: 'PF105', brand: 'Kilian', name: 'Love, Don\'t Be Shy (EDP 50ml)', category: 'Damskie', price: 980,
-              description: 'Kilian — słodka, waniliowo-karmelowa kompozycja dla miłośników gourmand.',
-              specs: [{ key: 'Pojemność', value: '50 ml' }, { key: 'Typ', value: 'EDP' }, { key: 'Nuty', value: 'Karmel, wanilia' }],
-              images: ['https://picsum.photos/seed/pf105/800/600']
-            },
-            { id: 'PF106', brand: 'Creed', name: 'Silver Mountain Water (EDP 100ml)', category: 'Unisex', price: 950,
-              description: 'Świeża, czysta kompozycja Creed — inspiracja górskimi strumieniami.',
-              specs: [{ key: 'Pojemność', value: '100 ml' }, { key: 'Typ', value: 'EDP' }, { key: 'Charakter', value: 'Świeży' }],
-              images: ['https://picsum.photos/seed/pf106/800/600']
-            },
-            { id: 'PF107', brand: 'Tom Ford', name: 'Oud Wood (EDP 50ml)', category: 'Unisex', price: 780,
-              description: 'Oud Wood — elegancka i egzotyczna kompozycja z dominującym oud.',
-              specs: [{ key: 'Pojemność', value: '50 ml' }, { key: 'Typ', value: 'EDP' }, { key: 'Główne nuty', value: 'Oud, drzewa' }],
-              images: ['https://picsum.photos/seed/pf107/800/600']
-            },
-            { id: 'PF108', brand: 'Parfums de Marly', name: 'Delina Exclusif (EDP 75ml)', category: 'Damskie', price: 1050,
-              description: 'Delina Exclusif — kwiatowa, luksusowa i pełna charakteru kompozycja.',
-              specs: [{ key: 'Pojemność', value: '75 ml' }, { key: 'Typ', value: 'EDP' }, { key: 'Styl', value: 'Elegancki' }],
-              images: ['https://picsum.photos/seed/pf108/800/600']
-            }
-        ];
+        /** Jednorazowa inicjalizacja bazy produktów (pobieranie z Supabase) */
+         async function initializeProductStorage() {
+
+             // 1. Spróbuj pobrać produkty z Supabase (jeśli Supabase jest dostępne)
+             if (supabase) {
+                 try {
+                     console.log("Pobieranie produktów z Supabase...");
+                     const { data, error } = await supabase
+                         .from('produkty')
+                         .select('*');
+
+                     if (error) throw error;
+                     
+                     if (data) { 
+                        // Jeśli data istnieje (nawet jeśli jest pusta), zapisz ją do cache
+                         localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(data));
+                         console.log(`Pobrano ${data.length} produktów z Supabase.`);
+                         return;
+                     }
+                 } catch (e) {
+                     console.error("Błąd pobierania z Supabase, próbuję użyć cache:", e.message);
+                 }
+             }
+             
+             // 2. Jeśli Supabase nie działa, sprawdź czy jest coś w cache
+             const products = localStorage.getItem(LS_PRODUCTS_KEY);
+             if (!products) {
+                 // Jeśli cache też jest pusty, ustaw pustą tablicę
+                 localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify([]));
+                 console.warn("Baza Supabase i cache są puste. Ustawiono pustą listę produktów.");
+             }
+         }
 
         /* NOWOŚĆ: Baza przykładowych zamówień */
         const initialOrdersData = [
