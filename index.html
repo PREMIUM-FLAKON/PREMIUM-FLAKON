@@ -2688,10 +2688,10 @@
                     <div style="display:flex; gap:8px; margin-top:10px;">
                         ${product.id ?
                             // 1. Jeśli ID ISTNIEJE (przyciski aktywne)
-                            `
-                            <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
-                            <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:8px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
-                            ` :
+                           `
+                            <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
+                            <button class="btn-add" style="background-color:var(--color-text-dark); color:var(--color-text-light); width:auto; padding:8px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
+                            ` :
                             // 2. Jeśli ID NIE ISTNIEJE (przyciski wyłączone)
                             `
                             <button class="btn-add" style="background:#CCC; color:#666;" disabled>DO KOSZYKA</button>
