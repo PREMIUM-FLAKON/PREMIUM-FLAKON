@@ -2373,12 +2373,12 @@
                 alert('Produkt zaktualizowany!');
 
             } else {
-                // === TRYB DODAWANIA ===
-                let products = getProductsFromStorage();
-                const newProduct = {
-                    id: 'PF' + Date.now(), 
-                    ...productData
-                };
+               // === TRYB DODAWANIA ===
+                let products = getProductsFromStorage();
+                const newProduct = {
+                    ID: Date.now(), // <-- POPRAWKA: Duże ID i jest liczbą
+                    ...productData
+                };
                 products.push(newProduct);
                 saveProductsToStorage(products);
                 alert('Nowy produkt dodany!');
