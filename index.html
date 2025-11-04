@@ -386,17 +386,17 @@
        .product-card .btn-add {
             display: block;
             width: 100%;
-            padding: 8px;
-            background-color: #555555; /* <-- POPRAWKA NA CIEMNOSZARY */
+            padding: 6px; /* <-- NOWA WARTOŚĆ */
+            background-color: #555555;
             color: var(--color-text-light);
             text-decoration: none;
             text-transform: uppercase;
             font-weight: 700;
             transition: background-color 0.3s;
-            cursor: pointer; /* NOWOŚĆ */
-            border: none; /* NOWOŚĆ */
-            font-family: var(--font-sans); /* NOWOŚĆ */
-            font-size: 0.9em; /* NOWOŚĆ */
+            cursor: pointer; 
+            border: none; 
+            font-family: var(--font-sans); 
+            font-size: 0.8em; /* <-- NOWA WARTOŚĆ */
         }
         .product-card .btn-add:hover {
             background-color: var(--color-accent-gold);
@@ -2690,7 +2690,7 @@
                             // 1. Jeśli ID ISTNIEJE (przyciski aktywne)
                           `
                             <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
-                            <button class="btn-add" style="background-color: #555555; color: var(--color-text-light); width: auto; padding: 8px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
+                            <button class="btn-add" style="background-color: #555555; color: var(--color-text-light); width: auto; padding: 6px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
                             ` :
                             // 2. Jeśli ID NIE ISTNIEJE (przyciski wyłączone)
                             `
