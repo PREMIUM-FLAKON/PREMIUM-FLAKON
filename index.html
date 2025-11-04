@@ -843,13 +843,14 @@
             .footer-links, .footer-contact { flex-basis: 45%; margin-bottom: 30px; }
             .collection-layout { flex-direction: column; }
             #filter-sidebar { flex: 1 1 100%; border-right: none; border-bottom: 1px solid #DDD; }
+            #product-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
             .dashboard-content { flex-direction: column; }
             .dashboard-nav { flex: 1 1 100%; }
             .admin-layout { flex-direction: column; } 
             .admin-form-container { position: static; } 
             #koszyk-formularz { position: static; } /* NOWOŚĆ */
-            #product-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-      }
+        }
+
         @media (max-width: 768px) {
             .container { padding: 0 15px; }
             h1, h2, h3 { letter-spacing: 1px; }
@@ -870,7 +871,6 @@
             .advantage-item { flex: 1 1 100%; }
             .dashboard-header { flex-direction: column; text-align: center; gap: 10px; }
             .stats-card-container { flex-direction: column; } /* NOWOŚĆ */
-       #product-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
         }
 
      @media (max-width: 480px) {
