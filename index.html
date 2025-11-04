@@ -2674,11 +2674,11 @@
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 
-                // === ZAKTUALIZOWANY KOD KARTY PRODUKTU ===
-                card.innerHTML = `
-                    <div style="height: 140px; background-color: #F8F8F4; border: 1px dashed #CCC; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}'); background-size: cover; background-position: center;">
-                    </div>
-                    <div class="brand">${product.brand}</div>
+               // === ZAKTUALIZOWANY KOD KARTY PRODUKTU ===
+                card.innerHTML = `
+                    <div style="height: 140px; background-color: #F8F8F4; border: 1px dashed #CCC; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}'); background-size: contain; background-position: center; background-repeat: no-repeat;">
+                    </div>
+                    <div class="brand">${product.brand}</div>
                     <h3>${product.name || 'Brak Nazwy'}</h3>
                     <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category}</p>
                     
