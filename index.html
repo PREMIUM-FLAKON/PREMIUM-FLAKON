@@ -383,21 +383,21 @@
             color: var(--color-accent-gold);
             margin: 10px 0;
         }
-       .product-card .btn-add {
-            display: block;
-            width: 100%;
-            padding: 6px; /* <-- NOWA WARTOŚĆ */
-            background-color: #555555;
-            color: var(--color-text-light);
-            text-decoration: none;
-            text-transform: uppercase;
-            font-weight: 700;
-            transition: background-color 0.3s;
-            cursor: pointer; 
-            border: none; 
-            font-family: var(--font-sans); 
-            font-size: 0.8em; /* <-- NOWA WARTOŚĆ */
-        }
+        .product-card .btn-add {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: var(--color-text-dark);
+            color: var(--color-text-light);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 700;
+            transition: background-color 0.3s;
+            cursor: pointer; /* NOWOŚĆ */
+            border: none; /* NOWOŚĆ */
+            font-family: var(--font-sans); /* NOWOŚĆ */
+            font-size: 1em; /* NOWOŚĆ */
+        }
         .product-card .btn-add:hover {
             background-color: var(--color-accent-gold);
             color: var(--color-text-dark);
@@ -2688,10 +2688,10 @@
                     <div style="display:flex; gap:8px; margin-top:10px;">
                         ${product.id ?
                             // 1. Jeśli ID ISTNIEJE (przyciski aktywne)
-                          `
-                            <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
-                            <button class="btn-add" style="background-color: #555555; color: var(--color-text-light); width: auto; padding: 6px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
-                            ` :
+                            `
+                            <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
+                            <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:10px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
+                            ` :
                             // 2. Jeśli ID NIE ISTNIEJE (przyciski wyłączone)
                             `
                             <button class="btn-add" style="background:#CCC; color:#666;" disabled>DO KOSZYKA</button>
