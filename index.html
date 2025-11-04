@@ -387,7 +387,7 @@
             display: block;
             width: 100%;
             padding: 8px;
-            background-color: var(--color-text-dark);
+            background-color: #555555; /* <-- POPRAWKA NA CIEMNOSZARY */
             color: var(--color-text-light);
             text-decoration: none;
             text-transform: uppercase;
@@ -2688,9 +2688,9 @@
                     <div style="display:flex; gap:8px; margin-top:10px;">
                         ${product.id ?
                             // 1. Jeśli ID ISTNIEJE (przyciski aktywne)
-                           `
+                          `
                             <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
-                            <button class="btn-add" style="background-color:var(--color-text-dark); color:var(--color-text-light); width:auto; padding:8px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
+                            <button class="btn-add" style="background-color: #555555; color: var(--color-text-light); width: auto; padding: 8px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
                             ` :
                             // 2. Jeśli ID NIE ISTNIEJE (przyciski wyłączone)
                             `
