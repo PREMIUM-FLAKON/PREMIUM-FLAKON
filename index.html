@@ -1003,23 +1003,23 @@
             <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">EKSKLUZYWNY</span> KATALOG ZAPACHÓW</h2>
             
             <div class="collection-layout">
-                <div id="filter-sidebar">
+               <div id="filter-sidebar">
                     <h4>FILTRUJ WYNIKI</h4>
                     
                     <div class="filter-group">
                         <h4>Marka</h4>
-                        <label><input type="checkbox" data-filter="brand" value="Creed" onchanging> Creed</label>
-                        <label><input type="checkbox" data-filter="brand" value="Parfums de Marly" onchaning> Parfums de Marly</label>
-                        <label><input type="checkbox" data-filter="brand" value="Tom Ford"  onchanging> Tom Ford</label>
-                        <label><input type="checkbox" data-filter="brand" value="Frederic Malle"  onchanging> Frederic Malle</label>
-                        <label><input type="checkbox" data-filter="brand" value="Kilian"  onchanging> Kilian</label>
+                        <label><input type="checkbox" data-filter="brand" value="Creed" name="filter_brand" id="filter_creed"> Creed</label>
+                        <label><input type="checkbox" data-filter="brand" value="Parfums de Marly" name="filter_brand" id="filter_pdm"> Parfums de Marly</label>
+                        <label><input type="checkbox" data-filter="brand" value="Tom Ford" name="filter_brand" id="filter_tf"> Tom Ford</label>
+                        <label><input type="checkbox" data-filter="brand" value="Frederic Malle" name="filter_brand" id="filter_fm"> Frederic Malle</label>
+                        <label><input type="checkbox" data-filter="brand" value="Kilian" name="filter_brand" id="filter_kilian"> Kilian</label>
                     </div>
                     
                     <div class="filter-group">
                         <h4>Kategoria</h4>
-                        <label><input type="checkbox" data-filter="category" value="Męskie"  onchanging> Męskie</label>
-                        <label><input type="checkbox" data-filter="category" value="Damskie"  onchanging> Damskie</label>
-                        <label><input type="checkbox" data-filter="category" value="Unisex"  onchanging> Unisex</label>
+                        <label><input type="checkbox" data-filter="category" value="Męskie" name="filter_category" id="filter_cat_meskie"> Męskie</label>
+                        <label><input type="checkbox" data-filter="category" value="Damskie" name="filter_category" id="filter_cat_damskie"> Damskie</label>
+                        <label><input type="checkbox" data-filter="category" value="Unisex" name="filter_category" id="filter_cat_unisex"> Unisex</label>
                     </div>
                 </div>
                 
@@ -2678,7 +2678,6 @@
             const grid = document.getElementById('product-grid');
             if (!grid) return; 
             
-            // Poprawiona kolejność ładowania
             const noProducts = document.getElementById('no-products'); 
             grid.innerHTML = ''; 
             
@@ -2695,13 +2694,16 @@
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 
-                // === TUTAJ JEST POPRAWIONY KOD (BEZ BŁĘDU '_') ===
+                // === ZAKTUALIZOWANY KOD KARTY PRODUKTU ===
                 card.innerHTML = `
                     <div style="height: 140px; background-color: #F8F8F4; border: 1px dashed #CCC; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}'); background-size: cover; background-position: center;">
                     </div>
                     <div class="brand">${product.brand}</div>
                     <h3>${product.name || 'Brak Nazwy'}</h3>
                     <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category}</p>
+                    
+                    <p style="font-size: 0.8em; color: #AAA; margin-top: 0; margin-bottom: 8px; font-family: monospace;">ID: ${product.id}</p>
+                    
                     <div class="price">${product.price} PLN</div>
                     <div style="display:flex; gap:8px; margin-top:10px;">
                         ${product.id ?
