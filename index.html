@@ -1653,38 +1653,7 @@
     // ### KROK 3: DODANIE NOWEGO KLUCZA DLA KOSZYKA ###
     const LS_CART_KEY = 'pf_cart';
         
-        /** Jednorazowa inicjalizacja bazy produktów (pobieranie z Supabase) */
-         async function initializeProductStorage() {
-
-             // 1. Spróbuj pobrać produkty z Supabase (jeśli Supabase jest dostępne)
-             if (supabase) {
-                 try {
-                     console.log("Pobieranie produktów z Supabase...");
-                     const { data, error } = await supabase
-                         .from('produkty')
-                         .select('*');
-
-                     if (error) throw error;
-                     
-                     if (data) { 
-                        // Jeśli data istnieje (nawet jeśli jest pusta), zapisz ją do cache
-                         localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(data));
-                         console.log(`Pobrano ${data.length} produktów z Supabase.`);
-                         return;
-                     }
-                 } catch (e) {
-                     console.error("Błąd pobierania z Supabase, próbuję użyć cache:", e.message);
-                 }
-             }
-             
-             // 2. Jeśli Supabase nie działa, sprawdź czy jest coś w cache
-             const products = localStorage.getItem(LS_PRODUCTS_KEY);
-             if (!products) {
-                 // Jeśli cache też jest pusty, ustaw pustą tablicę
-                 localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify([]));
-                 console.warn("Baza Supabase i cache są puste. Ustawiono pustą listę produktów.");
-             }
-         }
+       
 
         /* NOWOŚĆ: Baza przykładowych zamówień */
         const initialOrdersData = [
