@@ -848,8 +848,8 @@
             .admin-layout { flex-direction: column; } 
             .admin-form-container { position: static; } 
             #koszyk-formularz { position: static; } /* NOWOŚĆ */
-        }
-
+            #product-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+      }
         @media (max-width: 768px) {
             .container { padding: 0 15px; }
             h1, h2, h3 { letter-spacing: 1px; }
@@ -870,6 +870,7 @@
             .advantage-item { flex: 1 1 100%; }
             .dashboard-header { flex-direction: column; text-align: center; gap: 10px; }
             .stats-card-container { flex-direction: column; } /* NOWOŚĆ */
+       #product-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
         }
 
      @media (max-width: 480px) {
