@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PREMIUM FLAKON - Perfumy Luksusowych Producentów</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght{300;400;700}&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
@@ -167,11 +167,12 @@
             min-height: auto; 
         }
 
-        .hero-section {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85)), url('https://cdn.pixabay.com/photo/2016/08/29/18/43/perfume-1629235_1280.jpg') no-repeat center center/cover;
-            padding: 180px 20px 140px 20px; 
-            position: relative;
-        }
+       .hero-section {
+    /* Usunęliśmy tylko warstwę z niedziałającym obrazkiem, gradient został */
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85));
+    padding: 180px 20px 140px 20px; 
+    position: relative;
+}
         
         .hero-content h1 { font-size: 4em; letter-spacing: 8px; margin-bottom: 5px; font-weight: 900; }
         .hero-slogan { font-size: 1.2em; margin-bottom: 40px; font-weight: 400; letter-spacing: 3px; }
