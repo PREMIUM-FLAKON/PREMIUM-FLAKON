@@ -1935,11 +1935,13 @@
             }
         }
 
-        /** Pobiera wszystkie produkty z bazy localStorage i zapewnia domyślne pola */
+       /** Pobiera wszystkie produkty z bazy localStorage i zapewnia domyślne pola */
         function getProductsFromStorage() {
             const raw = JSON.parse(localStorage.getItem(LS_PRODUCTS_KEY) || '[]');
+            
+            // Poprawka: Mapujemy 'p.productid' (zamiast p.id) do pola 'id'
             return raw.map(p => ({
-                id: p.id,
+                id: p.productid, // <-- TUTAJ JEST KLUCZOWA ZMIANA
                 brand: p.brand || '',
                 name: p.name || '',
                 price: typeof p.price === 'number' ? p.price : parseFloat(p.price) || 0,
