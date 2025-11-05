@@ -934,8 +934,83 @@
             .mini-footer .social-icons { margin: 10px 0; }
             #side-menu.open { width: 100%; }
             #side-menu a { font-size: 16px; }
-        }
-    </style>
+      }
+  /* === STYLE DLA ZWIJANYCH GRUP FILTRÓW (AKORDEON) === */
+
+/* Zastępujemy stare style dla .filter-group */
+.filter-group {
+    border-bottom: 1px solid #DDD; /* Linia oddzielająca grupy */
+    padding-bottom: 0; /* Resetujemy stary padding */
+    margin-bottom: 0; /* Resetujemy stary margin */
+}
+
+/* Usuwamy stary nagłówek H4, bo teraz mamy nowy, klikalny */
+#filter-sidebar .filter-group > h4:not(.filter-group-toggle) {
+    display: none;
+}
+
+/* Nowy, klikalny nagłówek */
+.filter-group-toggle {
+    font-family: var(--font-serif);
+    font-size: 1.1em !important;
+    color: var(--color-text-dark) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+    padding: 18px 0; /* Dajemy padding dla klikalności */
+    cursor: pointer;
+    position: relative;
+    user-select: none; /* Zapobiegamy zaznaczaniu tekstu */
+    transition: color 0.3s;
+}
+
+.filter-group-toggle:hover {
+    color: var(--color-accent-gold) !important;
+}
+
+/* Strzałka */
+.filter-group-toggle .arrow {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg); /* Strzałka w dół */
+    width: 8px;
+    height: 8px;
+    border-bottom: 2px solid var(--color-text-dark);
+    border-right: 2px solid var(--color-text-dark);
+    transition: transform 0.3s, border-color 0.3s;
+}
+
+.filter-group-toggle:hover .arrow {
+    border-color: var(--color-accent-gold);
+}
+
+/* Kontener z checkboxami (domyślnie zwinięty) */
+.filter-group-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* --- Style dla AKTYWNEJ (rozwiniętej) grupy --- */
+.filter-group.active .filter-group-toggle {
+    color: var(--color-accent-gold) !important;
+}
+
+.filter-group.active .filter-group-toggle .arrow {
+    transform: translateY(-25%) rotate(-135deg); /* Strzałka w górę */
+    border-color: var(--color-accent-gold);
+}
+
+.filter-group.active .filter-group-content {
+    max-height: 600px; /* Wystarczająco dużo miejsca na filtry */
+    padding-top: 5px;
+    padding-bottom: 15px; /* Odstęp na dole po rozwinięciu */
+    transition: max-height 0.5s ease-in, padding 0.5s ease-in;
+}
+            </style>
 
     
     <style>
@@ -1056,25 +1131,32 @@
             <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">EKSKLUZYWNY</span> KATALOG ZAPACHÓW</h2>
             
             <div class="collection-layout">
-               <div id="filter-sidebar">
-                    <h4>FILTRUJ WYNIKI</h4>
-                    
-                    <div class="filter-group">
-                        <h4>Marka</h4>
-                        <label><input type="checkbox" data-filter="brand" value="Creed" name="filter_brand" id="filter_creed"> Creed</label>
-                        <label><input type="checkbox" data-filter="brand" value="Parfums de Marly" name="filter_brand" id="filter_pdm"> Parfums de Marly</label>
-                        <label><input type="checkbox" data-filter="brand" value="Tom Ford" name="filter_brand" id="filter_tf"> Tom Ford</label>
-                        <label><input type="checkbox" data-filter="brand" value="Frederic Malle" name="filter_brand" id="filter_fm"> Frederic Malle</label>
-                        <label><input type="checkbox" data-filter="brand" value="Kilian" name="filter_brand" id="filter_kilian"> Kilian</label>
-                    </div>
-                    
-                    <div class="filter-group">
-                        <h4>Kategoria</h4>
-                        <label><input type="checkbox" data-filter="category" value="Męskie" name="filter_category" id="filter_cat_meskie"> Męskie</label>
-                        <label><input type="checkbox" data-filter="category" value="Damskie" name="filter_category" id="filter_cat_damskie"> Damskie</label>
-                        <label><input type="checkbox" data-filter="category" value="Unisex" name="filter_category" id="filter_cat_unisex"> Unisex</label>
-                    </div>
-                </div>
+             <div id="filter-sidebar">
+    <h4>FILTRUJ WYNIKI</h4>
+
+    <div class="filter-group"> <h4 class="filter-group-toggle">
+            Marka <span class="arrow"></span>
+        </h4>
+        <div class="filter-group-content">
+            <label><input type="checkbox" data-filter="brand" value="Creed" name="filter_brand" id="filter_creed"> Creed</label>
+            <label><input type="checkbox" data-filter="brand" value="Parfums de Marly" name="filter_brand" id="filter_pdm"> Parfums de Marly</label>
+            <label><input type="checkbox" data-filter="brand" value="Tom Ford" name="filter_brand" id="filter_tf"> Tom Ford</label>
+            <label><input type="checkbox" data-filter="brand" value="Frederic Malle" name="filter_brand" id="filter_fm"> Frederic Malle</label>
+            <label><input type="checkbox" data-filter="brand" value="Kilian" name="filter_brand" id="filter_kilian"> Kilian</label>
+        </div>
+    </div>
+
+    <div class="filter-group "> <h4 class="filter-group-toggle">
+            Kategoria <span class="arrow"></span>
+        </h4>
+        <div class="filter-group-content">
+            <label><input type="checkbox" data-filter="category" value="Męskie" name="filter_category" id="filter_cat_meskie"> Męskie</label>
+            <label><input type="checkbox" data-filter="category" value="Damskie" name="filter_category" id="filter_cat_damskie"> Damskie</label>
+            <label><input type="checkbox" data-filter="category" value="Unisex" name="filter_category" id="filter_cat_unisex"> Unisex</label>
+        </div>
+    </div>
+
+    </div>
                 
                 <div id="product-list-wrapper">
                     <div id="sort-options">
@@ -3405,6 +3487,18 @@
             
             // ### KROK 3: INICJALIZACJA LICZNIKA PRZY STARCIE ###
             updateCartCounters();
+      // --- Logika akordeonu filtrów ---
+const filterToggles = document.querySelectorAll('.filter-group-toggle');
+filterToggles.forEach(toggle => {
+    toggle.addEventListener('click', () => {
+        // Znajdź rodzica .filter-group
+        const group = toggle.parentElement;
+        if (group && group.classList.contains('filter-group')) {
+            // Przełącz klasę .active
+            group.classList.toggle('active');
+        }
+    });
+});
         });
     </script>
 </body>
