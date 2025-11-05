@@ -1884,109 +1884,135 @@
             return user ? user.username : "Kliencie";
         }
 
-        /** Rejestruje nowego użytkownika */
-        function registerUser() {
-            const username = document.getElementById('register-username').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
+       /** Rejestruje nowego użytkownika w Supabase (z potwierdzeniem email) */
+        async function registerUser() {
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
 
-            if (!username || !email || !password) {
-                alert('Proszę wypełnić wszystkie pola.');
-                return;
-            }
-            if (email.toLowerCase() === 'admin@premium.pl') {
-                alert('Ten adres e-mail jest zarezerwowany.');
-                return;
-            }
+            if (!username || !email || !password) {
+                alert('Proszę wypełnić wszystkie pola.');
+                return;
+            }
+            if (email.toLowerCase() === 'admin@premium.pl') {
+                alert('Ten adres e-mail jest zarezerwowany.');
+                return;
+            }
 
-            let users = JSON.parse(localStorage.getItem(LS_USERS_KEY) || '{}');
+            try {
+                // Krok 1: Zarejestruj użytkownika w Supabase Auth
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: { 
+                            username: username 
+                        }
+                    }
+                });
 
-            if (users[email]) {
-                alert('Użytkownik o tym adresie e-mail już istnieje. Proszę się zalogować.');
-                return;
-            }
+                if (error) throw error; // Rzuć błąd, jeśli wystąpił
 
-            users[email] = { username: username, password: password };
-            localStorage.setItem(LS_USERS_KEY, JSON.stringify(users));
+                // Krok 2: Pokaż wiadomość o konieczności potwierdzenia
+                if (data.user) {
+                    alert('Rejestracja pomyślna! Sprawdź swoją skrzynkę mailową (również folder SPAM) i kliknij w link, aby aktywować konto. Dopiero wtedy będziesz mógł się zalogować.');
+                    // Wyczyść formularz
+                    document.getElementById('register-username').value = '';
+                    document.getElementById('register-email').value = '';
+                    document.getElementById('register-password').value = '';
+                }
 
-            alert('Rejestracja pomyślna! Zostaniesz teraz zalogowany.');
-            
-            const currentUser = { email: email, username: username, isAdmin: false };
-            localStorage.setItem(LS_SESSION_KEY, JSON.stringify(currentUser));
-            
-            updateSideMenu();
-            showPage('konto-page');
-        }
+            } catch (error) {
+                console.error('Błąd rejestracji:', error.message);
+                alert('Błąd rejestracji: ' + error.message);
+            }
+        }
 
-    /** Loguje użytkownika (klienta lub admina) */
-        async function loginUser() { // UWAGA: FUNKCJA MUSI BYĆ ASYNC
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
+    /** Loguje użytkownika (klienta lub admina) przez Supabase */
+        async function loginUser() { 
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
 
-            // ZACZNIJ OD PRÓBY LOGOWANIA ADMINA PRZEZ SUPABASE AUTH
-            if (email.toLowerCase() === 'admin@premium.pl' && password === 'admin123') {
-                if (!supabase) {
-                    alert('Błąd: Supabase nie jest skonfigurowane. Zalogowanie Admina niemożliwe.');
-                    return;
-                }
-                
-                // === PRÓBA LOGOWANIA W SUPABASE (DLA RLS) ===
-                const { error } = await supabase.auth.signInWithPassword({ // CZEKAMY NA WYNIK LOGOWANIA
-                    email: email,
-                    password: password,
-                });
-                
-                if (error) {
-                    alert(`Błąd logowania Admina: ${error.message}. Sprawdź, czy Admin istnieje w Supabase > Authentication > Users.`);
-                    return;
-                }
-                
-                // Sukces: Zalogowano Admina w Supabase i lokalnie
-                const currentUser = { 
-                    email: 'admin@premium.pl', 
-                    username: 'Administrator', 
-                    isAdmin: true 
-                };
-                localStorage.setItem(LS_SESSION_KEY, JSON.stringify(currentUser));
-                
-                updateSideMenu();
-                showPage('admin-page'); // Przekieruj admina od razu do panelu
-                return;
-            }
+            // Logika dla Admina zostaje (bo już używa Supabase)
+            if (email.toLowerCase() === 'admin@premium.pl' && password === 'admin123') {
+                if (!supabase) {
+                    alert('Błąd: Supabase nie jest skonfigurowane. Zalogowanie Admina niemożliwe.');
+                    return;
+                }
+                
+                const { error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
+                
+                if (error) {
+                    alert(`Błąd logowania Admina: ${error.message}.`);
+                    return;
+                }
+                
+                const currentUser = { 
+                    email: 'admin@premium.pl', 
+                    username: 'Administrator', 
+                    isAdmin: true 
+                };
+                localStorage.setItem(LS_SESSION_KEY, JSON.stringify(currentUser));
+                
+                updateSideMenu();
+                showPage('admin-page');
+                return;
+            }
 
-            // === ŚCIEŻKA DLA ZWYKŁEGO UŻYTKOWNIKA ===
-            let users = JSON.parse(localStorage.getItem(LS_USERS_KEY) || '{}');
+            // === ZMIANA: ŚCIEŻKA DLA ZWYKŁEGO UŻYTKOWNIKA ===
+            try {
+                // Używamy tej samej funkcji co admin, ale dla zwykłego usera
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
 
-            if (users[email] && users[email].password === password) {
-                const currentUser = { 
-                    email: email, 
-                    username: users[email].username, 
-                    isAdmin: false 
-                };
-                localStorage.setItem(LS_SESSION_KEY, JSON.stringify(currentUser));
-                
-                updateSideMenu();
-                renderKontoPage();
-            } else {
-                alert('Nieprawidłowy e-mail lub hasło.');
-                localStorage.removeItem(LS_SESSION_KEY);
-                updateSideMenu();
-            }
-        }
+                if (error) throw error; // Rzuć błąd, aby złapał go 'catch'
 
-        /** Wylogowuje użytkownika */
-        function logoutUser() {
-            localStorage.removeItem(LS_SESSION_KEY);
-            updateSideMenu();
-            
-            // Jeśli jesteśmy na stronie konta lub admina, przekieruj na stronę główną
-            const activePage = document.querySelector('.page-section.active');
-            if (activePage && (activePage.id === 'konto-page' || activePage.id === 'admin-page')) {
-                showPage('landing-page');
-            } else if (activePage && activePage.id === 'konto-page') {
-                renderKontoPage(); // Pokaż formularz logowania
-            }
-        }
+                if (data.user) {
+                    // Sukces: Zalogowano użytkownika
+                    const currentUser = {
+                        email: data.user.email,
+                        // Pobierz 'username' zapisane podczas rejestracji
+                        username: data.user.user_metadata.username || data.user.email.split('@')[0], 
+                        isAdmin: false,
+                        id: data.user.id
+                    };
+                    localStorage.setItem(LS_SESSION_KEY, JSON.stringify(currentUser));
+                    
+                    updateSideMenu();
+                    renderKontoPage(); // Pokaż panel konta
+                }
+            } catch (error) {
+                console.error('Błąd logowania:', error.message);
+                alert('Nieprawidłowy e-mail lub hasło.');
+                localStorage.removeItem(LS_SESSION_KEY);
+                updateSideMenu();
+            }
+        }
+       /** Wylogowuje użytkownika z Supabase i lokalnie */
+        async function logoutUser() { // ZMIANA: Dodano async
+            // Krok 1: Wyloguj z Supabase
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('Błąd wylogowania z Supabase:', error.message);
+            }
+
+            // Krok 2: Wyloguj lokalnie (jak wcześniej)
+            localStorage.removeItem(LS_SESSION_KEY);
+            updateSideMenu();
+            
+            // Reszta kodu UI zostaje bez zmian
+            const activePage = document.querySelector('.page-section.active');
+            if (activePage && (activePage.id === 'konto-page' || activePage.id === 'admin-page')) {
+                showPage('landing-page');
+            } else if (activePage && activePage.id === 'konto-page') {
+                renderKontoPage(); // Pokaż formularz logowania
+            }
+        }
 
         /** Aktualizuje boczny panel (#side-menu) na podstawie stanu logowania */
         function updateSideMenu() {
@@ -3414,6 +3440,34 @@
         // --- LOGIKA CHAT, INICJALIZACJA STRONY I ZDARZEŃ ---
         
         document.addEventListener('DOMContentLoaded', async () => { // <-- POPRAWKA ASYNC
+          
+            
+            // === NOWOŚĆ: Sprawdzenie sesji Supabase przy starcie ===
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                
+                if (session && session.user) {
+                    // Mamy aktywną sesję w Supabase! Zalogujmy użytkownika lokalnie.
+                    const user = session.user;
+                    // Sprawdzamy czy to admin
+                    const isAdmin = user.email === 'admin@premium.pl'; 
+                    
+                    const currentUser = {
+                        email: user.email,
+                        username: user.user_metadata.username || (isAdmin ? 'Administrator' : user.email.split('@')[0]),
+                        isAdmin: isAdmin,
+                        id: user.id
+                    };
+                    // Zapisujemy info do naszej lokalnej sesji, aby reszta skryptów działała
+                    localStorage.setItem(LS_SESSION_KEY, JSON.stringify(currentUser));
+                } else {
+                    // Brak sesji w Supabase, upewnij się, że lokalna też jest czysta
+                    localStorage.removeItem(LS_SESSION_KEY);
+                }
+            } catch (e) {
+                console.error("Błąd przywracania sesji:", e);
+                localStorage.removeItem(LS_SESSION_KEY);
+            }
             // === INICJALIZACJA BAZ ===
             await initializeProductStorage(); // <-- POPRAWKA AWAIT
             initializeOrderStorage(); 
