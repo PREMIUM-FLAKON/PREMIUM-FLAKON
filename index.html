@@ -871,7 +871,60 @@
             .advantage-item { flex: 1 1 100%; }
             .dashboard-header { flex-direction: column; text-align: center; gap: 10px; }
             .stats-card-container { flex-direction: column; } /* NOWOŚĆ */
+     /* === POPRAWKI MOBILNE (PRODUKTY I NAGŁÓWEK) === */
+    
+    /* 1. Zmniejszenie nagłówka na wszystkich podstronach */
+    header {
+        /* Zmniejszamy padding (wysokość) nagłówka */
+        padding: 12px 0;
+    }
+
+    header h1 {
+        /* Zmniejszamy logo/tytuł w nagłówku. 
+           Używamy !important, aby pokonać styl inline (font-size: 2.5em) z HTML */
+        font-size: 1.9em !important;
+    }
+
+    /* 2. Poprawki siatki produktów (styl "Sephora") */
+    #product-grid {
+        /* Wymuszamy 2 kolumny na telefonie */
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px; /* Zmniejszamy odstęp między produktami */
+    }
+    
+    .product-card {
+        /* Zmniejszamy padding wewnątrz karty, aby zmieścić więcej treści */
+        padding: 12px 10px;
+    }
+
+    .product-card .brand {
+        font-size: 1.1em; /* Mniejsza czcionka marki */
+        margin-bottom: 5px;
+    }
+
+    .product-card h3 {
+        font-size: 0.9em; /* Mniejsza czcionka nazwy produktu */
+        line-height: 1.3;
+        margin-bottom: 5px;
+        margin-top: 5px;
+    }
+
+    .product-card .price {
+        font-size: 1.25em; /* Mniejsza czcionka ceny */
+        margin: 8px 0;
+    }
+
+    .product-card .btn-add {
+        font-size: 0.8em; /* Mniejszy tekst na przyciskach */
+        padding: 8px 5px; /* Mniejsze przyciski */
+    }
+
+    /* Poprawka dla kontenera na mobilkach, aby mieć padding */
+    .container {
+        padding: 0 15px;
+    
         }
+        
 
      @media (max-width: 480px) {
             .hero-content h1 { font-size: 2em; }
