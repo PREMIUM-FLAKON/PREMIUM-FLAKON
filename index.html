@@ -3055,100 +3055,131 @@
          }
 
          // --- FUNKCJE NAWIGACJI ---
-         function highlightNavLink(activePageId) {
-             const headerNav = document.querySelector('header nav');
-             if (!headerNav) return; 
-             const allNavLinks = headerNav.querySelectorAll('a');
-             allNavLinks.forEach(link => { link.classList.remove('active-nav-link'); });
+        // (ZAKTUALIZOWANA FUNKCJA)
+        function highlightNavLink(activePageId, activeSectionElement) {
+            // Krok 1: Znajdź nawigację <nav> TYLKO wewnątrz aktywnej sekcji
+            // To jest kluczowa poprawka - szukamy tylko w widocznym nagłówku
+            const headerNav = activeSectionElement.querySelector('header nav');
+            
+            // Jeśli strona nie ma nawigacji (np. strona produktu), wyjdź
+            if (!headerNav) {
+                return; 
+            }
 
-             let targetIdPrefix;
-             if (activePageId.includes('kolekcja')) { targetIdPrefix = 'link-kolekcja'; } 
-             else if (activePageId.includes('onas')) { targetIdPrefix = 'link-onas'; } 
-             else if (activePageId.includes('regulamin')) { targetIdPrefix = 'link-regulamin'; } 
-             else if (activePageId.includes('polityka')) { targetIdPrefix = 'link-polityka'; } 
-             else if (activePageId.includes('zwroty')) { targetIdPrefix = 'link-zwroty'; } 
-             else if (activePageId.includes('pomoc')) { targetIdPrefix = 'link-pomoc'; }
-             else if (activePageId.includes('konto')) { targetIdPrefix = 'link-konto'; }
-             else if (activePageId.includes('koszyk')) { targetIdPrefix = 'link-koszyk'; } // NOWOŚĆ
-             
-             if (targetIdPrefix) {
-                 document.querySelectorAll(`[id^="${targetIdPrefix}"]`).forEach(link => {
-                     if (link.id.includes(targetIdPrefix)) { link.classList.add('active-nav-link'); }
-                 });
-             }
-         }
+            // Krok 2: Wyczyść wszystkie linki w TYM KONKRETNYM pasku nawigacji
+            const allNavLinks = headerNav.querySelectorAll('a');
+            allNavLinks.forEach(link => { link.classList.remove('active-nav-link'); });
 
-         function scrollToElement(elementId) {
-             const element = document.getElementById(elementId);
-             if (element) { setTimeout(() => { element.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100); }
-         }
+            // Krok 3: Znajdź prefix ID linku, który ma być aktywny
+            // (Ta logika była poprawna)
+            let targetIdPrefix;
+            if (activePageId.includes('kolekcja')) { targetIdPrefix = 'link-kolekcja'; } 
+            else if (activePageId.includes('onas')) { targetIdPrefix = 'link-onas'; } 
+            else if (activePageId.includes('regulamin')) { targetIdPrefix = 'link-regulamin'; } 
+            else if (activePageId.includes('polityka')) { targetIdPrefix = 'link-polityka'; } 
+            else if (activePageId.includes('zwroty')) { targetIdPrefix = 'link-zwroty'; } 
+            else if (activePageId.includes('pomoc')) { targetIdPrefix = 'link-pomoc'; }
+            else if (activePageId.includes('konto')) { targetIdPrefix = 'link-konto'; }
+            else if (activePageId.includes('koszyk')) { targetIdPrefix = 'link-koszyk'; } 
+            
+            if (targetIdPrefix) {
+                // Krok 4: Znajdź DOKŁADNY link w aktywnym pasku nawigacji
+                // Na stronie "O Nas" (onas-page), szukamy linku o ID "link-onas"
+                // Na stronie "Kolekcja" (kolekcja-page), szukamy linku o ID "link-kolekcja"
+                const exactLinkToHighlight = headerNav.querySelector(`#${targetIdPrefix}`);
+                
+                if (exactLinkToHighlight) {
+                    exactLinkToHighlight.classList.add('active-nav-link');
+                } else {
+                    // Drobna poprawka na wypadek, gdyby ID linków były różne (np. link-kolekcja-onas)
+                    // Spróbuj znaleźć link, który zaczyna się od prefixu
+                    const firstTry = headerNav.querySelector(`[id^="${targetIdPrefix}"]`);
+                    if(firstTry) {
+                         firstTry.classList.add('active-nav-link');
+                    }
+                }
+            }
+        }
 
-         function showPageAndScroll(pageId, elementId) {
-             showPage(pageId);
-             scrollToElement(elementId);
-             const targetPageId = pageId.split('-')[0];
-             highlightNavLink(targetPageId);
-         }
+        function scrollToElement(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) { setTimeout(() => { element.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100); }
+        }
 
-         function openNav() { document.getElementById("side-menu").classList.add("open"); }
-         function closeNav() { document.getElementById("side-menu").classList.remove("open"); }
-         
-         /** Główna funkcja nawigacyjna - z kontrolą dostępu */
-         function showPage(pageId) {
-             // === KONTROLA DOSTĘPU ADMINA ===
-             if (pageId === 'admin-page' && !isCurrentUserAdmin()) {
-                 alert('Nie masz uprawnień do tej strony. Zaloguj się jako administrator.');
-                 showPage(getIsLoggedIn() ? 'konto-page' : 'landing-page');
-                 return;
-             }
-             // === KONTROLA DOSTĘPU KLIENTA ===
-             if (pageId === 'konto-page' && isCurrentUserAdmin()) {
-                 pageId = 'admin-page';
-             }
+        function showPageAndScroll(pageId, elementId) {
+            showPage(pageId);
+            scrollToElement(elementId);
+            // Ta linijka poniżej jest teraz zbędna, bo showPage() samo wywoła highlightNavLink
+            // const targetPageId = pageId.split('-')[0];
+            // highlightNavLink(targetPageId);
+        }
 
-             // NOWOŚĆ: Wyczyszczenie interwału symulacji, jeśli opuszczamy panel admina
-             if (activeUserInterval && pageId !== 'admin-page') {
-                 clearInterval(activeUserInterval);
-                 activeUserInterval = null;
-             }
+        function openNav() { document.getElementById("side-menu").classList.add("open"); }
+        function closeNav() { document.getElementById("side-menu").classList.remove("open"); }
+        
+        /** Główna funkcja nawigacyjna - z kontrolą dostępu (ZAKTUALIZOWANA) */
+        function showPage(pageId) {
+            // === KONTROLA DOSTĘPU ADMINA ===
+            if (pageId === 'admin-page' && !isCurrentUserAdmin()) {
+                alert('Nie masz uprawnień do tej strony. Zaloguj się jako administrator.');
+                showPage(getIsLoggedIn() ? 'konto-page' : 'landing-page');
+                return;
+            }
+            // === KONTROLA DOSTĘPU KLIENTA ===
+            if (pageId === 'konto-page' && isCurrentUserAdmin()) {
+                pageId = 'admin-page';
+            }
+
+            // NOWOŚĆ: Wyczyszczenie interwału symulacji, jeśli opuszczamy panel admina
+            if (activeUserInterval && pageId !== 'admin-page') {
+                clearInterval(activeUserInterval);
+                activeUserInterval = null;
+            }
 
 
-             const sections = document.querySelectorAll('.page-section');
-             sections.forEach(section => { section.classList.remove('active'); });
-             
-             const activeSection = document.getElementById(pageId);
-             if (activeSection) {
-                 activeSection.classList.add('active');
-                 const event = new CustomEvent('pageShow', { detail: { pageId: pageId } });
-                 document.dispatchEvent(event);
-             } else {
-                 document.getElementById('landing-page').classList.add('active');
-                 return;
-             }
-             
-             if (pageId !== 'landing-page') { 
-                 highlightNavLink(pageId); 
-             } else { 
-                 document.querySelectorAll('header nav a').forEach(link => { link.classList.remove('active-nav-link'); }); 
-             }
-             
-             window.scrollTo({ top: 0, behavior: 'smooth' });
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(section => { section.classList.remove('active'); });
+            
+            // === ZMIANA ===
+            // Pobieramy element sekcji, aby przekazać go do funkcji podświetlającej
+            const activeSection = document.getElementById(pageId); 
+            // === KONIEC ZMIANY ===
 
-             // Inicjalizuj odpowiednie strony
-             if (pageId === 'kolekcja-page') {
-                 applyFilters(); 
-             }
-             if (pageId === 'konto-page') {
-                 renderKontoPage();
-             }
-             if (pageId === 'admin-page') {
-                 renderAdminPage(); // ZMODYFIKOWANE: teraz renderuje nową strukturę
-             }
-             // ### KROK 3: DODANIE WYWOŁANIA RENDEROWANIA KOSZYKA ###
-             if (pageId === 'koszyk-page') {
-                 renderCartPage();
-             }
-         }
+            if (activeSection) {
+                activeSection.classList.add('active');
+                const event = new CustomEvent('pageShow', { detail: { pageId: pageId } });
+                document.dispatchEvent(event);
+            } else {
+                document.getElementById('landing-page').classList.add('active');
+                return;
+            }
+            
+            if (pageId !== 'landing-page') { 
+                // === ZMIANA ===
+                // Przekazujemy teraz ID strony ORAZ element aktywnej sekcji
+                highlightNavLink(pageId, activeSection); 
+                // === KONIEC ZMIANY ===
+            } else { 
+                document.querySelectorAll('header nav a').forEach(link => { link.classList.remove('active-nav-link'); }); 
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Inicjalizuj odpowiednie strony
+            if (pageId === 'kolekcja-page') {
+                applyFilters(); 
+            }
+            if (pageId === 'konto-page') {
+                renderKontoPage();
+            }
+            if (pageId === 'admin-page') {
+                renderAdminPage(); 
+            }
+            // ### KROK 3: DODANIE WYWOŁANIA RENDEROWANIA KOSZYKA ###
+            if (pageId === 'koszyk-page') {
+                renderCartPage();
+            }
+        }
 
          // --- LOGIKA KONT (PANEL KLIENTA) ---
          function renderKontoPage() {
