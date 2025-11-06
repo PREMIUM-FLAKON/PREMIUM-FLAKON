@@ -2370,7 +2370,7 @@
                  const { data, error } = await supabase
                      .from('zamowienia') // Nazwa Twojej tabeli
                      .insert([newOrder])
-                     .select(); // Poproś o zwrot wstawionego wiersza
+                    
 
                  if (error) {
                      throw error; // Rzuć błędem, aby złapał go 'catch'
