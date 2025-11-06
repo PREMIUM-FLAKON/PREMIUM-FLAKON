@@ -168,17 +168,19 @@
         }
 
        .hero-section {
-    /* 1. Ustawiamy obrazek jako tło */
-    /* i nakładamy na niego gradient, aby tekst był czytelny */
+    /* Używamy publicznego obrazu z internetu jako tła */
     background-image: 
-        linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.8)), 
-        url('file:///C:/Users/milko/Desktop/Gemini_Generated_Image_byoda7byoda7byod.png');
-    
-    /* 2. Ustawiamy pozycjonowanie tła */
+        /* Warstwa przyciemniająca (gradient), aby tekst był czytelny */
+        linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), 
+        
+        /* Link do obrazu tła (zdjęcie kwiatów i perfum) */
+        url('https://images.unsplash.com/photo-1550989460-0d97b1b3b17c?q=80&w=1974&auto=format&fit=crop');
+
+    /* Ustawiamy pozycjonowanie tła */
     background-size: cover; /* Aby obrazek zawsze pokrywał całą sekcję */
     background-position: center center; /* Aby obrazek był wyśrodkowany */
 
-    /* 3. Reszta Twoich starych stylów (zostaje bez zmian) */
+    /* Reszta Twoich starych stylów (bez zmian) */
     padding: 180px 20px 140px 20px;
     position: relative;
 }
