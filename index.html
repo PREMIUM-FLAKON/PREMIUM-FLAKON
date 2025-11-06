@@ -2320,68 +2320,80 @@
                              <label for="order-uwagi">Uwagi do zamówienia (opcjonalnie)</label>
                              <textarea id="order-uwagi" rows="2"></textarea>
                          </div>
-                         <button type="submit" class="btn-auth">Złóż zamówienie (Wyślij e-mail)</button>
-                         <p style="font-size: 0.8em; color: #666; text-align: center; margin-top: 15px;">
-                             Kliknięcie przycisku otworzy Twój domyślny program pocztowy z gotowym zamówieniem do wysłania.
-                         </p>
-                     </form>
+                         <button type="submit" class="btn-auth">Złóż zamówienie</button>
+                         <p style="font-size: 0.8em; color: #666; text-align: center; margin-top: 15px;">
+                             Kliknięcie przycisku bezpiecznie zapisze Twoje zamówienie w naszym systemie.
+                         </p>
+                     </form>
                  `;
              }
          }
          
-         /** Obsługuje wysłanie formularza (tworzy mailto) */
-         function handleOrderSubmit(event) {
-             event.preventDefault();
-             
-             // ZASTĄP TYM ADRESEM SWÓJ E-MAIL ODBIORCZY
-             const adresEmailOdbiorcy = 'odoris.pl@gmail.com'; 
+        /** NOWA WERSJA: Obsługuje wysłanie formularza (zapisuje do Supabase) */
+         async function handleOrderSubmit(event) { // DODANO 'async'
+             event.preventDefault();
 
-            const imie = document.getElementById('order-imie').value;
-             const email = document.getElementById('order-email').value;
-             const adres = document.getElementById('order-adres').value;
-             const uwagi = document.getElementById('order-uwagi').value;
-             
-             const cart = getCart();
-             let sumaCalkowita = 0;
-             
-             let trescMaila = "NOWE ZAMÓWIENIE ZE STRONY ODORIS\n\n";
-             trescMaila += "--------------------------------------------------\n";
-             trescMaila += "DANE KLIENTA:\n";
-             trescMaila += `Imię i nazwisko: ${imie}\n`;
-             trescMaila += `E-mail kontaktowy: ${email}\n`;
-             trescMaila += `Adres dostawy: ${adres}\n`;
-             if (uwagi) {
-                 trescMaila += `Uwagi: ${uwagi}\n`;
-             }
-             trescMaila += "--------------------------------------------------\n";
-             trescMaila += "ZAMÓWIONE PRODUKTY:\n\n";
+             // 1. Zablokuj przycisk, aby zapobiec wielokrotnemu kliknięciu
+             const submitButton = document.querySelector('#koszyk-formularz button[type="submit"]');
+             if (submitButton) {
+                 submitButton.disabled = true;
+                 submitButton.textContent = 'Przetwarzanie...';
+             }
 
-             cart.forEach(item => {
-                 const itemSuma = (item.price || 0) * (item.quantity || 0);
-                 sumaCalkowita += itemSuma;
-                 trescMaila += `Produkt: ${item.brand} - ${item.name}\n`;
-                 trescMaila += `Ilość: ${item.quantity}\n`;
-                 trescMaila += `Cena: ${itemSuma.toFixed(2)} PLN\n`;
-                 trescMaila += "----\n";
-             });
+             // 2. Zbierz dane z formularza
+             const imie = document.getElementById('order-imie').value;
+             const email = document.getElementById('order-email').value;
+             const adres = document.getElementById('order-adres').value;
+             const uwagi = document.getElementById('order-uwagi').value;
+             
+             const cart = getCart();
+             let sumaCalkowita = 0;
+             
+             cart.forEach(item => {
+                 const itemSuma = (item.price || 0) * (item.quantity || 0);
+                 sumaCalkowita += itemSuma;
+             });
 
-             trescMaila += `\nSUMA CAŁKOWITA: ${sumaCalkowita.toFixed(2)} PLN\n`;
-             trescMaila += "\nProszę o potwierdzenie przyjęcia zamówienia.";
+             // 3. Stwórz obiekt zamówienia pasujący do tabeli Supabase
+             const newOrder = {
+                 customer_name: imie,
+                 customer_email: email,
+                 customer_address: adres,
+                 notes: uwagi,
+                 items: cart, // Zapisz cały koszyk jako JSONB
+                 total_price: sumaCalkowita
+                 // Kolumna 'status' ustawi się automatycznie na 'Oczekuje' (przez Default Value)
+             };
 
-             const temat = `Nowe zamówienie od ${imie} - ODORIS`;
-             
-             // Kodujemy treść, aby poprawnie wyświetlała się w linku
-             const mailtoLink = `mailto:${adresEmailOdbiorcy}?subject=${encodeURIComponent(temat)}&body=${encodeURIComponent(trescMaila)}`;
+             // 4. Wyślij dane do Supabase
+             try {
+                 const { data, error } = await supabase
+                     .from('zamowienia') // Nazwa Twojej tabeli
+                     .insert([newOrder])
+                     .select(); // Poproś o zwrot wstawionego wiersza
 
-             // Otwieramy domyślny program pocztowy użytkownika
-             window.location.href = mailtoLink;
-             
-             // Informujemy klienta i czyścimy koszyk
-              alert("Dziękujemy! Zostaniesz teraz poproszony o wysłanie do nas wiadomości e-mail z podsumowaniem zamówienia. Po wysłaniu maila koszyk zostanie opróżniony.");
-             
-             saveCart([]); // Czyścimy koszyk
-             renderCartPage(); // Odświeżamy widok koszyka (pokaże się pusty)
-         }
+                 if (error) {
+                     throw error; // Rzuć błędem, aby złapał go 'catch'
+                 }
+
+                 // 5. Sukces!
+                 alert('Dziękujemy! Twoje zamówienie zostało pomyślnie złożone i zapisane w systemie.');
+                 
+                 saveCart([]); // Wyczyść koszyk
+                 renderCartPage(); // Odśwież widok koszyka (pokaże pusty)
+             
+             } catch (error) {
+                 // 6. Obsługa błędu
+                 console.error('Błąd podczas składania zamówienia:', error.message);
+                 alert('Wystąpił błąd podczas składania zamówienia. Spróbuj ponownie lub skontaktuj się z nami telefonicznie.');
+                 
+                 // Odblokuj przycisk w razie błędu
+                 if (submitButton) {
+                     submitButton.disabled = false;
+                     submitButton.textContent = 'Złóż zamówienie';
+                 }
+             }
+         }
 
 
          // ===============================================
