@@ -167,23 +167,18 @@
             min-height: auto;
         }
 
-      .hero-section {
-    /* 1. Ustawiamy obrazek tła */
+       .hero-section {
+    /* Używamy publicznego obrazu z internetu jako tła */
     background-image: 
-        /* 2. NOWY GRADIENT DLA PŁYNNEGO PRZEJŚCIA: */
-        linear-gradient(to bottom, 
-            rgba(26, 26, 26, 0.6) 0%,  /* Ciemna góra dla czytelności tekstu */
-            rgba(26, 26, 26, 0) 40%,  /* Środek obrazka czysty (przezroczysty) */
-            rgba(26, 26, 26, 0) 70%,  /* Środek obrazka czysty (przezroczysty) */
-            #1A1A1A 95%             /* Dół zanika do koloru tła #1A1A1A */
-        ),
+        /* Warstwa przyciemniająca (gradient), aby tekst był czytelny */
+        linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), 
         
-        /* 3. POPRAWIONA NAZWA PLIKU: (tak jak masz na GitHubie) */
-        url('hero-tlo.png');
+        /* Link do obrazu tła (zdjęcie kwiatów i perfum) */
+        url('tlo-hero.png');
 
     /* Ustawiamy pozycjonowanie tła */
-    background-size: cover; 
-    background-position: center center; 
+    background-size: cover; /* Aby obrazek zawsze pokrywał całą sekcję */
+    background-position: center center; /* Aby obrazek był wyśrodkowany */
 
     /* Reszta Twoich starych stylów (bez zmian) */
     padding: 180px 20px 140px 20px;
