@@ -870,7 +870,14 @@
             h1, h2, h3 { letter-spacing: 1px; }
             .hero-content h1 { font-size: 3em; letter-spacing: 5px; }
             .hero-slogan { font-size: 1em; }
-            .hero-section { padding: 120px 15px 80px 15px; }
+            .hero-section { 
+    padding: 120px 15px 80px 15px; 
+
+    /* NOWE LINIE KODU DLA TELEFONU: */
+    background-size: contain;     /* Dopasuj cały obrazek */
+    background-position: center top;  /* Wyśrodkuj i przyklej do góry */
+    background-repeat: no-repeat; /* Nie powtarzaj obrazka */
+}
             .values-section .value-cards { flex-direction: column; gap: 20px; }
             .values-section .card { flex-basis: 100%; padding: 20px; }
             .detail-section .content-2col { flex-direction: column; gap: 30px; }
