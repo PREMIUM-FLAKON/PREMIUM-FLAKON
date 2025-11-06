@@ -1671,10 +1671,7 @@
     <template id="admin-stats-template">
         <h3>Przegląd Sklepu</h3>
         <div class="stats-card-container">
-            <div class="stats-card">
-                <h4>Aktywni użytkownicy (symulacja)</h4>
-                <div id="stats-active-users" class="stat-value">...</div>
-            </div>
+            
             <div class="stats-card">
                 <h4>Łączny przychód (z bazy)</h4>
                 <div id="stats-total-revenue" class="stat-value">...</div>
@@ -1808,16 +1805,11 @@
          
          
 
-         /* NOWOŚĆ: Baza przykładowych zamówień */
-         const initialOrdersData = [
-             { id: '2025/08/01', date: '20.08.2025', email: 'michal@odoris.pl', items: 'Aventus (100ml)', total: 1250, status: 'Dostarczono' },
-             { id: '2025/09/15', date: '15.09.2025', email: 'ania@test.pl', items: 'Layton (75ml)', total: 899, status: 'Wysłano' },
-             { id: '2025/10/29', date: '29.10.2025', email: 'klient@domena.com', items: 'Tuscan Leather (50ml)', total: 720, status: 'Oczekuje' },
-             { id: '2025/10/30', date: '30.10.2025', email: 'michal@odoris.pl', items: 'Delina Exclusif (75ml)', total: 1050, status: 'Wysłano' }
-         ];
+         /* Baza zamówień (teraz pusta, czeka na prawdziwe dane) */
+         const initialOrdersData = [];
 
          /* NOWOŚĆ: Zmienna do przechowywania interwału symulacji */
-         let activeUserInterval = null;
+        
 
          // ===============================================
          // === FUNKCJE SUPABASE (SYNCHRONIZACJA Z ADMINEM) ===
@@ -2451,20 +2443,7 @@
              // 2. Wypełnij karty statystyk
              document.getElementById('stats-total-revenue').textContent = totalRevenue.toFixed(2) + ' PLN';
              document.getElementById('stats-total-orders').textContent = totalOrders;
-             // 3. Symulacja aktywnych użytkowników
-             const activeUsersEl = document.getElementById('stats-active-users');
-             if (activeUsersEl) {
-                 // Ustaw wartość początkową
-                 activeUsersEl.textContent = Math.floor(Math.random() * 6) + 5;
-                 // Wyczyść stary interwał, jeśli istnieje
-                 if (activeUserInterval) {
-                     clearInterval(activeUserInterval);
-                 }
-                 // Ustaw nowy interwał
-                 activeUserInterval = setInterval(() => {
-                     activeUsersEl.textContent = Math.floor(Math.random() * 6) + 5;
-                 }, 3000);
-             }
+             
 
              // 4. Wypełnij tabelę zamówień
              const listBody = document.getElementById('admin-orders-list-body');
@@ -2708,11 +2687,7 @@
                 pageId = 'admin-page';
             }
 
-            // NOWOŚĆ: Wyczyszczenie interwału symulacji, jeśli opuszczamy panel admina
-            if (activeUserInterval && pageId !== 'admin-page') {
-                clearInterval(activeUserInterval);
-                activeUserInterval = null;
-            }
+           
 
 
             const sections = document.querySelectorAll('.page-section');
