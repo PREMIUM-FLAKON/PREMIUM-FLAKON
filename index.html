@@ -2415,7 +2415,7 @@
          }
 
          /** NOWOŚĆ: Przełącza zawartość w panelu admina (Statystyki / Produkty) */
-         function showAdminContent(view) {
+         async function showAdminContent(view) { // <-- DODANO 'async'
              const mainContent = document.getElementById('admin-main');
              if (!mainContent) return;
 
@@ -2429,7 +2429,7 @@
                  document.getElementById('nav-admin-stats')?.classList.add('active');
                  
                  // Odpal renderowanie statystyk i listy zamówień
-                 renderAdminStatsAndOrders();
+                await renderAdminStatsAndOrders();
 
              } else if (view === 'products') {
                  const productsTemplate = document.getElementById('admin-products-template');
@@ -2444,44 +2444,66 @@
              }
          }
 
-         /** NOWOŚĆ: Renderuje statystyki i listę zamówień w panelu admina */
-         function renderAdminStatsAndOrders() {
-             const orders = getOrdersFromStorage();
+        /** ZAKTUALIZOWANA: Renderuje statystyki i listę zamówień z Supabase */
+         async function renderAdminStatsAndOrders() {
+             
+             // 1. ZACIĄGNIJ DANE Z SUPABASE (zamiast getOrdersFromStorage())
+             const { data: orders, error } = await supabase
+                 .from('zamowienia')
+                 .select('*')
+                 .order('created_at', { ascending: false }); // Sortuj od najnowszych
 
-             // 1. Oblicz statystyki
-             const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
-             const totalOrders = orders.length;
+             if (error) {
+                 console.error("Błąd pobierania zamówień z Supabase:", error.message);
+                 alert("Nie udało się pobrać listy zamówień. Sprawdź konsolę F12.");
+             }
 
-             // 2. Wypełnij karty statystyk
-             document.getElementById('stats-total-revenue').textContent = totalRevenue.toFixed(2) + ' PLN';
-             document.getElementById('stats-total-orders').textContent = totalOrders;
-             
+             // Użyj 'orders' z Supabase lub pustej tablicy, jeśli jest błąd
+             const allOrders = orders || []; 
 
-             // 4. Wypełnij tabelę zamówień
-             const listBody = document.getElementById('admin-orders-list-body');
-             if (!listBody) return;
-             listBody.innerHTML = '';
+             // 2. Oblicz statystyki (używamy teraz nazw kolumn z bazy danych)
+             const totalRevenue = allOrders.reduce((sum, order) => sum + (order.total_price || 0), 0);
+             const totalOrders = allOrders.length;
 
-             if (orders.length === 0) {
-                 listBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Brak zamówień w bazie.</td></tr>';
-                 return;
-             }
+             // 3. Wypełnij karty statystyk
+             document.getElementById('stats-total-revenue').textContent = totalRevenue.toFixed(2) + ' PLN';
+             document.getElementById('stats-total-orders').textContent = totalOrders;
+             
+             // 4. Wypełnij tabelę zamówień
+             const listBody = document.getElementById('admin-orders-list-body');
+             if (!listBody) return;
+             listBody.innerHTML = '';
 
-             orders.forEach(order => {
-                 const statusColor = order.status === 'Dostarczono' ? '#0A0' : order.status === 'Wysłano' ? '#F90' : '#C00';
-                 listBody.innerHTML += `
-                     <tr>
-                         <td>${order.id}</td>
-                         <td>${order.date}</td>
-                         <td>${order.email}</td>
-                         <td>${order.items}</td>
-                         <td>${(order.total||0).toFixed(2)} PLN</td>
-                         <td><strong style="color: ${statusColor};">${order.status}</strong></td>
-                     </tr>
-                 `;
-             });
-         }
+             if (allOrders.length === 0) {
+                 listBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Brak zamówień w bazie.</td></tr>';
+                 return;
+             }
 
+             // 5. ZMAPUJ NOWE DANE DO TABELI
+             allOrders.forEach(order => {
+                 const statusColor = order.status === 'Dostarczono' ? '#0A0' : order.status === 'Wysłano' ? '#F90' : (order.status === 'Oczekuje' ? '#C00' : '#888');
+                 
+                 // Sformatuj datę (z '2025-11-06T19:55:30+00:00' na '06.11.2025')
+                 const orderDate = new Date(order.created_at).toLocaleDateString('pl-PL'); 
+                 
+                 // Sformatuj listę przedmiotów (z JSON na tekst)
+                 let itemsText = 'Brak danych';
+                 if (Array.isArray(order.items) && order.items.length > 0) {
+                     itemsText = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+                 }
+
+                 listBody.innerHTML += `
+                     <tr>
+                         <td>${order.id.substring(0, 8)}...</td> 
+                         <td>${orderDate}</td>
+                         <td>${order.customer_email}</td>
+                         <td>${itemsText}</td>
+                         <td>${(order.total_price || 0).toFixed(2)} PLN</td>
+                         <td><strong style="color: ${statusColor};">${order.status}</strong></td>
+                     </tr>
+                 `;
+             });
+         }
 
          /** Renderuje listę produktów w tabeli admina (teraz wywoływane przez showAdminContent) */
          function renderAdminProductList() {
