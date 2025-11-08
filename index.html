@@ -379,11 +379,12 @@
             padding: 8px;
             border: 1px solid #AAA;
         }
-      #product-grid {
+    #product-grid {
             display: grid;
-          	grid-template-columns: repeat(auto-fill, 190px); /* <-- ZMIANA: Stała szerokość */
-          	gap: 20px; /* Możesz dostosować odstęp */
-          	justify-content: center; /* <-- ZMIANA: Centruje całą grupę kart */
+          	/* Twórz kolumny o szerokości min. 200px, ale pozwól im rosnąć */
+          	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+          	gap: 20px; 
+          	justify-items: center; /* <-- TO JEST KLUCZOWA POPRAWKA */
         }
         .product-card {
             background-color: #FFFFFF;
@@ -392,8 +393,9 @@
             text-align: center;
             transition: box-shadow 0.3s, transform 0.3s;
             cursor: pointer;
-            width: 190px; /* <-- ZMIANA: Taka sama jak w siatce */
-            box-sizing: border-box; /* <-- DODANE: Ważne dla zachowania wymiarów z paddingiem */
+            width: 100%; /* <-- KARTA MA WYPEŁNIĆ KOMÓRKĘ */
+            max-width: 200px; /* <-- ALE NIGDY NIE SZERZEJ NIŻ 200px */
+            box-sizing: border-box; 
         }
         .product-card:hover {
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
