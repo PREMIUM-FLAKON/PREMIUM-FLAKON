@@ -985,7 +985,7 @@
         }
 
         /* Nowy, klikalny nagłówek */
-        .filter-group-toggle {
+        #kolekcja-page .filter-group-toggle {
             font-family: var(--font-serif);
             font-size: 1.1em !important;
             color: var(--color-text-dark) !important;
@@ -1049,9 +1049,8 @@
 
 /* --- Styl banera i ciemnego tła (z poprzedniego Kroku 1) --- */
 #kolekcja-page {
-    background-color: var(--color-background-dark);
-    color: var(--color-text-light);
-}
+    background-color: var(--color-background-dark) !important; 
+    color: var(--color-text-light) !important; 
 #kolekcja-page header {
     background-color: var(--color-background-dark);
     border-bottom: 1px solid #333; /* Ciemniejsza linia */
@@ -1068,7 +1067,7 @@
 #kolekcja-page header .menu-toggle:hover {
     color: var(--color-accent-gold);
 }
-#filter-sidebar {
+#kolekcja-page #filter-sidebar {
     background-color: #222; /* Ciemniejsze tło dla filtrów */
     border-right: 1px solid #333;
 }
@@ -1136,7 +1135,7 @@
 }
 
 /* --- Styl ciemnych kart (z poprzedniego Kroku 2) --- */
-.product-card {
+#kolekcja-page .product-card {
     background-color: #2a2a2a; /* Ciemne tło dla karty */
     border: 1px solid #444; /* Ciemniejsza ramka */
     box-shadow: none; /* Usuwamy stary cień z białego tła */
