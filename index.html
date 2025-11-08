@@ -52,8 +52,8 @@
         /* === PRZEŁĄCZANIE WIDOKÓW === */
         .page-section {
             display: none;
-            background-color: var(--color-background-dark); /* <-- ZMIANA */
-            color: var(--color-text-light); /* <-- ZMIANA */
+            background-color: var(--color-background-light);
+            color: var(--color-text-dark);
             min-height: 100vh;
         }
         .page-section.active {
@@ -64,8 +64,8 @@
         header {
             text-align: center;
             padding: 25px 0;
-           border-bottom: 1px solid #333; /* <-- ZMIANA (ciemniejsza linia) */
-            background-color: var(--color-background-dark); /* <-- ZMIANA */
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            background-color: var(--color-background-light);
             position: sticky;
             top: 0;
             z-index: 10;
@@ -79,7 +79,7 @@
         }
 
         header nav a {
-           color: var(--color-text-light); /* <-- ZMIANA */
+            color: var(--color-text-dark);
             text-decoration: none;
             font-size: 13px;
             margin: 0 12px;
@@ -153,7 +153,7 @@
         #landing-page .menu-toggle:hover { color: var(--color-accent-gold); }
         /* Hamburger dla Podstron (Jasny widok) */
         header .menu-toggle {
-           color: var(--color-text-light); /* <-- ZMIANA */
+            color: var(--color-text-dark);
             margin-left: auto;
             padding-right: 15px;
         }
@@ -341,10 +341,10 @@
             padding-top: 40px;
         }
         #filter-sidebar {
-           flex: 0 0 250px;
-            padding: 20px;
-            background-color: #222; /* <-- ZMIANA */
-            border-right: 1px solid #333; /* <-- ZMIANA */
+            flex: 0 0 250px;
+            padding: 20px;
+            background-color: #ECECE4;
+            border-right: 1px solid #DDD;
         }
         #filter-sidebar h4 {
             color: var(--color-accent-gold);
@@ -359,7 +359,6 @@
             border-bottom: 1px solid #CCC;
         }
         .filter-group label {
-           color: #CCC; /* <-- ZMIANA */
             display: block;
             margin-bottom: 8px;
             cursor: pointer;
@@ -373,13 +372,10 @@
             text-align: right;
         }
         #sort-options label {
-           color: var(--color-text-light); /* <-- ZMIANA */
             font-weight: 700;
             margin-right: 10px;
         }
         #sort-options select {
-           background-color: #333; /* <-- ZMIANA */
-            color: var(--color-text-light); /* <-- ZMIANA */
             padding: 8px;
             border: 1px solid #AAA;
         }
@@ -388,12 +384,10 @@
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 25px;
         }
-.product-card {
-            background-color: #2a2a2a; /* <-- ZMIANA */
-            border: 1px solid #444; /* <-- ZMIANA */
-            text-align: center;
-            transition: box-shadow 0.3s, transform 0.3s;
-            padding: 20px 15px; /* Przywrócone (było w oryginale) */
+        .product-card {
+            background-color: #FFFFFF;
+            border: 1px solid #E0E0E0;
+            padding: 20px 15px;
             text-align: center;
             transition: box-shadow 0.3s, transform 0.3s;
         }
@@ -405,7 +399,7 @@
             font-family: var(--font-sans);
             font-size: 1.1em;
             font-weight: 700;
-           color: var(--color-text-light); /* <-- ZMIANA */
+            color: var(--color-text-dark);
             margin-top: 10px;
             margin-bottom: 5px;
         }
@@ -426,8 +420,8 @@
             display: block;
             width: 100%;
             padding: 8px;
-           background-color: var(--color-accent-gold); /* <-- ZMIANA */
-            color: var(--color-background-dark); /* <-- ZMIANA */
+            background-color: var(--color-text-dark);
+            color: var(--color-text-light);
             text-decoration: none;
             text-transform: uppercase;
             font-weight: 700;
@@ -991,7 +985,7 @@
         }
 
         /* Nowy, klikalny nagłówek */
-        #kolekcja-page .filter-group-toggle {
+        .filter-group-toggle {
             font-family: var(--font-serif);
             font-size: 1.1em !important;
             color: var(--color-text-dark) !important;
@@ -1051,137 +1045,6 @@
             padding-bottom: 15px; /* Odstęp na dole po rozwinięciu */
             transition: max-height 0.5s ease-in, padding 0.5s ease-in;
         }
-  /* === START KROK 1 i 2: Ciemny motyw, Baner i Ciemne Karty === */
-
-/* --- Styl banera i ciemnego tła (z poprzedniego Kroku 1) --- */
-#kolekcja-page {
-    background-color: var(--color-background-dark) !important; 
-    color: var(--color-text-light) !important; 
-#kolekcja-page header {
-    background-color: var(--color-background-dark);
-    border-bottom: 1px solid #333; /* Ciemniejsza linia */
-}
-#kolekcja-page header nav a {
-    color: var(--color-text-light);
-}
-#kolekcja-page header nav a:hover {
-    color: var(--color-accent-gold);
-}
-#kolekcja-page header .menu-toggle {
-    color: var(--color-text-light);
-}
-#kolekcja-page header .menu-toggle:hover {
-    color: var(--color-accent-gold);
-}
-#kolekcja-page #filter-sidebar {
-    background-color: #222; /* Ciemniejsze tło dla filtrów */
-    border-right: 1px solid #333;
-}
-.filter-group-toggle {
-    color: var(--color-text-light) !important;
-}
-.filter-group-toggle .arrow {
-    border-color: var(--color-text-light);
-}
-.filter-group-toggle:hover {
-    color: var(--color-accent-gold) !important;
-}
-.filter-group-toggle:hover .arrow {
-    border-color: var(--color-accent-gold);
-}
-.filter-group label {
-    color: #CCC; /* Jaśniejszy tekst opcji filtra */
-}
-.filter-group.active .filter-group-toggle {
-    color: var(--color-accent-gold) !important;
-}
-.filter-group.active .filter-group-toggle .arrow {
-    border-color: var(--color-accent-gold);
-}
-#sort-options label {
-    color: var(--color-text-light);
-}
-#sort-options select {
-    background-color: #333;
-    color: var(--color-text-light);
-    border: 1px solid #555;
-}
-.collection-hero {
-    position: relative;
-    min-height: 300px; 
-    background-color: #000;
-    
-    /* Pamiętaj, aby podmienić ten link na własne zdjęcie banera */
-    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1541643600914-78b084683601?w=1200&fit=max');
-    
-    background-size: cover;
-    background-position: center 60%;
-    margin-bottom: 25px; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-.collection-hero-content h2 {
-    font-family: var(--font-sans);
-    font-weight: 300;
-    font-size: 1.5em;
-    color: var(--color-text-light);
-    text-transform: none;
-    letter-spacing: 1px;
-    margin: 0;
-}
-.collection-hero-content h1 {
-    font-family: var(--font-serif);
-    font-size: 2.8em;
-    color: var(--color-accent-gold);
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    margin: 5px 0 0 0;
-}
-
-/* --- Styl ciemnych kart (z poprzedniego Kroku 2) --- */
-#kolekcja-page .product-card {
-    background-color: #2a2a2a; /* Ciemne tło dla karty */
-    border: 1px solid #444; /* Ciemniejsza ramka */
-    box-shadow: none; /* Usuwamy stary cień z białego tła */
-}
-.product-card:hover {
-    transform: translateY(-3px); /* Zachowujemy podniesienie */
-    border-color: var(--color-accent-gold); /* Złota ramka */
-    box-shadow: 0 5px 20px rgba(192, 160, 76, 0.2); /* Złoty cień */
-}
-.product-card h3 {
-    color: var(--color-text-light);
-}
-.product-card p[style*="font-size: 0.85em"] {
-    color: #999 !important;
-}
-.product-card .btn-add {
-    background-color: var(--color-accent-gold); /* Złote tło */
-    color: var(--color-background-dark); /* Ciemny tekst */
-    border: 1px solid var(--color-accent-gold); /* Złota ramka */
-}
-.product-card .btn-add:hover {
-    background-color: transparent; /* Przezroczyste tło */
-    color: var(--color-accent-gold); /* Złoty tekst */
-    border: 1px solid var(--color-accent-gold);
-}
-.product-card .btn-add[style*="background:transparent"] {
-    background-color: transparent !important; 
-    color: var(--color-text-light) !important; /* Jasny tekst */
-    border: 1px solid #555 !important; /* Ciemniejsza ramka */
-}
-.product-card .btn-add[style*="background:transparent"]:hover {
-    background-color: var(--color-accent-gold) !important; /* Złote tło */
-    color: var(--color-background-dark) !important; /* Ciemny tekst */
-    border-color: var(--color-accent-gold) !important; /* Złota ramka */
-}
-#no-products {
-    color: var(--color-text-light);
-}
-
-/* === KONIEC KROK 1 i 2 === */
     </style>
 
     
@@ -1307,55 +1170,34 @@
             <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">EKSKLUZYWNY</span> KATALOG ZAPACHÓW</h2>
             
             <div class="collection-layout">
-               <div id="filter-sidebar">
-                                                <h4 style="color: var(--color-text-light); opacity: 0.5; font-weight: 700; font-size: 1em; text-transform: uppercase;">FILTRY</h4>
+                <div id="filter-sidebar">
+                    <h4>FILTRUJ WYNIKI</h4>
 
-                                                <div class="filter-group active"> 
-                            <h4 class="filter-group-toggle">Marka <span class="arrow"></span></h4>
-                            <div class="filter-group-content">
-                                <label><input type="checkbox" data-filter="brand" value="Creed"> Creed</label>
-                                <label><input type="checkbox" data-filter="brand" value="Parfums de Marly"> Parfums de Marly</label>
-                                <label><input type="checkbox" data-filter="brand" value="Tom Ford"> Tom Ford</label>
-                                <label><input type="checkbox" data-filter="brand" value="Frederic Malle"> Frederic Malle</label>
-                                <label><input type="checkbox" data-filter="brand" value="Kilian"> Kilian</label>
-                                <label><input type="checkbox" data-filter="brand" value="Rosendo Mateu"> Rosendo Mateu</label>
-                            </div>
-                        </div>
+                    <div class="filter-group"> <h4 class="filter-group-toggle">
+                            Marka <span class="arrow"></span>
+                        </h4>
+                        <div class="filter-group-content">
+                            <label><input type="checkbox" data-filter="brand" value="Creed" name="filter_brand" id="filter_creed"> Creed</label>
+                            <label><input type="checkbox" data-filter="brand" value="Parfums de Marly" name="filter_brand" id="filter_pdm"> Parfums de Marly</label>
+                            <label><input type="checkbox" data-filter="brand" value="Tom Ford" name="filter_brand" id="filter_tf"> Tom Ford</label>
+                            <label><input type="checkbox" data-filter="brand" value="Frederic Malle" name="filter_brand" id="filter_fm"> Frederic Malle</label>
+                            <label><input type="checkbox" data-filter="brand" value="Kilian" name="filter_brand" id="filter_kilian"> Kilian</label>
+                        </div>
+                    </div>
 
-                                                <div class="filter-group">
-                            <h4 class="filter-group-toggle">Rodzaj zapachu <span class="arrow"></span></h4>
-                            <div class="filter-group-content">
-                                <label><input type="checkbox" data-filter="scent" value="Swiezy"> Świeży</label>
-                                <label><input type="checkbox" data-filter="scent" value="Drzewny"> Drzewny</label>
-                                <label><input type="checkbox" data-filter="scent" value="Orientalny"> Orientalny</label>
-                            </div>
-                        </div>
-                        
-                                                <div class="filter-group"> 
-                            <h4 class="filter-group-toggle">Dla Kogo <span class="arrow"></span></h4>
-                            <div class="filter-group-content">
-                                <label><input type="checkbox" data-filter="category" value="Męskie"> Męskie</label>
-                                <label><input type="checkbox" data-filter="category" value="Damskie"> Damskie</label>
-                                <label><input type="checkbox" data-filter="category" value="Unisex"> Unisex</label>
-                            </div>
-                        </div>
-
-                                                <div class="filter-group">
-                            <h4 class="filter-group-toggle">Pora Roku <span class="arrow"></span></h4>
-                            <div class="filter-group-content">
-                                                            </div>
-                    
+                    <div class="filter-group "> <h4 class="filter-group-toggle">
+                            Kategoria <span class="arrow"></span>
+                        </h4>
+                        <div class="filter-group-content">
+                            <label><input type="checkbox" data-filter="category" value="Męskie" name="filter_category" id="filter_cat_meskie"> Męskie</label>
+                            <label><input type="checkbox" data-filter="category" value="Damskie" name="filter_category" id="filter_cat_damskie"> Damskie</label>
+                            <label><input type="checkbox" data-filter="category" value="Unisex" name="filter_category" id="filter_cat_unisex"> Unisex</label>
+                        </div>
                     </div>
 
                 </div>
                 
                 <div id="product-list-wrapper">
-                   <div class="collection-hero">
-    <div class="collection-hero-content">
-        <h2>Odkryj Nasze</h2>
-        <h1>Ekskluzywne Zapachy</h1>
-    </div>
-</div>
                     <div id="sort-options">
                         <label for="sort-by">Sortuj według:</label>
                         <select id="sort-by" onchange="applyFilters()">
@@ -3074,24 +2916,30 @@
                  
                  // === ZAKTUALIZOWANY KOD KARTY PRODUKTU ===
                 card.innerHTML = `
-                                                <div style="height: 220px; width: 140px; margin-left: auto; margin-right: auto; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}'); background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #FFFFFF;">
-                        </div>
-                        <div class="brand">${product.brand}</div>
-                        <h3>${product.name || 'Brak Nazwy'}</h3>
-                        
-                                                
-                        <div class="price">${product.price} PLN</div>
-                        
-                                                <div style="display:flex; gap:8px; margin-top:10px; justify-content: center;">
-                            ${product.id ?
-                                // Przycisk "DO KOSZYKA"
-                                `<button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>`
-                                :
-                                // Przycisk wyłączony
-                                `<button class="btn-add" style="background:#CCC; color:#666;" disabled>NIEDOSTĘPNY</button>`
-                            }
-                        </div>
-                `;
+                     <div style="height: 220px; width: 140px; margin-left: auto; margin-right: auto; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}'); background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #FFFFFF;">
+                     </div>
+                     <div class="brand">${product.brand}</div>
+                     <h3>${product.name || 'Brak Nazwy'}</h3>
+                     <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category}</p>
+                     
+                     <p style="font-size: 0.8em; color: #AAA; margin-top: 0; margin-bottom: 8px; font-family: monospace;">ID: ${product.id}</p>
+                     
+                     <div class="price">${product.price} PLN</div>
+                     <div style="display:flex; gap:8px; margin-top:10px;">
+                         ${product.id ?
+                             // 1. Jeśli ID ISTNIEJE (przyciski aktywne)
+                             `
+                             <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
+                             <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:8px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
+                             ` :
+                             // 2. Jeśli ID NIE ISTNIEJE (przyciski wyłączone)
+                             `
+                             <button class="btn-add" style="background:#CCC; color:#666;" disabled>DO KOSZYKA</button>
+                             <button class="btn-add" style="background:transparent; color:#CCC; border:1px solid #CCC; width:auto; padding:10px;" disabled title="Produkt chwilowo niedostępny (brak ID)">SZCZEGÓŁY</button>
+                             `
+                         }
+                     </div>
+                `;
                  grid.appendChild(card);
              });
          }
