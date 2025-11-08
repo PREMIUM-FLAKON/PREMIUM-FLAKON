@@ -1045,6 +1045,138 @@
             padding-bottom: 15px; /* Odstęp na dole po rozwinięciu */
             transition: max-height 0.5s ease-in, padding 0.5s ease-in;
         }
+  /* === START KROK 1 i 2: Ciemny motyw, Baner i Ciemne Karty === */
+
+/* --- Styl banera i ciemnego tła (z poprzedniego Kroku 1) --- */
+#kolekcja-page {
+    background-color: var(--color-background-dark);
+    color: var(--color-text-light);
+}
+#kolekcja-page header {
+    background-color: var(--color-background-dark);
+    border-bottom: 1px solid #333; /* Ciemniejsza linia */
+}
+#kolekcja-page header nav a {
+    color: var(--color-text-light);
+}
+#kolekcja-page header nav a:hover {
+    color: var(--color-accent-gold);
+}
+#kolekcja-page header .menu-toggle {
+    color: var(--color-text-light);
+}
+#kolekcja-page header .menu-toggle:hover {
+    color: var(--color-accent-gold);
+}
+#filter-sidebar {
+    background-color: #222; /* Ciemniejsze tło dla filtrów */
+    border-right: 1px solid #333;
+}
+.filter-group-toggle {
+    color: var(--color-text-light) !important;
+}
+.filter-group-toggle .arrow {
+    border-color: var(--color-text-light);
+}
+.filter-group-toggle:hover {
+    color: var(--color-accent-gold) !important;
+}
+.filter-group-toggle:hover .arrow {
+    border-color: var(--color-accent-gold);
+}
+.filter-group label {
+    color: #CCC; /* Jaśniejszy tekst opcji filtra */
+}
+.filter-group.active .filter-group-toggle {
+    color: var(--color-accent-gold) !important;
+}
+.filter-group.active .filter-group-toggle .arrow {
+    border-color: var(--color-accent-gold);
+}
+#sort-options label {
+    color: var(--color-text-light);
+}
+#sort-options select {
+    background-color: #333;
+    color: var(--color-text-light);
+    border: 1px solid #555;
+}
+.collection-hero {
+    position: relative;
+    min-height: 300px; 
+    background-color: #000;
+    
+    /* Pamiętaj, aby podmienić ten link na własne zdjęcie banera */
+    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1541643600914-78b084683601?w=1200&fit=max');
+    
+    background-size: cover;
+    background-position: center 60%;
+    margin-bottom: 25px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.collection-hero-content h2 {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 1.5em;
+    color: var(--color-text-light);
+    text-transform: none;
+    letter-spacing: 1px;
+    margin: 0;
+}
+.collection-hero-content h1 {
+    font-family: var(--font-serif);
+    font-size: 2.8em;
+    color: var(--color-accent-gold);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin: 5px 0 0 0;
+}
+
+/* --- Styl ciemnych kart (z poprzedniego Kroku 2) --- */
+.product-card {
+    background-color: #2a2a2a; /* Ciemne tło dla karty */
+    border: 1px solid #444; /* Ciemniejsza ramka */
+    box-shadow: none; /* Usuwamy stary cień z białego tła */
+}
+.product-card:hover {
+    transform: translateY(-3px); /* Zachowujemy podniesienie */
+    border-color: var(--color-accent-gold); /* Złota ramka */
+    box-shadow: 0 5px 20px rgba(192, 160, 76, 0.2); /* Złoty cień */
+}
+.product-card h3 {
+    color: var(--color-text-light);
+}
+.product-card p[style*="font-size: 0.85em"] {
+    color: #999 !important;
+}
+.product-card .btn-add {
+    background-color: var(--color-accent-gold); /* Złote tło */
+    color: var(--color-background-dark); /* Ciemny tekst */
+    border: 1px solid var(--color-accent-gold); /* Złota ramka */
+}
+.product-card .btn-add:hover {
+    background-color: transparent; /* Przezroczyste tło */
+    color: var(--color-accent-gold); /* Złoty tekst */
+    border: 1px solid var(--color-accent-gold);
+}
+.product-card .btn-add[style*="background:transparent"] {
+    background-color: transparent !important; 
+    color: var(--color-text-light) !important; /* Jasny tekst */
+    border: 1px solid #555 !important; /* Ciemniejsza ramka */
+}
+.product-card .btn-add[style*="background:transparent"]:hover {
+    background-color: var(--color-accent-gold) !important; /* Złote tło */
+    color: var(--color-background-dark) !important; /* Ciemny tekst */
+    border-color: var(--color-accent-gold) !important; /* Złota ramka */
+}
+#no-products {
+    color: var(--color-text-light);
+}
+
+/* === KONIEC KROK 1 i 2 === */
     </style>
 
     
@@ -1198,6 +1330,12 @@
                 </div>
                 
                 <div id="product-list-wrapper">
+                   <div class="collection-hero">
+    <div class="collection-hero-content">
+        <h2>Odkryj Nasze</h2>
+        <h1>Ekskluzywne Zapachy</h1>
+    </div>
+</div>
                     <div id="sort-options">
                         <label for="sort-by">Sortuj według:</label>
                         <select id="sort-by" onchange="applyFilters()">
