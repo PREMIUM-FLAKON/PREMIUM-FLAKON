@@ -49,24 +49,23 @@
             padding: 0 20px;
         }
 
-       /* === PRZEŁĄCZANIE WIDOKÓW === */
+        /* === PRZEŁĄCZANIE WIDOKÓW === */
         .page-section {
             display: none;
-            background-color: var(--color-background-dark); /* <-- ZMIANA TŁA */
-            color: var(--color-text-light); /* <-- ZMIANA TEKSTU */
+            background-color: var(--color-background-light);
+            color: var(--color-text-dark);
             min-height: 100vh;
         }
         .page-section.active {
             display: block;
         }
         
-       /* === Nagłówek i Aktywny Link (dla podstron) === */
+        /* === Nagłówek i Aktywny Link (dla podstron) === */
         header {
             text-align: center;
             padding: 25px 0;
-            /* Złote obramowanie, pasujące do motywu */
-            border-bottom: 1px solid rgba(192, 160, 76, 0.3); /* <-- ZMIANA */
-            background-color: var(--color-background-dark); /* <-- ZMIANA */
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            background-color: var(--color-background-light);
             position: sticky;
             top: 0;
             z-index: 10;
@@ -79,8 +78,8 @@
             position: relative;
         }
 
-       header nav a {
-            color: var(--color-text-light); /* <-- ZMIANA */
+        header nav a {
+            color: var(--color-text-dark);
             text-decoration: none;
             font-size: 13px;
             margin: 0 12px;
@@ -89,7 +88,7 @@
             cursor: pointer;
         }
         
-       /* === NOWY STYL DLA LICZNIKA KOSZYKA === */
+        /* === NOWY STYL DLA LICZNIKA KOSZYKA === */
         header nav a .cart-counter {
             background-color: var(--color-accent-gold);
             color: var(--color-background-dark);
@@ -112,7 +111,7 @@
             padding-bottom: 5px;
         }
         
-       /* === SIDE MENU I HAMBURGER === */
+        /* === SIDE MENU I HAMBURGER === */
         #side-menu {
             height: 100%; width: 0; position: fixed; z-index: 20; top: 0; right: 0;
             background-color: rgba(26, 26, 26, 0.95); overflow-x: hidden; transition: 0.5s;
@@ -129,7 +128,7 @@
         #side-menu a:hover { color: var(--color-accent-gold); background-color: #222; }
         #side-menu .closebtn { position: absolute; top: 0; right: 25px; font-size: 36px; margin-left: 50px; font-weight: 300; }
         
-       /* === NOWY STYL DLA LICZNIKA KOSZYKA W SIDE-MENU === */
+        /* === NOWY STYL DLA LICZNIKA KOSZYKA W SIDE-MENU === */
         #side-menu a .cart-counter {
             background-color: var(--color-accent-gold);
             color: var(--color-background-dark);
@@ -152,15 +151,15 @@
             color: var(--color-text-light);
         }
         #landing-page .menu-toggle:hover { color: var(--color-accent-gold); }
-        /* Hamburger dla Podstron (Ciemny widok) */
+        /* Hamburger dla Podstron (Jasny widok) */
         header .menu-toggle {
-            color: var(--color-text-light); /* <-- ZMIANA */
+            color: var(--color-text-dark);
             margin-left: auto;
             padding-right: 15px;
         }
         header .menu-toggle:hover { color: var(--color-accent-gold); }
 
-       /* === STYLE LANDING PAGE === */
+        /* === STYLE LANDING PAGE === */
         #landing-page {
             background-color: var(--color-background-dark);
             color: var(--color-text-light);
@@ -243,9 +242,9 @@
         .footer-contact a { color: var(--color-text-light); text-decoration: none; font-size: 1.1em; display: inline-block; }
         .copyright { flex-basis: 100%; text-align: center; padding-top: 20px; border-top: 1px solid #333; margin-top: 20px; font-size: 0.75em; color: #666; line-height: 1.4; }
 
-       /* === STYLE DLA CHATBOTA === */
-       .chatbot-container {
-            background-color: #222; /* <-- ZMIANA */
+        /* === STYLE DLA CHATBOTA === */
+        .chatbot-container {
+            background-color: var(--color-background-light);
             border: 1px solid var(--color-accent-gold);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             max-width: 350px;
@@ -278,8 +277,8 @@
             max-width: 80%;
             font-size: 0.9em;
         }
-       .bot-message {
-            background-color: #333; /* <-- ZMIANA */
+        .bot-message {
+            background-color: #EEE;
             align-self: flex-start;
             border-bottom-left-radius: 2px;
         }
@@ -335,7 +334,7 @@
             background-color: #9E8045;
         }
 
-       /* === STYLE DLA KOLEKCJI === */
+        /* === STYLE DLA KOLEKCJI === */
         .collection-layout {
             display: flex;
             gap: 30px;
@@ -344,9 +343,8 @@
         #filter-sidebar {
             flex: 0 0 250px;
             padding: 20px;
-            background-color: #222; /* <-- ZMIANA */
-            border-right: 1px solid #333; /* <-- ZMIANA */
-        
+            background-color: #ECECE4;
+            border-right: 1px solid #DDD;
         }
         #filter-sidebar h4 {
             color: var(--color-accent-gold);
@@ -386,9 +384,9 @@
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 25px;
         }
-       .product-card {
-            background-color: #222; /* <-- ZMIANA */
-            border: 1px solid #333; /* <-- ZMIANA */
+        .product-card {
+            background-color: #FFFFFF;
+            border: 1px solid #E0E0E0;
             padding: 20px 15px;
             text-align: center;
             transition: box-shadow 0.3s, transform 0.3s;
@@ -401,7 +399,7 @@
             font-family: var(--font-sans);
             font-size: 1.1em;
             font-weight: 700;
-           color: var(--color-text-light);
+            color: var(--color-text-dark);
             margin-top: 10px;
             margin-bottom: 5px;
         }
@@ -438,7 +436,7 @@
             color: var(--color-text-dark);
         }
 
-       /* === STYLE DLA STRONY KONTA (LOGOWANIE/REJESTRACJA) === */
+        /* === STYLE DLA STRONY KONTA (LOGOWANIE/REJESTRACJA) === */
         #konto-page {
             background-color: var(--color-background-light);
             color: var(--color-text-dark);
@@ -456,7 +454,7 @@
             margin: 40px auto;
         }
         .auth-form {
-           background-color: #252525; /* <-- ZMIANA */
+            background-color: #F0F0F0;
             padding: 40px;
             border: 1px solid rgba(0, 0, 0, 0.1);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
@@ -483,12 +481,12 @@
             color: var(--color-text-dark);
             font-size: 0.95em;
         }
-       .form-group input, .form-group select, .form-group textarea { /* DODANO TEXTAREA */
+        .form-group input, .form-group select, .form-group textarea { /* DODANO TEXTAREA */
             width: 100%;
             padding: 12px;
-            border: 1px solid #555; /* <-- ZMIANA */
-            background-color: #333; /* <-- ZMIANA */
-            color: var(--color-text-light); /* <-- ZMIANA */
+            border: 1px solid #AAA;
+            background-color: white;
+            color: var(--color-text-dark);
             font-size: 1em;
             box-sizing: border-box;
             transition: border-color 0.3s;
@@ -523,7 +521,7 @@
             transition: background-color 0.3s;
         }
         
-       /* === STYLE DLA PANELU UŻYTKOWNIKA === */
+        /* === STYLE DLA PANELU UŻYTKOWNIKA === */
         #user-dashboard {
             max-width: 1000px;
             margin: 40px auto;
@@ -602,7 +600,7 @@
             font-size: 0.85em;
         }
 
-       /* === STYLE DLA PANELU ADMINA (OGÓLNE) === */
+        /* === STYLE DLA PANELU ADMINA (OGÓLNE) === */
         #admin-page .container {
             padding-top: 50px;
             padding-bottom: 50px;
@@ -668,7 +666,7 @@
             width: 100%;
         }
 
-       /* === NOWE STYLE DLA KART STATYSTYK === */
+        /* === NOWE STYLE DLA KART STATYSTYK === */
         .stats-card-container {
             display: flex;
             gap: 20px;
@@ -697,7 +695,7 @@
             color: var(--color-text-dark);
         }
 
-       /* === STYLE DLA STRONY O NAS - SEKACJA DLACZEGO MY === */
+        /* === STYLE DLA STRONY O NAS - SEKACJA DLACZEGO MY === */
         .advantage-section {
             background-color: #ECECE4;
             padding: 60px 0;
@@ -739,7 +737,7 @@
             display: block;
         }
 
-       /* === STYLE DLA PODSTRON Z TEKSTEM (REGULAMIN, POLITYKA, ZWROTY) === */
+        /* === STYLE DLA PODSTRON Z TEKSTEM (REGULAMIN, POLITYKA, ZWROTY) === */
         .text-page-content {
             padding: 50px 0 80px 0;
             line-height: 1.8;
@@ -764,14 +762,14 @@
         }
         .text-page-content p, .text-page-content ul {
             margin-bottom: 20px;
-            color: #AAA; /* <-- ZMIANA */
+            color: #333;
         }
         .text-page-content ul {
             padding-left: 20px;
             list-style: disc;
         }
 
-       /* === NOWE STYLE DLA KOSZYKA === */
+        /* === NOWE STYLE DLA KOSZYKA === */
         #koszyk-page .container {
             padding-top: 50px;
             padding-bottom: 80px;
@@ -788,7 +786,7 @@
         #koszyk-formularz {
             flex: 1;
             min-width: 300px;
-           background-color: #252525; /* <-- ZMIANA */
+            background-color: #F0F0F0;
             padding: 30px;
             border: 1px solid rgba(0, 0, 0, 0.1);
             position: sticky;
@@ -874,239 +872,14 @@
         .product-card > div:last-of-type {
             justify-content: center;
         }
-
-        
-        /* 1. Nowy baner "Hero" na stronie kolekcji */
-        .collection-hero {
-            height: 40vh; /* 40% wysokości ekranu */
-            min-height: 300px;
-            /* Obraz z inspiracji - zmień na własny jeśli chcesz */
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('https://i.imgur.com/gYfKXaD.jpeg');
-            background-size: cover;
-            background-position: center 30%; /* Ustawia ostrość na flakonie */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-            margin-bottom: 50px;
-            border-bottom: 1px solid rgba(192, 160, 76, 0.5);
-        }
-        .collection-hero h1 {
-            font-size: 3.5em;
-            color: var(--color-text-light);
-            font-weight: 900;
-            margin: 0;
-            letter-spacing: 5px;
-        }
-        .collection-hero p {
-            font-size: 1.2em;
-            color: var(--color-accent-gold);
-            font-family: var(--font-serif);
-            font-weight: 400;
-            text-transform: none;
-            letter-spacing: 1px;
-            margin-top: 10px;
-        }
-
-        /* 2. Tytuł sekcji (zamiast starego H2) */
-        .collection-title {
-            font-size: 2.2em;
-            text-align: left;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(192, 160, 76, 0.4);
-            color: var(--color-text-light);
-            text-transform: none; /* Wyłączamy wielkie litery */
-            font-weight: 400;
-        }
-        
-        /* 3. Ulepszony Sidebar Filtrów */
-        #filter-sidebar {
-            background-color: transparent; /* Usuwamy tło */
-            border-right: none; /* Usuwamy ramkę */
-            padding: 0; /* Usuwamy padding */
-            flex: 0 0 220px; /* Zmniejszamy trochę */
-        }
-        /* Tytuł "FILTRUJ WYNIKI" */
-        #filter-sidebar > h4 { 
-            color: var(--color-text-light);
-            font-size: 1.1em;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--color-accent-gold);
-        }
-
-        /* 4. Zmieniony styl sortowania (nad produktami) */
-        #sort-options {
-            text-align: right;
-            margin-bottom: 30px; /* Więcej miejsca */
-        }
-        #sort-options label {
-            color: #AAA;
-            font-weight: 400;
-            font-size: 0.9em;
-        }
-        #sort-options select {
-            background: var(--color-background-dark);
-            color: var(--color-text-light);
-            border: 1px solid #555;
-            padding: 10px;
-            font-family: var(--font-sans);
-            font-size: 0.9em;
-            cursor: pointer;
-        }
-        #sort-options select:focus {
-             outline: 1px solid var(--color-accent-gold);
-        }
-
-        /* 5. Siatka produktów - dodajemy więcej odstępu */
-         #product-grid {
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* Trochę szersze karty */
-            gap: 50px 30px; /* Więcej odstępu (pion/poziom) */
-        }
-
-        /* === (KROK 1.B) NAJWAŻNIEJSZE: NOWA KARTA PRODUKTU === */
-
-        .product-card {
-            background-color: transparent; /* 1. Usuwamy tło */
-            border: none; /* 2. Usuwamy ramkę */
-            padding: 0; /* 3. Usuwamy padding */
-            text-align: left; /* 4. Wyrównanie do lewej */
-            transition: transform 0.3s;
-            position: relative; /* Potrzebne dla przycisków */
-        }
-        .product-card:hover {
-            transform: translateY(-5px); /* Lekkie uniesienie */
-            box-shadow: none;
-        }
-
-        /* Wrapper na zdjęcie (dla hover effect) */
-        .product-image-wrapper {
-            position: relative;
-            background-color: #FFFFFF; /* Jasne tło dla flakonu */
-            width: 100%;
-            height: 300px; /* Stała wysokość */
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden; /* Ukrywa przyciski */
-            transition: background-color 0.3s;
-            cursor: pointer;
-        }
-        .product-image-wrapper .product-image {
-             width: 100%;
-             height: 100%;
-             object-fit: contain; /* Dopasowuje zdjęcie bez zniekształcania */
-             transition: transform 0.4s ease-out;
-        }
-        .product-card:hover .product-image {
-            transform: scale(1.05); /* Lekkie powiększenie zdjęcia */
-        }
-
-        /* 6. Nowa typografia na karcie */
-        .product-card .brand {
-            font-family: var(--font-serif);
-            color: var(--color-accent-gold);
-            font-size: 1.1em;
-            font-weight: 400; /* Elegancka, niepogrubiona */
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-        }
-        .product-card h3 {
-            font-family: var(--font-serif);
-            font-size: 1.5em; /* Duża, czytelna nazwa */
-            font-weight: 400;
-            color: var(--color-text-light);
-            text-transform: none; /* Bez wielkich liter */
-            letter-spacing: 0.5px;
-            margin-top: 0;
-            margin-bottom: 10px;
-            line-height: 1.3;
-        }
-        .product-card .price {
-            font-family: var(--font-sans);
-            font-size: 1.2em;
-            font-weight: 700;
-            color: var(--color-text-light); /* Jaśniejsza cena */
-            margin: 10px 0;
-        }
-
-        /* 7. Ukryte przyciski (pojawiające się na hover) */
-        .product-buttons-wrapper {
-            opacity: 0; /* Domyślnie ukryte */
-            transition: opacity 0.3s ease-out;
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-        }
-        .product-card:hover .product-buttons-wrapper {
-            opacity: 1; /* Pokaż na hover */
-        }
-
-        /* 8. Nowy styl przycisków na karcie */
-        .product-card .btn-add {
-            display: block;
-            width: auto; /* Dopasuj do treści */
-            flex-grow: 1; /* Rozciągnij główny przycisk */
-            padding: 12px 10px;
-            background-color: var(--color-accent-gold); /* Złoty przycisk */
-            color: var(--color-background-dark); /* Ciemny tekst */
-            text-decoration: none;
-            text-transform: uppercase;
-            text-align: center;
-            font-weight: 700;
-            transition: all 0.3s;
-            cursor: pointer;
-            border: 1px solid var(--color-accent-gold);
-            font-family: var(--font-sans);
-            font-size: 0.9em;
-        }
-        .product-card .btn-add:hover {
-            background-color: transparent;
-            color: var(--color-accent-gold);
-            border-color: var(--color-accent-gold);
-        }
-        
-        /* Przycisk "Szczegóły" (drugi) */
-        .product-card .btn-details {
-            display: block;
-            width: auto;
-            flex-grow: 0;
-            padding: 12px 15px;
-            background: transparent;
-            color: var(--color-text-light);
-            border: 1px solid #555;
-            font-size: 0.9em;
-            font-weight: 700;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-         .product-card .btn-details:hover {
-            border-color: var(--color-accent-gold);
-            color: var(--color-accent-gold);
-         }
-        
-        /* === KONIEC ZMIAN: KROK 1 === */
-        
-        
         /* === RESPONSIVE DESIGN (MEDIA QUERIES) === */
         @media (max-width: 1024px) {
             header nav { display: none; }
             .footer-content { flex-wrap: wrap; justify-content: space-around; }
             .footer-links, .footer-contact { flex-basis: 45%; margin-bottom: 30px; }
             .collection-layout { flex-direction: column; }
-            #filter-sidebar {
-                flex: 1 1 100%;
-                border-right: none;
-                border-bottom: 1px solid rgba(192, 160, 76, 0.4); /* Złota linia */
-                padding: 0 0 20px 0; /* Padding tylko na dole */
-            }
-            #product-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); } /* Lepsza siatka na tablet */
+            #filter-sidebar { flex: 1 1 100%; border-right: none; border-bottom: 1px solid #DDD; }
+            #product-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
             .dashboard-content { flex-direction: column; }
             .dashboard-nav { flex: 1 1 100%; }
             .admin-layout { flex-direction: column; }
@@ -1152,92 +925,1607 @@
             #product-grid {
                 /* Wymuszamy 2 kolumny na telefonie */
                 grid-template-columns: repeat(2, 1fr);
-                gap: 30px 15px; /* Zmniejszamy odstęp boczny */
+                gap: 15px; /* Zmniejszamy odstęp między produktami */
             }
             
-            /* NOWOŚĆ: Poprawki dla szerszej karty na mobilce */
-            .product-image-wrapper {
-                height: 220px; /* Niższe zdjęcia na mobilce */
+            .product-card {
+                /* Zmniejszamy padding wewnątrz karty, aby zmieścić więcej treści */
+                padding: 12px 10px;
             }
-             .product-card h3 {
-                font-size: 1.1em; /* Mniejsza czcionka nazwy */
-                line-height: 1.3;
-             }
-             .product-card .price {
-                font-size: 1.1em; /* Mniejsza czcionka ceny */
-             }
-            /* Ukrywamy przyciski na mobilce, aby oszczędzić miejsce */
-            .product-buttons-wrapper {
-                display: none;
-            }
-            /* Zamiast tego, pokazujemy je na hover (na desktopie) LUB zostawiamy ukryte na mobilce */
-            /* (Poprzednie style .product-card:hover .product-buttons-wrapper załatwiają sprawę na desktopie) */
 
+            .product-card .brand {
+                font-size: 1.1em; /* Mniejsza czcionka marki */
+                margin-bottom: 5px;
+            }
+
+            .product-card h3 {
+                font-size: 0.9em; /* Mniejsza czcionka nazwy produktu */
+                line-height: 1.3;
+                margin-bottom: 5px;
+                margin-top: 5px;
+            }
+
+            .product-card .price {
+                font-size: 1.25em; /* Mniejsza czcionka ceny */
+                margin: 8px 0;
+            }
+
+            .product-card .btn-add {
+                font-size: 0.8em; /* Mniejszy tekst na przyciskach */
+                padding: 8px 5px; /* Mniejsze przyciski */
+            }
 
             /* Poprawka dla kontenera na mobilkach, aby mieć padding */
             .container {
                 padding: 0 15px;
             }
-        /** ZAKTUALIZOWANA: Renderuje statystyki i listę zamówień z Supabase */
-          async function renderAdminStatsAndOrders() {
-             
-             // 1. ZACIĄGNIJ DANE Z SUPABASE (zamiast getOrdersFromStorage())
-             const { data: orders, error } = await supabase
-                 .from('zamowienia')
-                 .select('*')
-                 .order('created_at', { ascending: false }); // Sortuj od najnowszych
+            
 
-             if (error) {
-                 console.error("Błąd pobierania zamówień z Supabase:", error.message);
-                 alert("Nie udało się pobrać listy zamówień. Sprawdź konsolę F12.");
+            @media (max-width: 480px) {
+                .hero-content h1 { font-size: 2em; }
+                .btn-main { padding: 12px 40px; font-size: 0.9em; }
+                .mini-footer { flex-direction: column; text-align: center; }
+                .mini-footer p { margin-bottom: 10px; }
+                .mini-footer .social-icons { margin: 10px 0; }
+                #side-menu.open { width: 100%; }
+                #side-menu a { font-size: 16px; }
+            }
+        /* === STYLE DLA ZWIJANYCH GRUP FILTRÓW (AKORDEON) === */
+
+        /* Zastępujemy stare style dla .filter-group */
+        .filter-group {
+            border-bottom: 1px solid #DDD; /* Linia oddzielająca grupy */
+            padding-bottom: 0; /* Resetujemy stary padding */
+            margin-bottom: 0; /* Resetujemy stary margin */
+        }
+
+        /* Usuwamy stary nagłówek H4, bo teraz mamy nowy, klikalny */
+        #filter-sidebar .filter-group > h4:not(.filter-group-toggle) {
+            display: none;
+        }
+
+        /* Nowy, klikalny nagłówek */
+        .filter-group-toggle {
+            font-family: var(--font-serif);
+            font-size: 1.1em !important;
+            color: var(--color-text-dark) !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0;
+            padding: 18px 0; /* Dajemy padding dla klikalności */
+            cursor: pointer;
+            position: relative;
+            user-select: none; /* Zapobiegamy zaznaczaniu tekstu */
+            transition: color 0.3s;
+        }
+
+        .filter-group-toggle:hover {
+            color: var(--color-accent-gold) !important;
+        }
+
+        /* Strzałka */
+        .filter-group-toggle .arrow {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg); /* Strzałka w dół */
+            width: 8px;
+            height: 8px;
+            border-bottom: 2px solid var(--color-text-dark);
+            border-right: 2px solid var(--color-text-dark);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .filter-group-toggle:hover .arrow {
+            border-color: var(--color-accent-gold);
+        }
+
+        /* Kontener z checkboxami (domyślnie zwinięty) */
+        .filter-group-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        /* --- Style dla AKTYWNEJ (rozwiniętej) grupy --- */
+        .filter-group.active .filter-group-toggle {
+            color: var(--color-accent-gold) !important;
+        }
+
+        .filter-group.active .filter-group-toggle .arrow {
+            transform: translateY(-25%) rotate(-135deg); /* Strzałka w górę */
+            border-color: var(--color-accent-gold);
+        }
+
+        .filter-group.active .filter-group-content {
+            max-height: 600px; /* Wystarczająco dużo miejsca na filtry */
+            padding-top: 5px;
+            padding-bottom: 15px; /* Odstęp na dole po rozwinięciu */
+            transition: max-height 0.5s ease-in, padding 0.5s ease-in;
+        }
+    </style>
+
+    
+    <style>
+        /* Dodatkowa animacja pisania */
+        .bot-message.typing::after {
+            content: '...';
+            display: inline-block;
+            animation: typing-blink 1s infinite;
+        }
+        @keyframes typing-blink {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="side-menu">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        
+        <div id="user-panel-side">
+        </div>
+
+        <h3 style="color: var(--color-accent-gold); margin-top: 20px; margin-bottom: 30px;">NAWIGACJA</h3>
+        
+        <a id="nav-koszyk-side" onclick="closeNav(); showPage('koszyk-page');">Mój Koszyk (<span class="cart-counter">0</span>)</a>
+        <a id="nav-kolekcja-side" onclick="closeNav(); showPage('kolekcja-page');">Odkryj Kolekcję</a>
+        <a id="nav-onas-side" onclick="closeNav(); showPage('onas-page');">Nasza Misja (O Nas)</a>
+        <a id="nav-regulamin-side" onclick="closeNav(); showPage('regulamin-page');">Regulamin i Zasady</a>
+        <a id="nav-polityka-side" onclick="closeNav(); showPage('polityka-page');">Polityka Prywatności</a>
+        <a id="nav-zwroty-side" onclick="closeNav(); showPage('zwroty-page');">Zwroty i Reklamacje</a>
+        <a onclick="closeNav(); showPage('pomoc-page');">Wsparcie i FAQ</a>
+        <a id="nav-konto-side" onclick="closeNav(); showPage('konto-page');">Konto Klienta</a>
+        
+        <div style="margin-top: 50px; font-size: 0.9em; color: rgba(255, 255, 255, 0.5);"><p>Tel: 532 116 720</p><p>E-mail: odoris.pl@gmail.com</p></div>
+    </div>
+
+    <div id="landing-page" class="page-section active">
+        <div class="hero-section">
+            <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            <div class="hero-content">
+                <h1><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
+                <p class="hero-slogan">Autentyczność. Luksus. Ekskluzywność.</p>
+                <p>Twój autoryzowany butik luksusowych perfum. <br>**100% Gwarancji Oryginalności.** **Kultowe Zapachy Świata.**</p>
+                
+                </div>
+        </div>
+        
+        <div style="text-align: center; position: relative; z-index: 2; margin-top: -90px; padding-bottom: 70px;">
+            <a onclick="showPage('kolekcja-page');" class="btn-main">Odkryj Pełną Kolekcję &rarr;</a>
+        </div>
+        
+        <div class="values-section">
+            <div class="container">
+                <h2 style="color: var(--color-accent-gold); margin-bottom: 20px;">Gwarancja ODORIS</h2>
+                <div class="value-cards">
+                    <div class="card"><a onclick="showPage('onas-page');" style="color: inherit; text-decoration: none;"><h3>Autentyczność</h3><p>Gwarantujemy 100% oryginalności.</p></a></div>
+                    <div class="card"><a onclick="showPage('onas-page');" style="color: inherit; text-decoration: none;"><h3>Kontrolowany Sourcing</h3><p>Bezpośrednia współpraca z oficjalnymi dystrybutorami.</p></a></div>
+                    <div class="card"><a onclick="showPage('pomoc-page');" style="color: inherit; text-decoration: none;"><h3>Szybka Realizacja</h3><p>Dyskretna, zabezpieczona wysyłka w 24 godziny.</p></a></div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="sourcing" class="detail-section">
+            <div class="container content-2col">
+                <div class="text-content">
+                    <h2 style="color: var(--color-accent-gold);">Rygorystyczny Proces Sourcingu</h2>
+                    <p style="font-size: 1.1em;">W świecie perfum luksusowych, autentyczność to podstawa...</p>
+                    <p>Każdy flakon w naszej ofercie przechodzi wieloetapową weryfikację. Współpracujemy wyłącznie z **autoryzowanymi dystrybutorami** marek niszowych i luksusowych, co pozwala nam eliminować ryzyko produktów z niepewnych źródeł.</p>
+                    <p>Nasze magazyny spełniają rygorystyczne normy dotyczące temperatury i wilgotności. Zapachy są chronione przed światłem i wahaniami termicznymi, co **gwarantuje zachowanie ich pierwotnej kompozycji i trwałości** aż do momentu dostawy do klienta.</p>
+                    <p style="font-weight: bold; color: var(--color-accent-gold);">Kupujesz pewność. <a onclick="showPage('onas-page');" style="color: var(--color-text-light); text-decoration: underline;">Czytaj więcej o nas.</a></p>
+                </div>
+                <div class="image-mock" style="background-image: url('https://picsum.photos/id/21/500/400'); background-size: cover; background-position: center;"></div>
+            </div>
+        </div>
+        
+        <div id="paleta" class="detail-section">
+            <div class="container content-2col" style="flex-direction: row-reverse;">
+                <div class="text-content">
+                    <h2 style="color: var(--color-accent-gold);">Ekskluzywna Kuratela Zapachów</h2>
+                    <p style="font-size: 1.1em;">Nie jesteśmy hurtownią. Jesteśmy butikiem z wyselekcjonowaną ofertą...</p>
+                    <p>Nasza kolekcja to rezultat głębokiej wiedzy i pasji do perfumiarstwa. Wybieramy wyłącznie te kompozycje, które wyróżniają się **unikalnym składem, historią i mistrzowskim wykonaniem**. Wierzymy, że luksus to doświadczenie, nie tylko cena.</p>
+                    <p>W **ODORIS** znajdziesz rzadkie, trudno dostępne edycje oraz absolutne bestsellery niszowych domów perfumeryjnych. Jeśli szukasz czegoś wyjątkowego, co podkreśli Twój styl, nasza kuratela jest dla Ciebie.</p>
+                    <p style="font-weight: bold; color: var(--color-accent-gold);">Najlepsze z najlepszych – gotowe do odkrycia. <a onclick="showPage('kolekcja-page');" style="color: var(--color-text-light); text-decoration: underline;">Przejdź do katalogu.</a></p>
+                </div>
+                <div class="image-mock" style="background-image: url('https://picsum.photos/id/40/500/400'); background-size: cover; background-position: center;"></div>
+            </div>
+        </div>
+        
+        <div class="mini-footer container">
+            <p>&copy; 2025 ODORIS. Wszelkie prawa zastrzeżone.</p>
+            <div class="social-icons">
+                <span>Znajdziesz nas na:</span>
+                <a href="#" target="_blank" title="Facebook">&#9733; FB</a>
+                <a href="#" target="_blank" title="Instagram">&#9733; IG</a>
+                <a href="#" target="_blank" title="TikTok">&#9733; TikTok</a>
+            </div>
+            <a onclick="showPage('pomoc-page');">Potrzebujesz Pomocy? &rarr;</a>
+        </div>
+    </div>
+
+    <div id="kolekcja-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
+                <nav id="nav-kolekcja-header">
+                    <a id="link-koszyk-kolekcja" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                    <a id="link-kolekcja" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas-kolekcja" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin-kolekcja" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-polityka-kolekcja" onclick="showPage('polityka-page');">Polityka</a>
+                    <a id="link-zwroty-kolekcja" onclick="showPage('zwroty-page');">Zwroty</a>
+                    <a id="link-pomoc-kolekcja" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto-kolekcja" onclick="showPage('konto-page');">Konto</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
+
+        <section id="kolekcja" class="collection-section container">
+            <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">EKSKLUZYWNY</span> KATALOG ZAPACHÓW</h2>
+            
+            <div class="collection-layout">
+                <div id="filter-sidebar">
+                    <h4>FILTRUJ WYNIKI</h4>
+
+                    <div class="filter-group"> <h4 class="filter-group-toggle">
+                            Marka <span class="arrow"></span>
+                        </h4>
+                        <div class="filter-group-content">
+                            <label><input type="checkbox" data-filter="brand" value="Creed" name="filter_brand" id="filter_creed"> Creed</label>
+                            <label><input type="checkbox" data-filter="brand" value="Parfums de Marly" name="filter_brand" id="filter_pdm"> Parfums de Marly</label>
+                            <label><input type="checkbox" data-filter="brand" value="Tom Ford" name="filter_brand" id="filter_tf"> Tom Ford</label>
+                            <label><input type="checkbox" data-filter="brand" value="Frederic Malle" name="filter_brand" id="filter_fm"> Frederic Malle</label>
+                            <label><input type="checkbox" data-filter="brand" value="Kilian" name="filter_brand" id="filter_kilian"> Kilian</label>
+                        </div>
+                    </div>
+
+                    <div class="filter-group "> <h4 class="filter-group-toggle">
+                            Kategoria <span class="arrow"></span>
+                        </h4>
+                        <div class="filter-group-content">
+                            <label><input type="checkbox" data-filter="category" value="Męskie" name="filter_category" id="filter_cat_meskie"> Męskie</label>
+                            <label><input type="checkbox" data-filter="category" value="Damskie" name="filter_category" id="filter_cat_damskie"> Damskie</label>
+                            <label><input type="checkbox" data-filter="category" value="Unisex" name="filter_category" id="filter_cat_unisex"> Unisex</label>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div id="product-list-wrapper">
+                    <div id="sort-options">
+                        <label for="sort-by">Sortuj według:</label>
+                        <select id="sort-by" onchange="applyFilters()">
+                            <option value="default">Domyślne</option>
+                            <option value="price-asc">Cena rosnąco</option>
+                            <option value="price-desc">Cena malejąco</option>
+                        </select>
+                    </div>
+                    
+                    <div id="product-grid">
+                        <p id="no-products" style="text-align: center; display: none;">Brak produktów spełniających kryteria.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer id="kolekcja-stopka"></footer>
+    </div>
+    
+    <div id="product-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
+                <nav>
+                    <a onclick="showPage('kolekcja-page')">Powrót do kolekcji</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
+
+        <section class="container" style="padding-top:40px; padding-bottom:80px;">
+            <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start;">
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <div id="detail-image" style="flex:1; min-width:260px; min-height:320px; background-color:#f3f3f3; border:1px solid #ddd; background-size:cover; background-position:center;"></div>
+                    <div id="detail-thumbnails" style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;"></div>
+                </div>
+                <div style="flex:2; min-width:260px;">
+                    <div style="margin-bottom:10px;"><span id="detail-brand" class="brand"></span></div>
+                    <h2 id="detail-name" style="margin-top:0;"></h2>
+                    <div class="price" id="detail-price" style="margin-bottom:15px;"></div>
+                    <p id="detail-description" style="color:#333; line-height:1.6;"></p>
+
+                    <h4 style="margin-top:20px; color:var(--color-accent-gold);">Specyfikacja</h4>
+                    <table id="detail-specs" style="width:100%; border-collapse:collapse; margin-top:10px;">
+                    </table>
+
+                    <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
+                        <button class="btn-main" onclick="addToCartFromDetail()">Dodaj do koszyka</button>
+                        <button class="btn-main" style="background:#333; color:#fff;" onclick="showPage('kolekcja-page')">Powrót</button>
+                        <button id="detail-edit-btn" class="btn-admin-edit" style="display:none; align-self:flex-start;" onclick="editProductFromDetail()">Edytuj (Admin)</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer></footer>
+    </div>
+
+    <div id="onas-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
+                <nav id="nav-onas-header">
+                    <a id="link-koszyk-onas" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                    <a id="link-kolekcja-onas" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin-onas" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-polityka-onas" onclick="showPage('polityka-page');">Polityka</a>
+                    <a id="link-zwroty-onas" onclick="showPage('zwroty-page');">Zwroty</a>
+                    <a id="link-pomoc-onas" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto-onas" onclick="showPage('konto-page');">Konto</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
+
+        <section class="about-content container">
+            <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">NASZA</span> FILOZOFIA I MISJA</h2>
+            <p style="font-size: 1.2em; text-align: center; max-width: 800px; margin: 0 auto 50px;">Jesteśmy dedykowanym butikiem, stworzonym z pasji do autentycznej, niszowej perfumerii. Nasza misja to transparentność i gwarancja luksusu.</p>
+            
+            <h3>Działalność ODORIS</h3>
+            <p>**ODORIS** to platforma powstała w celu dostarczania klientom w Polsce wyłącznie **100% oryginalnych perfum luksusowych** w najkrótszym łańcuchu dostaw. Działamy jako wyspecjalizowany butik online, koncentrujący się na autentyczności, globalnym sourcingu i eksperckiej selekcji. Obejmujemy **Warmińsko-Mazurskie (Kętrzyn)** jako naszą bazę operacyjną, skąd realizujemy wysyłki na całą Polskę.</p>
+            
+            <div class="advantage-section">
+                <div class="container" style="max-width: 1000px;">
+                    <h2 style="text-align: center; color: var(--color-text-dark); margin-bottom: 40px;"><span class="gold-text">DLACZEGO</span> ODORIS?</h2>
+                    <p style="text-align: center; color: #666; font-size: 1.1em;">Nasze cztery kluczowe filary, które odróżniają nas od standardowej drogerii.</p>
+                    <div class="advantage-list">
+                        
+                        <div class="advantage-item">
+                            <span class="icon">&#10003;</span>
+                            <h4>Gwarancja 100% Oryginalności</h4>
+                            <p>Współpracujemy tylko z autoryzowanymi dystrybutorami. Każdy flakon to potwierdzona autentyczność.</p>
+                        </div>
+                        <div class="advantage-item">
+                            <span class="icon">&#9733;</span>
+                            <h4>Ekskluzywna Selekcja Niszowa</h4>
+                            <p>Zamiast tysięcy pozycji, oferujemy kuratelę najlepszych i najrzadszych zapachów świata.</p>
+                        </div>
+                        <div class="advantage-item">
+                            <span class="icon">&#9888;</span>
+                            <h4>Rygorystyczny Sourcing</h4>
+                            <p>Kontrola pochodzenia i warunków przechowywania eliminuje wahania jakości i chroni kompozycję.</p>
+                        </div>
+                        <div class="advantage-item">
+                            <span class="icon">&#9992;</span>
+                            <h4>Dyskretna Dostawa w 24h</h4>
+                            <p>Paczki są starannie zabezpieczone i wysyłane z naszej siedziby w Kętrzynie w 24 godziny.</p>
+                        </div>
+                    </div>
+                </div>
+           </div>
+
+            <h3>Jak Powstała Działalność: Historia Autentyczności</h3>
+            <p>Pomysł na **ODORIS** zrodził się z frustracji dostępnością niezweryfikowanych produktów na rynku. Zamiast akceptować szarą strefę, zdecydowaliśmy się stworzyć transparentną platformę, która daje absolutną pewność oryginalności. Nasza działalność opiera się na **współpracy bezpośrednio z autoryzowanymi dystrybutorami** i audytach pochodzenia. Eliminujemy ryzyko podróbek i gwarantujemy najwyższą jakość przechowywania, co ma kluczowe znaczenie dla trwałości i kompozycji zapachu.</p>
+        </section>
+        <footer id="onas-stopka"></footer>
+    </div>
+
+    <div id="pomoc-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
+                <nav id="nav-pomoc-header">
+                    <a id="link-koszyk-pomoc" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                    <a id="link-kolekcja-pomoc" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas-pomoc" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin-pomoc" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-polityka-pomoc" onclick="showPage('polityka-page');">Polityka</a>
+                    <a id="link-zwroty-pomoc" onclick="showPage('zwroty-page');">Zwroty</a>
+                    <a id="link-pomoc" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto-pomoc" onclick="showPage('konto-page');">Konto</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
+        
+        <section class="container" style="padding-top: 50px; padding-bottom: 50px;">
+            <h2 style="margin-bottom: 40px; text-align: center;"><span class="gold-text">WSPARCIE</span> I POMOC</h2>
+            <div style="display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start;">
+                
+                <div style="flex: 1; min-width: 300px;">
+                    <h3><span class="gold-text">Bot</span> Wsparcia ODORIS</h3>
+                    <p>Nasz automatyczny asystent pomoże Ci znaleźć odpowiedzi na najczęściej zadawane pytania. Możesz też wpisać swoje pytanie poniżej:</p>
+                    <div class="chatbot-container">
+                        <div class="chat-header">Asystent ODORIS</div>
+                        <div id="chat-history">
+                            <div class="bot-message">Witaj! Jestem Bot Wsparcia. Jak mogę Ci pomóc?</div>
+                        </div>
+                        <div id="chat-options" class="chat-options">
+                        </div>
+                        <div id="chat-input-area">
+                            <input type="text" id="user-input" placeholder="Wpisz: Gwarancja, Dostawa, Zwroty..." data-ph-index="0">
+                            <button onclick="sendChatMessage()">Wyślij</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="contact-section" style="flex: 1; min-width: 300px;">
+                    <h3><span class="gold-text">Szczegóły</span> Kontaktu</h3>
+                    <p>Jeśli Bot nie odpowiedział na Twoje pytania, skontaktuj się z nami bezpośrednio:</p>
+                    <div class="contact-box" style="margin-top: 20px;">
+                        <h4>Kontakt Telefoniczny</h4>
+                        <strong class="gold-text">Numer Telefonu:</strong><p><a href="tel:532116720">532 116 720</a></p>
+                    </div>
+                    <div class="contact-box" style="margin-top: 20px;">
+                        <h4>Kontakt E-mail</h4>
+                        <strong class="gold-text">Adres E-mail:</strong><p><a href="mailto:odoris.pl@gmail.com">odoris.pl@gmail.com</a></p>
+                    </div>
+                    <div class="contact-box" style="margin-top: 20px;">
+                        <h4>Adres Siedziby</h4>
+                        <strong class="gold-text">Lokalizacja:</strong><p>ul. Perfumowa 1, 11-400 Kętrzyn</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <footer id="pomoc-stopka"></footer>
+    </div>
+    
+    <div id="konto-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
+                <nav id="nav-konto-header">
+                    <a id="link-koszyk-konto" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                    <a id="link-kolekcja-konto" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas-konto" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin-konto" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-polityka-konto" onclick="showPage('polityka-page');">Polityka</a>
+                    <a id="link-zwroty-konto" onclick="showPage('zwroty-page');">Zwroty</a>
+                    <a id="link-pomoc-konto" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto" onclick="showPage('konto-page');">Konto</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
+
+        <section class="auth-section container" id="konto-content">
+        </section>
+
+        <footer id="konto-stopka"></footer>
+    </div>
+    
+    <div id="regulamin-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
+                <nav id="nav-regulamin-header">
+                    <a id="link-koszyk-regulamin" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                    <a id="link-kolekcja-regulamin" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas-regulamin" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-polityka-regulamin" onclick="showPage('polityka-page');">Polityka</a>
+                    <a id="link-zwroty-regulamin" onclick="showPage('zwroty-page');">Zwroty</a>
+                    <a id="link-pomoc-regulamin" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto-regulamin" onclick="showPage('konto-page');">Konto</a>
+                </nav>
+               <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
+        <section class="container text-page-content">
+            <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">REGULAMIN</span> SPRZEDAŻY I ZASADY SKLEPU</h2>
+            <p style="text-align: center; color: #666; font-size: 1.1em; max-width: 900px; margin: 0 auto 50px;">Aktualna wersja obowiązująca od 01.01.2025 r.</p>
+            <h3>§ 1. Postanowienia Ogólne</h3>
+            <p>Niniejszy regulamin określa zasady dokonywania zakupów w sklepie internetowym **ODORIS**, dostępnym pod adresem odoris.pl. Sprzedawcą jest [Nazwa firmy, NIP, adres - do uzupełnienia].</p>
+            <ul>
+                <li>Definicje: Użyte w regulaminie terminy oznaczają: Klient, Sprzedawca, Sklep, Towar (perfumy luksusowe).</li>
+                <li>Zakres: Regulamin dotyczy umów sprzedaży Towarów zawieranych na odległość.</li>
+            </ul>
+            <h3>§ 2. Zamówienia i Ceny</h3>
+            <h4>2.1. Składanie Zamówień</h4>
+            <p>Zamówienia można składać 24 godziny na dobę poprzez witrynę Sklepu. Do złożenia zamówienia wymagana jest rejestracja konta Klienta lub złożenie zamówienia bez rejestracji.</p>
+            <ul>
+                <li>Potwierdzenie: Po złożeniu zamówienia Klient otrzymuje e-mail z podsumowaniem i potwierdzeniem przyjęcia zamówienia do realizacji.</li>
+                <li>Płatność: Klient zobowiązany jest dokonać płatności w terminie 3 dni roboczych od dnia złożenia zamówienia.</li>
+            </ul>
+            
+            <h4>2.2. Ceny Produktów</h4>
+            <p>Wszystkie ceny podane w Sklepie są cenami brutto (zawierają podatek VAT) i są wyrażone w polskich złotych (PLN).</p>
+            <ul>
+                <li>Cena wiążąca: Wiążąca dla Klienta i Sprzedawcy jest cena Towaru obowiązująca w chwili złożenia zamówienia.</li>
+                <li>Koszty Dostawy: Koszty dostawy są doliczane do ceny Towaru i są widoczne w koszyku przed finalizacją transakcji.</li>
+            </ul>
+            <h3>§ 3. Dostawa i Czas Realizacji</h3>
+            <p>Dostawa Towarów jest ograniczona do terytorium Rzeczypospolitej Polskiej.</p>
+            <ul>
+                <li>Czas Realizacji: Zamówienia są realizowane w ciągu **24 godzin** od momentu zaksięgowania pełnej płatności.</li>
+                <li>Metody Dostawy: Przesyłki realizowane są za pośrednictwem kuriera (DPD/Inpost) lub Paczkomatów.</li>
+                <li>Odbiór Przesyłki: W momencie odbioru Towaru Klient powinien sprawdzić stan przesyłki. W przypadku uszkodzenia należy sporządzić protokół szkody.</li>
+            </ul>
+            <h3>§ 4. Gwarancja Oryginalności i Jakość</h3>
+            <p>Sprzedawca gwarantuje, że wszystkie oferowane Towary są **w 100% oryginalne** i pochodzą z autoryzowanego źródła dystrybucji.</p>
+            <ul>
+                <li>Sourcing: Towary są przechowywane w kontrolowanych warunkach, co zapewnia ich niezmienioną kompozycję i jakość.</li>
+                <li>Brak Wymiany: Perfumy są produktem higienicznym i chemicznym; Sprzedawca nie akceptuje zwrotów Towaru z naruszonym fabrycznym opakowaniem.</li>
+            </ul>
+            <h3>§ 5. Prawo Odstąpienia od Umowy (Zwroty)</h3>
+            <p>Klient będący konsumentem ma prawo odstąpić od umowy sprzedaży w terminie 14 dni bez podania jakiejkolwiek przyczyny.</p>
+            <ul>
+                <li>Wyjątek: Prawo odstąpienia od umowy nie przysługuje w odniesieniu do Towaru dostarczanego w zapieczętowanym opakowaniu, jeżeli opakowanie to zostało otwarte po dostarczeniu (Art. 38 pkt 5 ustawy o prawach konsumenta).</li>
+                <li>Procedura: Aby skorzystać z prawa odstąpienia, należy poinformować Sprzedawcę pisemnie przed upływem 14 dni i odesłać nieużywany Towar w nienaruszonym stanie.</li>
+            </ul>
+        </section>
+        <footer id="regulamin-stopka"></footer>
+    </div>
+
+    <div id="polityka-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
+                <nav id="nav-polityka-header">
+                    <a id="link-koszyk-polityka" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                    <a id="link-kolekcja-polityka" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas-polityka" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin-polityka" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-polityka" onclick="showPage('polityka-page');">Polityka</a>
+                    <a id="link-zwroty-polityka" onclick="showPage('zwroty-page');">Zwroty</a>
+                    <a id="link-pomoc-polityka" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto-polityka" onclick="showPage('konto-page');">Konto</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
+        <section class="container text-page-content">
+            <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">POLITYKA</span> PRYWATNOŚCI</h2>
+            <p style="text-align: center; color: #666; font-size: 1.1em; max-width: 900px; margin: 0 auto 50px;">Ochrona Twoich danych jest dla nas priorytetem. Niniejsza Polityka reguluje zasady przetwarzania danych osobowych.</p>
+            <h3>§ 1. Administrator Danych Osobowych</h3>
+            <p>Administratorem Twoich danych osobowych jest [Nazwa firmy, Adres Siedziby - do uzupełnienia], kontakt możliwy poprzez e-mail: odoris.pl@gmail.com.</p>
+            <h3>§ 2. Cel i Podstawy Przetwarzania Danych</h3>
+            <p>Twoje dane osobowe (imię, nazwisko, adres e-mail, adres dostawy, numer telefonu) są przetwarzane w celu:</p>
+            <ul>
+                <li>**Realizacji zamówień** (podstawa: niezbędność do wykonania umowy Art. 6 ust. 1 lit. b RODO).</li>
+                <li>**Obsługi konta Klienta** (podstawa: zgoda na przetwarzanie Art. 6 ust. 1 lit. a RODO).</li>
+               
+                <li>**Marketingu bezpośredniego** (podstawa: prawnie uzasadniony interes Administratora Art. 6 ust. 1 lit. f RODO, w przypadku wcześniej wyrażonej zgody).</li>
+            </ul>
+            <h3>§ 3. Odbiorcy Danych</h3>
+            <p>Twoje dane mogą być udostępniane podmiotom, z którymi współpracujemy, w celu realizacji zamówienia, w tym:</p>
+            <ul>
+                <li>Firmom kurierskim i operatorom pocztowym.</li>
+                <li>Podmiotom obsługującym płatności elektroniczne.</li>
+                <li>Podmiotom świadczącym usługi księgowe i prawne.</li>
+            </ul>
+            <h3>§ 4. Prawa Osoby, Której Dane Dotyczą</h3>
+            <p>Przysługuje Ci prawo do:</p>
+            <ul>
+                <li>Dostępu do swoich danych.</li>
+                <li>Sprostowania, usunięcia lub ograniczenia przetwarzania danych.</li>
+                <li>Wniesienia sprzeciwu wobec przetwarzania.</li>
+                <li>Przenoszenia danych.</li>
+                <li>Wniesienia skargi do organu nadzorczego (Prezesa UODO).</li>
+            </ul>
+            
+            <p>Wycofanie zgody na przetwarzanie danych nie ma wpływu na zgodność z prawem przetwarzania, którego dokonano na podstawie zgody przed jej wycofaniem.</p>
+        </section>
+        <footer id="polityka-stopka"></footer>
+    </div>
+
+    <div id="zwroty-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
+                <nav id="nav-zwroty-header">
+                    <a id="link-koszyk-zwroty" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                   <a id="link-kolekcja-zwroty" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas-zwroty" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin-zwroty" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-polityka-zwroty" onclick="showPage('polityka-page');">Polityka</a>
+                    <a id="link-zwroty" onclick="showPage('zwroty-page');">Zwroty</a>
+                    <a id="link-pomoc-zwroty" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto-zwroty" onclick="showPage('konto-page');">Konto</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
+        <section class="container text-page-content">
+            <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">ZWROTY</span> I REKLAMACJE</h2>
+            <p style="text-align: center; color: #666; font-size: 1.1em; max-width: 900px; margin: 0 auto 50px;">Szczegółowe informacje dotyczące odstąpienia od umowy i procedur reklamacyjnych.</p>
+            <h3>§ 1. Prawo Odstąpienia od Umowy (Zwroty)</h3>
+            <p>Jako konsument masz prawo odstąpić od umowy zakupu bez podawania przyczyny w terminie 14 dni od dnia otrzymania przesyłki.</p>
+            
+            <h4>1.1. Warunki Zwrotu Produktów Higienicznych</h4>
+            <p>Zgodnie z Art. 38 pkt 5 ustawy o prawach konsumenta, **perfumy są towarem dostarczanym w zapieczętowanym opakowaniu** i stanowią produkt higieniczny. Prawo odstąpienia od umowy **nie przysługuje**, jeżeli opakowanie fabryczne (folia, plomba, zabezpieczenie) zostało naruszone lub usunięte.</p>
+            <ul>
+                <li>Zwracany Towar musi być nieużywany i znajdować się w stanie nienaruszonym (fabrycznie zapakowany).</li>
+                <li>Zwrot pieniędzy następuje w terminie 14 dni od otrzymania oświadczenia o odstąpieniu, pod warunkiem zwrotu nienaruszonego towaru.</li>
+           </ul>
+            <h3>§ 2. Procedura Reklamacyjna (Wady Produktu)</h3>
+            <p>Reklamacje z tytułu wad produktu (np. uszkodzony atomizer, wada butelki) są rozpatrywane na podstawie przepisów o rękojmi.</p>
+            <h4>2.1. Zgłoszenie Reklamacji</h4>
+           <p>W celu złożenia reklamacji prosimy o kontakt e-mailowy na adres **odoris.pl@gmail.com** z załączeniem:</p>
+            <ul>
+                <li>Dowodu zakupu (paragon lub faktura).</li>
+                <li>Dokładnego opisu wady i okoliczności jej powstania.</li>
+                <li>Zdjęć lub filmu ilustrującego wadę.</li>
+            </ul>
+            <h4>2.2. Rozpatrzenie i Termin</h4>
+           <p>Reklamacja zostanie rozpatrzona w terminie 14 dni od daty jej otrzymania. O wyniku postępowania Klient zostanie poinformowany drogą mailową.</p>
+            
+            <p style="margin-top: 40px; font-weight: bold;">Adres do zwrotów i reklamacji: ODORIS, ul. Perfumowa 1, 11-400 Kętrzyn.</p>
+        </section>
+        <footer id="zwroty-stopka"></footer>
+    </div>
+
+    <div id="admin-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
+                <nav id="nav-admin-header">
+                    <a onclick="showPage('kolekcja-page');">Podgląd sklepu</a>
+                    <a onclick="logoutUser(); showPage('landing-page');">Wyloguj Admina</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
+        
+        <section id="admin-content" class="container">
+       </section>
+
+        <footer id="admin-stopka"></footer>
+    </div>
+
+    <div id="koszyk-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
+                <nav id="nav-koszyk-header">
+                    <a id="link-koszyk" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                    <a id="link-kolekcja-koszyk" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas-koszyk" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin-koszyk" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-pomoc-koszyk" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto-koszyk" onclick="showPage('konto-page');">Konto</a>
+               </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
+        
+        <section class="container">
+            <h2 style="margin-bottom: 40px; text-align: center;">TWÓJ <span class="gold-text">KOSZYK</span></h2>
+            
+            <div class="koszyk-layout">
+                <div id="koszyk-lista">
+                </div>
+                
+                <div id="koszyk-formularz-container">
+                </div>
+            </div>
+        </section>
+        
+        <footer id="koszyk-stopka"></footer>
+   </div>
+
+
+    <template id="auth-template">
+        <h2 style="color: var(--color-text-dark); margin-bottom: 20px; font-size: 2.2em;">Zarządzaj swoim <span class="gold-text">Kontem</span></h2>
+        <p style="color: #666; max-width: 700px; margin: 0 auto 50px;">Zaloguj się, aby śledzić zamówienia, zarządzać ulubionymi zapachami i korzystać ze specjalnych ofert.</p>
+        
+        <div class="auth-container">
+            <div class="auth-form">
+                <h2>Logowanie</h2>
+                <form onsubmit="loginUser(); return false;">
+                    <div class="form-group">
+                        <label for="login-email">Adres E-mail</label>
+                        <input type="email" id="login-email" value="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Hasło</label>
+                        <input type="password" id="login-password"  required>
+                    </div>
+                    <button type="submit" class="btn-auth">ZALOGUJ SIĘ</button>
+                    <div class="forgot-password"><a href="#">Nie pamiętasz hasła?</a></div>
+                </form>
+            </div>
+            
+            <div class="auth-form">
+               <h2>Nowe Konto</h2>
+                <form onsubmit="registerUser(); return false;">
+                    <div class="form-group">
+                        <label for="register-username">Nazwa użytkownika (login)</label>
+                        <input type="text" id="register-username" required>
+                   </div>
+                    <div class="form-group">
+                        <label for="register-email">Adres E-mail</label>
+                        <input type="email" id="register-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Hasło</label>
+                        <input type="password" id="register-password" required>
+                    </div>
+                    <button typeS="submit" class="btn-auth">UTWÓRZ KONTO</button>
+                    <p style="margin-top: 20px; font-size: 0.8em; color: #666; text-align: center;">Tworząc konto, akceptujesz <a onclick="showPage('regulamin-page');" style="color: var(--color-accent-gold); cursor: pointer;">Regulamin</a>.</p>
+                </form>
+            </div>
+        </div>
+    </template>
+
+    <template id="dashboard-template">
+        <div id="user-dashboard">
+            <div class="dashboard-header">
+                <h2>Witaj, <span id="user-name-display" class="gold-text">Kliencie!</span></h2>
+                <button onclick="logoutUser();">Wyloguj &rarr;</button>
+            </div>
+            <div class="dashboard-content">
+                <div class="dashboard-nav">
+                    <a id="nav-orders" class="active" onclick="showDashboardContent('orders')">Twoje Zamówienia</a>
+                    <a id="nav-address" onclick="showDashboardContent('address')">Adresy Dostawy</a>
+                    <a id="nav-profile" onclick="showDashboardContent('profile')">Edytuj Profil</a>
+                   <a onclick="showPage('kolekcja-page')">Przejdź do Sklepu</a>
+                </div>
+                <div id="dashboard-main" class="dashboard-main">
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="admin-template">
+        <div id="admin-dashboard-container"> <div class="dashboard-header">
+                <h2>Panel <span class="gold-text">Administratora</span></h2>
+                <button onclick="logoutUser();">Wyloguj &rarr;</button>
+            </div>
+            <div class="dashboard-content">
+                <div class="dashboard-nav">
+                   <a id="nav-admin-stats" class="active" onclick="showAdminContent('stats')">Statystyki</a>
+                    <a id="nav-admin-products" onclick="showAdminContent('products')">Zarządzaj Produktami</a>
+                    <a onclick="showPage('kolekcja-page')">Podgląd Sklepu</a>
+                </div>
+                <div id="admin-main" class="dashboard-main">
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="admin-stats-template">
+        <h3>Przegląd Sklepu</h3>
+        <div class="stats-card-container">
+            
+            <div class="stats-card">
+                <h4>Łączny przychód (z bazy)</h4>
+                <div id="stats-total-revenue" class="stat-value">...</div>
+           </div>
+            <div class="stats-card">
+                <h4>Liczba zamówień (z bazy)</h4>
+                <div id="stats-total-orders" class="stat-value">...</div>
+            </div>
+        </div>
+
+        <h3 style="margin-top: 40px;">Wszystkie Złożone Zamówienia</h3>
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th>ID Zamówienia</th>
+                    <th>Data</th>
+                    <th>Email Klienta</th>
+                    <th>Przedmioty</th>
+                    <th>Suma</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="admin-orders-list-body">
+            </tbody>
+        </table>
+    </template>
+
+    <template id="admin-products-template">
+        <h2 style="text-align: center; margin-bottom: 40px;">ZARZĄDZANIE <span class="gold-text">PRODUKTAMI</span></h2>
+        
+        <div class="admin-layout">
+            <div id="admin-form-container" class="admin-form-container">
+                <h3 id="admin-form-title" style="color: var(--color-accent-gold); text-align: center;">Dodaj Nowy Produkt</h3>
+                
+                <form id="admin-product-form" onsubmit="handleAdminFormSubmit(event)">
+                    <input type="hidden" id="admin-product-id">
+                    
+                    <div class="form-group">
+                       <label for="admin-brand">Marka</label>
+                        <input type="text" id="admin-brand" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-name">Nazwa Produktu (np. Aventus (EDP 100ml))</label>
+                        <input type="text" id="admin-name" required>
+                    </div>
+                    <div class="form-group">
+                       <label for="admin-price">Cena (tylko liczba, np. 1250)</label>
+                        <input type="number" id="admin-price" required>
+                    </div>
+                    <div class="form-group">
+                       <label for="admin-category">Kategoria</label>
+                        <select id="admin-category" required>
+                            <option value="Męskie">Męskie</option>
+                            <option value="Damskie">Damskie</option>
+                            <option value="Unisex">Unisex</option>
+                       </select>
+                    </div>
+
+                    <div class="form-group">
+                       <label for="admin-description">Opis produktu</label>
+                        <textarea id="admin-description" rows="4"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                       <label>Specyfikacja (klucz → wartość)</label>
+                        <div id="admin-specs-list"></div>
+                        <button type="button" class="btn-admin-clear" onclick="addSpecField()">Dodaj pole specyfikacji</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="admin-images">Zdjęcia produktu (max 5)</label>
+                        <input type="file" id="admin-images" accept="image/*" multiple>
+                        <div id="admin-image-previews" style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;"></div>
+                        <small style="color:#666;">Wgrywane obrazy zapisywane są lokalnie w przeglądarce jako data URL (localStorage).</small>
+                    </div>
+                    
+                    <button type="submit" class="btn-auth">Zapisz Produkt</button>
+                    <button type="button" class="btn-admin-clear" onclick="clearAdminForm()">Wyczyść formularz</button>
+                </form>
+            </div>
+
+            <div class="admin-list-container">
+               <h3>Obecna Baza Produktów</h3>
+                <table class="admin-product-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Marka</th>
+                            <th>Nazwa</th>
+                            <th>Cena</th>
+                            <th>Kategoria</th>
+                            <th>Akcje</th>
+                       </tr>
+                    </thead>
+                    <tbody id="admin-product-list-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+   <script>
+        
+    // === KONFIGURACJA SUPABASE (TWOJE KLUCZE SĄ JUŻ W ŚRODKU) ===
+     // UWAGA: Klucz anon jest widoczny publicznie. Upewnij się, że masz włączone RLS (Row Level Security) w tabelach!
+     const SUPABASE_URL = 'https://dtgwyrvbqpefrcjdnqqv.supabase.co';
+     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0Z3d5cnZicXBlZnJjamRucXF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwMTU3MjIsImV4cCI6MjA3NzU5MTcyMn0.WObj9HRon0hYM9m9JC-ty1bE1DXxzwQ7RmkfValxJCs';
+
+     // Inicjalizuj klienta
+     let supabase = null;
+     if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+         try {
+             supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+         } catch (e) {
+             console.error("Błąd inicjalizacji Supabase:", e);
+         }
+     } else {
+         console.warn("Chatbot: Nie skonfigurowano Supabase. Funkcje bazy danych nie będą działać.");
+     }
+
+     // === STAN CHATBOTA ===
+     let chatState = 'IDLE'; // Stan rozmowy: IDLE, AWAITING_ORDER_NUMBER
+
+     // === KLUCZ PRZECHOWYWANIA DANYCH W LOCALSTORAGE ===
+     const LS_PRODUCTS_KEY = 'pf_products';
+     const LS_USERS_KEY = 'pf_users';
+     const LS_SESSION_KEY = 'pf_currentUser';
+     const LS_ORDERS_KEY = 'pf_orders';
+
+     // ### KROK 3: DODANIE NOWEGO KLUCZA DLA KOSZYKA ###
+     const LS_CART_KEY = 'pf_cart';
+         
+         
+
+         /* Baza zamówień (teraz pusta, czeka na prawdziwe dane) */
+         const initialOrdersData = [];
+
+         
+        
+
+         // ===============================================
+         // === FUNKCJE SUPABASE (SYNCHRONIZACJA Z ADMINEM) ===
+         // ===============================================
+
+         // --- NOWA FUNKCJA: Synchronizacja produktów z Supabase (Zapis/Aktualizacja) ---
+         async function syncProductsToSupabase(products) {
+             if (!supabase) {
+                 console.warn("Supabase nie jest skonfigurowane, nie można zapisać produktów w bazie.");
+                 return;
              }
-
-             // Użyj 'orders' z Supabase lub pustej tablicy, jeśli jest błąd
-             const allOrders = orders || []; 
-
-             // 2. Oblicz statystyki (używamy teraz nazw kolumn z bazy danych)
-             const totalRevenue = allOrders.reduce((sum, order) => sum + (order.total_price || 0), 0);
-             const totalOrders = allOrders.length;
-
-             // 3. Wypełnij karty statystyk
-             document.getElementById('stats-total-revenue').textContent = totalRevenue.toFixed(2) + ' PLN';
-             document.getElementById('stats-total-orders').textContent = totalOrders;
              
-             // 4. Wypełnij tabelę zamówień
-             const listBody = document.getElementById('admin-orders-list-body');
-             if (!listBody) return;
-             listBody.innerHTML = '';
+          try {
+                 // ZMIANA: Mapujemy obiekty z {id: ...} na {ID: ...} przed wysłaniem do Supabase
+             const productsForSupabase = products.map(p => {
+                 const { id, ...rest } = p; // Dzielimy obiekt: 'id' i reszta pól
+                 return {
+                     ID: id, // Zmieniamy nazwę klucza 'id' na 'ID'
+                     ...rest // Dodajemy resztę pól (brand, name, price etc.)
+                 };
+             });
 
-             if (allOrders.length === 0) {
-                 listBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Brak zamówień w bazie.</td></tr>';
+                 // Upsert: wstawia, jeśli nie istnieje; aktualizuje, jeśli ID już istnieje
+                 const { error } = await supabase
+                     .from('produkty') // <-- UŻYJ NAZWY SWOJEJ TABELI PRODUKTÓW
+                     .upsert(productsForSupabase, { onConflict: 'ID' }); // <-- ZMIANA
+                 
+                 if (error) throw error;
+                 console.log("Produkty pomyślnie zsynchronizowane z Supabase.");
+             } catch (e) {
+                 console.error("Błąd zapisu do Supabase:", e.message);
+                 // W Admin Panelu w tym miejscu często pojawia się alert z błędem RLS
+                 alert("Błąd zapisu w bazie danych Supabase. Sprawdź, czy jesteś zalogowany i czy polityki RLS są poprawne.");
+             }
+         }
+
+         // --- NOWA FUNKCJA: Synchronizacja usunięcia produktu z Supabase ---
+         async function deleteProductFromSupabase(productId) {
+             if (!supabase || !isCurrentUserAdmin()) return;
+             
+             try {
+                const { error } = await supabase
+                     .from('produkty') // <-- UŻYJ NAZWY SWOJEJ TABELI PRODUKTÓW
+                     .delete()
+                     .eq('ID', productId);
+                     
+                 if (error) throw error;
+                 console.log(`Produkt ${productId} usunięty z Supabase.`);
+             } catch (e) {
+                 console.error("Błąd usuwania z Supabase:", e.message);
+                 alert("Błąd usuwania z bazy Supabase. Spróbuj ponownie.");
+             }
+         }
+
+         // ===============================================
+         // === LOGIKA UWIERZYTELNIANIA (KLIENT I ADMIN) ===
+         // ===============================================
+
+         /** Pobiera aktualnie zalogowanego użytkownika z localStorage */
+         function getCurrentUser() {
+             const user = localStorage.getItem(LS_SESSION_KEY);
+             return user ? JSON.parse(user) : null;
+         }
+
+         /** Sprawdza, czy użytkownik jest zalogowany */
+         function getIsLoggedIn() {
+             return getCurrentUser() !== null;
+         
+         }
+        /** Sprawdza, czy zalogowany użytkownik jest adminem */
+         function isCurrentUserAdmin() {
+             const user = getCurrentUser();
+             return user && user.isAdmin === true;
+         }
+
+         /** Pobiera nazwę zalogowanego użytkownika */
+         function getUserName() {
+             const user = getCurrentUser();
+             return user ? user.username : "Kliencie";
+         }
+
+        /** Rejestruje nowego użytkownika w Supabase (z potwierdzeniem email) */
+         async function registerUser() {
+             const username = document.getElementById('register-username').value;
+             const email = document.getElementById('register-email').value;
+             const password = document.getElementById('register-password').value;
+
+             if (!username || !email || !password) {
+                 alert('Proszę wypełnić wszystkie pola.');
+                 return;
+             }
+             if (email.toLowerCase() === 'odoris.pl@gmail.com') {
+                 alert('Ten adres e-mail jest zarezerwowany.');
                  return;
              }
 
-             // 5. ZMAPUJ NOWE DANE DO TABELI
-             allOrders.forEach(order => {
-                 const statusColor = order.status === 'Dostarczono' ? '#0A0' : order.status === 'Wysłano' ? '#F90' : (order.status === 'Oczekuje' ? '#C00' : '#888');
-                 
-                 // Sformatuj datę (z '2025-11-06T19:55:30+00:00' na '06.11.2025')
-                 const orderDate = new Date(order.created_at).toLocaleDateString('pl-PL'); 
-                 
-                 // Sformatuj listę przedmiotów (z JSON na tekst)
-                 let itemsText = 'Brak danych';
-                 if (Array.isArray(order.items) && order.items.length > 0) {
-                     itemsText = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+             try {
+                 // Krok 1: Zarejestruj użytkownika w Supabase Auth
+                 const { data, error } = await supabase.auth.signUp({
+                     email: email,
+                     password: password,
+                     options: {
+                         data: { 
+                             username: username 
+                         }
+                     }
+                 });
+
+                 if (error) throw error; // Rzuć błąd, jeśli wystąpił
+
+                 // Krok 2: Pokaż wiadomość o konieczności potwierdzenia
+                 if (data.user) {
+                     alert('Rejestracja pomyślna! Sprawdź swoją skrzynkę mailową (również folder SPAM) i kliknij w link, aby aktywować konto. Dopiero wtedy będziesz mógł się zalogować.');
+                     // Wyczyść formularz
+                     document.getElementById('register-username').value = '';
+                     document.getElementById('register-email').value = '';
+                     document.getElementById('register-password').value = '';
                  }
 
-                 listBody.innerHTML += `
-                     <tr>
-                         <td>${order.id.substring(0, 8)}...</td> 
-                         <td>${orderDate}</td>
-                         <td>${order.customer_email}</td>
-                         <td>${itemsText}</td>
-                         <td>${(order.total_price || 0).toFixed(2)} PLN</td>
-                         <td><strong style="color: ${statusColor};">${order.status}</strong></td>
-                     </tr>
+             } catch (error) {
+                 console.error('Błąd rejestracji:', error.message);
+                 alert('Błąd rejestracji: ' + error.message);
+             }
+         }
+
+         /** Loguje użytkownika (klienta lub admina) przez Supabase */
+         async function loginUser() { 
+             const email = document.getElementById('login-email').value;
+             const password = document.getElementById('login-password').value;
+
+             // Logika dla Admina zostaje (bo już używa Supabase)
+             if (email.toLowerCase() === 'odoris.pl@gmail.com' && password === 'admin123') {
+                 if (!supabase) {
+                     alert('Błąd: Supabase nie jest skonfigurowane. Zalogowanie Admina niemożliwe.');
+                     return;
+                 }
+                 
+                 const { error } = await supabase.auth.signInWithPassword({
+                     email: email,
+                     password: password,
+                 });
+                 
+                 if (error) {
+                     alert(`Błąd logowania Admina: ${error.message}.`);
+                     return;
+                 }
+                 
+                 const currentUser = { 
+                     email: 'odoris.pl@gmail.com', 
+                     username: 'Administrator', 
+                     isAdmin: true 
+                 };
+                 localStorage.setItem(LS_SESSION_KEY, JSON.stringify(currentUser));
+                 
+                 updateSideMenu();
+                 showPage('admin-page');
+                 return;
+             }
+
+             // === ZMIANA: ŚCIEŻKA DLA ZWYKŁEGO UŻYTKOWNIKA ===
+             try {
+                 // Używamy tej samej funkcji co admin, ale dla zwykłego usera
+                 const { data, error } = await supabase.auth.signInWithPassword({
+                     email: email,
+                     password: password,
+                 });
+
+                 if (error) throw error; // Rzuć błąd, aby złapał go 'catch'
+
+                 if (data.user) {
+                     // Sukces: Zalogowano użytkownika
+                     const currentUser = {
+                         email: data.user.email,
+                         // Pobierz 'username' zapisane podczas rejestracji
+                         username: data.user.user_metadata.username || data.user.email.split('@')[0], 
+                         isAdmin: false,
+                         id: data.user.id
+                     };
+                     localStorage.setItem(LS_SESSION_KEY, JSON.stringify(currentUser));
+                     
+                     updateSideMenu();
+                     renderKontoPage(); // Pokaż panel konta
+                 }
+             } catch (error) {
+                 console.error('Błąd logowania:', error.message);
+                 alert('Nieprawidłowy e-mail lub hasło.');
+                 localStorage.removeItem(LS_SESSION_KEY);
+                 updateSideMenu();
+             }
+         }
+        /** Wylogowuje użytkownika z Supabase i lokalnie */
+         async function logoutUser() { // ZMIANA: Dodano async
+             // Krok 1: Wyloguj z Supabase
+             const { error } = await supabase.auth.signOut();
+             if (error) {
+                 console.error('Błąd wylogowania z Supabase:', error.message);
+             }
+
+             // Krok 2: Wyloguj lokalnie (jak wcześniej)
+             localStorage.removeItem(LS_SESSION_KEY);
+             updateSideMenu();
+             
+             // Reszta kodu UI zostaje bez zmian
+             const activePage = document.querySelector('.page-section.active');
+             if (activePage && (activePage.id === 'konto-page' || activePage.id === 'admin-page')) {
+                 showPage('landing-page');
+             } else if (activePage && activePage.id === 'konto-page') {
+                 renderKontoPage(); // Pokaż formularz logowania
+             }
+         }
+
+         /** Aktualizuje boczny panel (#side-menu) na podstawie stanu logowania */
+         function updateSideMenu() {
+             const userPanel = document.getElementById('user-panel-side');
+             const kontoLink = document.getElementById('nav-konto-side');
+             const user = getCurrentUser();
+
+             let panelHTML = '';
+
+             if (user) {
+                 // Użytkownik ZALOGOWANY
+                 panelHTML = `
+                     <div style="padding: 15px 32px; color: #AAA; font-size: 1.1em; text-align: left; padding-bottom: 5px;">
+                         Witaj, <strong style="color: var(--color-accent-gold); display: block; font-size: 1.2em;">${user.username}</strong>
+                     </div>
                  `;
+
+                 if (user.isAdmin) {
+                     // ZALOGOWANY JAKO ADMIN
+                     panelHTML += `
+                         <a id="nav-admin-panel-side" onclick="closeNav(); showPage('admin-page');" style="color: #e74c3c; font-weight: 700;">PANEL ADMINA</a>
+                         <a id="nav-zamowienia-side" onclick="closeNav(); showPage('kolekcja-page');">Podgląd sklepu</a>
+                     `;
+                 } else {
+                     // ZALOGOWANY JAKO KLIENT
+                     panelHTML += `
+                         <a id="nav-zamowienia-side" onclick="closeNav(); showPage('konto-page'); showDashboardContent('orders');">Moje Zamówienia</a>
+                     `;
+                 }
+                 
+                 panelHTML += `
+                     <a id="nav-wyloguj-side" onclick="closeNav(); logoutUser();">Wyloguj się</a>
+                     <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 30px;">
+                 `;
+                 kontoLink.textContent = 'Panel Konta';
+
+             } else {
+                 // Użytkownik Wylogowany
+                 kontoLink.textContent = 'Konto Klienta';
+             }
+
+             userPanel.innerHTML = panelHTML;
+         }
+
+
+         // ===============================================
+         // === ZARZĄDZANIE BAZAMI (Produkty i Zamówienia) ===
+         // ===============================================
+
+         /** Jednorazowa inicjalizacja bazy produktów (pobieranie z Supabase) */
+         async function initializeProductStorage() {
+
+             // 1. Spróbuj pobrać produkty z Supabase (jeśli Supabase jest dostępne)
+             if (supabase) {
+                 try {
+                     console.log("Pobieranie produktów z Supabase...");
+                     const { data, error } = await supabase
+                         .from('produkty')
+                         .select('*');
+
+                     if (error) throw error;
+                     
+                     if (data && data.length > 0) {
+                         // Sukces: zapisz do LocalStorage (jako cache) i użyj
+                         localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(data));
+                         console.log(`Pobrano ${data.length} produktów z Supabase.`);
+                         return;
+                     } else {
+                         console.warn("Brak danych w Supabase. Używam domyślnych danych startowych.");
+                     }
+                 } catch (e) {
+                     console.error("Błąd pobierania z Supabase, używam LocalStorage:", e.message);
+                 }
+             }
+             
+             // 2. Jeśli Supabase nie działa lub nie ma danych, użyj LocalStorage/inicjalizuj
+             const products = localStorage.getItem(LS_PRODUCTS_KEY);
+             if (!products) {
+                 // Inicjalizacja LocalStorage startowymi danymi tylko raz
+                 localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(initialProductsData));
+                 if (supabase) {
+                      // Jeśli Supabase jest dostępne, spróbuj zapisać startowe dane do Supabase
+                      await syncProductsToSupabase(initialProductsData);
+                }
+             }
+         }
+
+         /** NOWOŚĆ: Jednorazowa inicjalizacja bazy zamówień w localStorage */
+         function initializeOrderStorage() {
+             const orders = localStorage.getItem(LS_ORDERS_KEY);
+             if (!orders) {
+                 localStorage.setItem(LS_ORDERS_KEY, JSON.stringify(initialOrdersData));
+             }
+         }
+
+        /** Pobiera wszystkie produkty z bazy localStorage i zapewnia domyślne pola */
+         function getProductsFromStorage() {
+             const raw = JSON.parse(localStorage.getItem(LS_PRODUCTS_KEY) || '[]');
+             
+            // Poprawka: Mapujemy 'p.ID' (z Supabase) do pola 'id' (dla JavaScriptu)
+             return raw.map(p => ({
+                 id: p.ID, // <-- ZMIANA: Pobieramy z kolumny 'ID' z Supabase
+                 brand: p.brand || '',
+                 name: p.name || '',
+                 price: typeof p.price === 'number' ? p.price : parseFloat(p.price) || 0,
+                 category: p.category || '',
+                 description: p.description || 'Brak opisu produktu.',
+                 specs: Array.isArray(p.specs) ? p.specs : [],
+                 images: Array.isArray(p.images) ? p.images : []
+             }));
+         }
+
+         /** NOWOŚĆ: Pobiera wszystkie zamówienia z bazy localStorage */
+         function getOrdersFromStorage() {
+             return JSON.parse(localStorage.getItem(LS_ORDERS_KEY) || '[]');
+         }
+
+         /** Zapisuje całą tablicę produktów do bazy localStorage (i synchronizuje z Supabase) */
+         function saveProductsToStorage(products) {
+             localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(products));
+
+             // Jeśli użytkownik jest zalogowany jako Admin, spróbuj zapisać zmiany do Supabase
+             if (isCurrentUserAdmin()) {
+                 syncProductsToSupabase(products);
+             }
+         }
+         
+         // ===============================================
+         // === LOGIKA KOSZYKA (NOWOŚĆ) ===
+         // ===============================================
+
+         /** Pobiera koszyk z localStorage */
+         function getCart() {
+             return JSON.parse(localStorage.getItem(LS_CART_KEY) || '[]');
+         }
+
+         /** Zapisuje koszyk w localStorage */
+         function saveCart(cartData) {
+             localStorage.setItem(LS_CART_KEY, JSON.stringify(cartData));
+             updateCartCounters(); // Aktualizuj liczniki przy każdym zapisie
+         }
+
+         /** Aktualizuje wszystkie liczniki koszyka na stronie */
+         function updateCartCounters() {
+             const cart = getCart();
+             let totalItems = 0;
+             if (Array.isArray(cart)) {
+                 totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+             }
+             
+             const counters = document.querySelectorAll('.cart-counter');
+             counters.forEach(counter => {
+                 counter.textContent = totalItems;
              });
          }
+
+         /** Dodaje produkt do koszyka */
+         function addToCart(productId) {
+             const products = getProductsFromStorage();
+             // === POPRAWKA BŁĘDU TYPÓW (Liczba vs Tekst) ===
+             const productToAdd = products.find(p => String(p.id) === String(productId));
+             
+             if (!productToAdd) {
+                 console.error('Nie znaleziono produktu o ID:', productId);
+                 alert('Błąd: Nie można dodać do koszyka, nie znaleziono produktu.');
+                 return;
+             }
+
+             let cart = getCart();
+             if (!Array.isArray(cart)) { // Zabezpieczenie przed uszkodzonymi danymi
+                  cart = [];
+             }
+             
+             // === POPRAWKA BŁĘDU TYPÓW (Liczba vs Tekst) ===
+             const existingItem = cart.find(item => String(item.id) === String(productId));
+
+             if (existingItem) {
+                 existingItem.quantity = (existingItem.quantity || 0) + 1;
+             } else {
+                 cart.push({
+                     id: productToAdd.id,
+                     name: productToAdd.name,
+                     brand: productToAdd.brand,
+                     price: productToAdd.price,
+                     quantity: 1
+                 });
+             }
+
+             saveCart(cart);
+             alert(`"${productToAdd.name}" został dodany do koszyka!`);
+         }
+         
+         /** Zmienia ilość produktu w koszyku */
+         function updateCartQuantity(productId, newQuantity) {
+             let cart = getCart();
+             if (!Array.isArray(cart)) cart = [];
+             
+             const itemToUpdate = cart.find(item => String(item.id) === String(productId));
+             
+             if (itemToUpdate) {
+                 const quantity = parseInt(newQuantity, 10);
+                 if (quantity > 0) {
+                     itemToUpdate.quantity = quantity;
+                 } else {
+                     // Jeśli ilość to 0 lub mniej, usuń przedmiot
+                     cart = cart.filter(item => String(item.id) !== String(productId));
+                 }
+                 saveCart(cart);
+                 renderCartPage(); // Przerenderuj koszyk
+             }
+         }
+
+         /** Usuwa produkt z koszyka */
+         function removeFromCart(productId) {
+             if (!confirm('Czy na pewno chcesz usunąć ten produkt z koszyka?')) {
+                 return;
+             }
+             let cart = getCart();
+             if (!Array.isArray(cart)) cart = [];
+             
+             cart = cart.filter(item => String(item.id) !== String(productId));
+             saveCart(cart);
+             renderCartPage(); // Przerenderuj koszyk
+         }
+
+         /** Renderuje zawartość strony koszyka */
+         function renderCartPage() {
+             const listContainer = document.getElementById('koszyk-lista');
+             const formContainer = document.getElementById('koszyk-formularz-container');
+             
+             if (!listContainer || !formContainer) return;
+
+             const cart = getCart();
+             
+             if (!Array.isArray(cart) || cart.length === 0) {
+                 // POKAŻ INFO O PUSTYM KOSZYKU
+                 listContainer.innerHTML = `
+                     <div id="pusty-koszyk-info">
+                         <h3>Twój koszyk jest pusty.</h3>
+                         <p>Odkryj naszą kolekcję i znajdź coś dla siebie.</p>
+                         <a onclick="showPage('kolekcja-page');" class="btn-main">Przejdź do sklepu</a>
+                     </div>
+                 `;
+                 formContainer.innerHTML = ''; // Wyczyść formularz
+             } else {
+                 // RENDERUJ LISTĘ PRODUKTÓW I FORMULARZ
+                 let listHTML = '';
+                 let sumaCalkowita = 0;
+
+                 cart.forEach(item => {
+                     const itemTotal = (item.price || 0) * (item.quantity || 0);
+                     sumaCalkowita += itemTotal;
+                     
+                     listHTML += `
+                         <div class="koszyk-item">
+                             <div class="koszyk-item-img">Miniatura</div>
+                             <div class="koszyk-item-info">
+                                 <span class="brand">${item.brand}</span>
+                                 <h4>${item.name}</h4>
+                                 <p>Ilość: 
+                                     <input type="number" value="${item.quantity}" min="1" 
+                                             onchange="updateCartQuantity('${item.id}', this.value)" 
+                                             class="koszyk-ilosc">
+                                 </p>
+                             </div>
+                             <span class="koszyk-item-cena">${itemTotal.toFixed(2)} PLN</span>
+                             <button class="btn-usun" title="Usuń produkt" onclick="removeFromCart('${item.id}')">&times;</button>
+                         </div>
+                     `;
+                 });
+                 
+                 // Dodaj podsumowanie pod listą
+                 listHTML += `
+                     <div id="koszyk-podsumowanie">
+                         <p style="margin: 0; font-size: 1.1em;">Suma częściowa:</p>
+                         <h3>${sumaCalkowita.toFixed(2)} PLN</h3>
+                     </div>
+                 `;
+                 listContainer.innerHTML = listHTML;
+
+                 // RENDERUJ FORMULARZ ZAMÓWIENIA
+                 formContainer.innerHTML = `
+                     <form id="koszyk-formularz" onsubmit="handleOrderSubmit(event)">
+                         <h3 style="color: var(--color-accent-gold); text-align: center; margin-top: 0;">Podsumowanie i Wysyłka</h3>
+                         <div class="form-group">
+                             <label for="order-imie">Imię i nazwisko</label>
+                             <input type="text" id="order-imie" required>
+                         </div>
+                         <div class="form-group">
+                             <label for="order-email">Adres e-mail</label>
+                             <input type="email" id="order-email" required>
+                         </div>
+                         <div class="form-group">
+                             <label for="order-adres">Adres dostawy</label>
+                             <textarea id="order-adres" rows="3" required></textarea>
+                </div>
+                         <div class="form-group">
+                             <label for="order-uwagi">Uwagi do zamówienia (opcjonalnie)</label>
+                             <textarea id="order-uwagi" rows="2"></textarea>
+                         </div>
+                         <button type="submit" class="btn-auth">Złóż zamówienie</button>
+                         <p style="font-size: 0.8em; color: #666; text-align: center; margin-top: 15px;">
+                             Kliknięcie przycisku bezpiecznie zapisze Twoje zamówienie w naszym systemie.
+                         </p>
+                     </form>
+                 `;
+             }
+         }
+         
+        /** NOWA WERSJA: Obsługuje wysłanie formularza (zapisuje do Supabase) */
+         async function handleOrderSubmit(event) { // DODANO 'async'
+             event.preventDefault();
+
+             // 1. Zablokuj przycisk, aby zapobiec wielokrotnemu kliknięciu
+             const submitButton = document.querySelector('#koszyk-formularz button[type="submit"]');
+             if (submitButton) {
+                 submitButton.disabled = true;
+                 submitButton.textContent = 'Przetwarzanie...';
+             }
+
+             // 2. Zbierz dane z formularza
+             const imie = document.getElementById('order-imie').value;
+             const email = document.getElementById('order-email').value;
+             const adres = document.getElementById('order-adres').value;
+             const uwagi = document.getElementById('order-uwagi').value;
+             
+             const cart = getCart();
+             let sumaCalkowita = 0;
+             
+             cart.forEach(item => {
+                 const itemSuma = (item.price || 0) * (item.quantity || 0);
+                 sumaCalkowita += itemSuma;
+             });
+
+             // 3. Stwórz obiekt zamówienia pasujący do tabeli Supabase
+             const newOrder = {
+                 customer_name: imie,
+                 customer_email: email,
+                 customer_address: adres,
+                 notes: uwagi,
+                 items: cart, // Zapisz cały koszyk jako JSONB
+                 total_price: sumaCalkowita
+                 // Kolumna 'status' ustawi się automatycznie na 'Oczekuje' (przez Default Value)
+             };
+
+             // 4. Wyślij dane do Supabase
+             try {
+                 const { data, error } = await supabase
+                     .from('zamowienia') // Nazwa Twojej tabeli
+                     .insert([newOrder])
+                    
+
+                 if (error) {
+                     throw error; // Rzuć błędem, aby złapał go 'catch'
+                 }
+
+                 // 5. Sukces!
+                 alert('Dziękujemy! Twoje zamówienie zostało pomyślnie złożone i zapisane w systemie.');
+                 
+                 saveCart([]); // Wyczyść koszyk
+                 renderCartPage(); // Odśwież widok koszyka (pokaże pusty)
+             
+             } catch (error) {
+                 // 6. Obsługa błędu
+                 console.error('Błąd podczas składania zamówienia:', error.message);
+                 alert('Wystąpił błąd podczas składania zamówienia. Spróbuj ponownie lub skontaktuj się z nami telefonicznie.');
+                 
+                 // Odblokuj przycisk w razie błędu
+                 if (submitButton) {
+                     submitButton.disabled = false;
+                     submitButton.textContent = 'Złóż zamówienie';
+                 }
+             }
+         }
+
+
+         // ===============================================
+         // === LOGIKA PANELU ADMINA (NOWA STRUKTURA) ===
+         // ===============================================
+
+         /** NOWOŚĆ: Renderuje główną "skorupę" panelu admina */
+         function renderAdminPage() {
+             const adminContent = document.getElementById('admin-content');
+             if (!adminContent) return;
+
+             // Wstrzyknij szablon
+             const template = document.getElementById('admin-template');
+             adminContent.innerHTML = ''; // Wyczyść
+             adminContent.appendChild(document.importNode(template.content, true));
+
+             // Domyślnie pokaż statystyki
+             showAdminContent('stats');
+         }
+
+         /** NOWOŚĆ: Przełącza zawartość w panelu admina (Statystyki / Produkty) */
+         async function showAdminContent(view) { // <-- DODANO 'async'
+             const mainContent = document.getElementById('admin-main');
+             if (!mainContent) return;
+
+             const navLinks = document.querySelectorAll('#admin-page .dashboard-nav a');
+             navLinks.forEach(link => link.classList.remove('active'));
+
+             if (view === 'stats') {
+                 const statsTemplate = document.getElementById('admin-stats-template');
+                 mainContent.innerHTML = '';
+                 mainContent.appendChild(document.importNode(statsTemplate.content, true));
+                 document.getElementById('nav-admin-stats')?.classList.add('active');
+                 
+                 // Odpal renderowanie statystyk i listy zamówień
+                await renderAdminStatsAndOrders();
+
+             } else if (view === 'products') {
+                 const productsTemplate = document.getElementById('admin-products-template');
+                 mainContent.innerHTML = '';
+                 mainContent.appendChild(document.importNode(productsTemplate.content, true));
+                 document.getElementById('nav-admin-products')?.classList.add('active');
+
+                 // Odpal renderowanie listy produktów (formularz jest w szablonie)
+                 renderAdminProductList();
+                 // Podłącz obsługę inputu plików i render podglądu (jeśli formularz jest w DOM)
+                 setupAdminImageInput();
+             }
+         }
+
+        /** ZAKTUALIZOWANA: Renderuje statystyki i listę zamówień z Supabase */
+         async function renderAdminStatsAndOrders() {
+             
+             // 1. ZACIĄGNIJ DANE Z SUPABASE (zamiast getOrdersFromStorage())
+             const { data: orders, error } = await supabase
+                 .from('zamowienia')
+                 .select('*')
+                 .order('created_at', { ascending: false }); // Sortuj od najnowszych
+
+             if (error) {
+                 console.error("Błąd pobierania zamówień z Supabase:", error.message);
+                 alert("Nie udało się pobrać listy zamówień. Sprawdź konsolę F12.");
+             }
+
+             // Użyj 'orders' z Supabase lub pustej tablicy, jeśli jest błąd
+             const allOrders = orders || []; 
+
+             // 2. Oblicz statystyki (używamy teraz nazw kolumn z bazy danych)
+             const totalRevenue = allOrders.reduce((sum, order) => sum + (order.total_price || 0), 0);
+             const totalOrders = allOrders.length;
+
+             // 3. Wypełnij karty statystyk
+             document.getElementById('stats-total-revenue').textContent = totalRevenue.toFixed(2) + ' PLN';
+             document.getElementById('stats-total-orders').textContent = totalOrders;
+             
+             // 4. Wypełnij tabelę zamówień
+             const listBody = document.getElementById('admin-orders-list-body');
+             if (!listBody) return;
+             listBody.innerHTML = '';
+
+             if (allOrders.length === 0) {
+                 listBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Brak zamówień w bazie.</td></tr>';
+                 return;
+             }
+
+             // 5. ZMAPUJ NOWE DANE DO TABELI
+             allOrders.forEach(order => {
+                 const statusColor = order.status === 'Dostarczono' ? '#0A0' : order.status === 'Wysłano' ? '#F90' : (order.status === 'Oczekuje' ? '#C00' : '#888');
+                 
+                 // Sformatuj datę (z '2025-11-06T19:55:30+00:00' na '06.11.2025')
+                 const orderDate = new Date(order.created_at).toLocaleDateString('pl-PL'); 
+                 
+                 // Sformatuj listę przedmiotów (z JSON na tekst)
+                 let itemsText = 'Brak danych';
+                 if (Array.isArray(order.items) && order.items.length > 0) {
+                     itemsText = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+                 }
+
+                 listBody.innerHTML += `
+                     <tr>
+                         <td>${order.id.substring(0, 8)}...</td> 
+                         <td>${orderDate}</td>
+                         <td>${order.customer_email}</td>
+                         <td>${itemsText}</td>
+                         <td>${(order.total_price || 0).toFixed(2)} PLN</td>
+                         <td><strong style="color: ${statusColor};">${order.status}</strong></td>
+                     </tr>
+                 `;
+             });
+         }
 
          /** Renderuje listę produktów w tabeli admina (teraz wywoływane przez showAdminContent) */
          function renderAdminProductList() {
@@ -1256,7 +2544,7 @@
                  listBody.innerHTML += `
                      <tr>
                          <td>${p.id}</td>
-                         <td>${p.brand}</td>
+                        <td>${p.brand}</td>
                          <td>${p.name}</td>
                          <td>${p.price} PLN</td>
                          <td>${p.category}</td>
@@ -1297,8 +2585,8 @@
                  saveProductsToStorage(updatedProducts);
                  alert('Produkt zaktualizowany!');
 
-            } else {
-                 // === TRYB DODAWANIA ===
+             } else {
+                // === TRYB DODAWANIA ===
                  let products = getProductsFromStorage();
                  const newProduct = {
                      ID: Date.now(), // <-- POPRAWKA: Duże ID i jest liczbą
@@ -1380,127 +2668,127 @@
          }
 
          // --- FUNKCJE NAWIGACJI ---
-         // (ZAKTUALIZOWANA FUNKCJA)
-         function highlightNavLink(activePageId, activeSectionElement) {
-             // Krok 1: Znajdź nawigację <nav> TYLKO wewnątrz aktywnej sekcji
-             // To jest kluczowa poprawka - szukamy tylko w widocznym nagłówku
-             const headerNav = activeSectionElement.querySelector('header nav');
-             
-             // Jeśli strona nie ma nawigacji (np. strona produktu), wyjdź
-             if (!headerNav) {
-                 return; 
-             }
+        // (ZAKTUALIZOWANA FUNKCJA)
+        function highlightNavLink(activePageId, activeSectionElement) {
+            // Krok 1: Znajdź nawigację <nav> TYLKO wewnątrz aktywnej sekcji
+            // To jest kluczowa poprawka - szukamy tylko w widocznym nagłówku
+            const headerNav = activeSectionElement.querySelector('header nav');
+            
+            // Jeśli strona nie ma nawigacji (np. strona produktu), wyjdź
+            if (!headerNav) {
+                return; 
+            }
 
-             // Krok 2: Wyczyść wszystkie linki w TYM KONKRETNYM pasku nawigacji
-             const allNavLinks = headerNav.querySelectorAll('a');
-             allNavLinks.forEach(link => { link.classList.remove('active-nav-link'); });
+            // Krok 2: Wyczyść wszystkie linki w TYM KONKRETNYM pasku nawigacji
+            const allNavLinks = headerNav.querySelectorAll('a');
+            allNavLinks.forEach(link => { link.classList.remove('active-nav-link'); });
 
-             // Krok 3: Znajdź prefix ID linku, który ma być aktywny
-             // (Ta logika była poprawna)
-             let targetIdPrefix;
-             if (activePageId.includes('kolekcja')) { targetIdPrefix = 'link-kolekcja'; } 
-             else if (activePageId.includes('onas')) { targetIdPrefix = 'link-onas'; } 
-             else if (activePageId.includes('regulamin')) { targetIdPrefix = 'link-regulamin'; } 
-             else if (activePageId.includes('polityka')) { targetIdPrefix = 'link-polityka'; } 
-             else if (activePageId.includes('zwroty')) { targetIdPrefix = 'link-zwroty'; } 
-             else if (activePageId.includes('pomoc')) { targetIdPrefix = 'link-pomoc'; }
-             else if (activePageId.includes('konto')) { targetIdPrefix = 'link-konto'; }
-             else if (activePageId.includes('koszyk')) { targetIdPrefix = 'link-koszyk'; } 
-             
-             if (targetIdPrefix) {
-                 // Krok 4: Znajdź DOKŁADNY link w aktywnym pasku nawigacji
-                 // Na stronie "O Nas" (onas-page), szukamy linku o ID "link-onas"
-                 // Na stronie "Kolekcja" (kolekcja-page), szukamy linku o ID "link-kolekcja"
-                 const exactLinkToHighlight = headerNav.querySelector(`#${targetIdPrefix}`);
-                 
-                 if (exactLinkToHighlight) {
-                     exactLinkToHighlight.classList.add('active-nav-link');
-                 } else {
-                     // Drobna poprawka na wypadek, gdyby ID linków były różne (np. link-kolekcja-onas)
-                     // Spróbuj znaleźć link, który zaczyna się od prefixu
-                     const firstTry = headerNav.querySelector(`[id^="${targetIdPrefix}"]`);
-                     if(firstTry) {
-                         firstTry.classList.add('active-nav-link');
-                     }
-                 }
-             }
-         }
+            // Krok 3: Znajdź prefix ID linku, który ma być aktywny
+            // (Ta logika była poprawna)
+            let targetIdPrefix;
+            if (activePageId.includes('kolekcja')) { targetIdPrefix = 'link-kolekcja'; } 
+            else if (activePageId.includes('onas')) { targetIdPrefix = 'link-onas'; } 
+            else if (activePageId.includes('regulamin')) { targetIdPrefix = 'link-regulamin'; } 
+            else if (activePageId.includes('polityka')) { targetIdPrefix = 'link-polityka'; } 
+            else if (activePageId.includes('zwroty')) { targetIdPrefix = 'link-zwroty'; } 
+            else if (activePageId.includes('pomoc')) { targetIdPrefix = 'link-pomoc'; }
+            else if (activePageId.includes('konto')) { targetIdPrefix = 'link-konto'; }
+            else if (activePageId.includes('koszyk')) { targetIdPrefix = 'link-koszyk'; } 
+            
+            if (targetIdPrefix) {
+                // Krok 4: Znajdź DOKŁADNY link w aktywnym pasku nawigacji
+                // Na stronie "O Nas" (onas-page), szukamy linku o ID "link-onas"
+                // Na stronie "Kolekcja" (kolekcja-page), szukamy linku o ID "link-kolekcja"
+                const exactLinkToHighlight = headerNav.querySelector(`#${targetIdPrefix}`);
+                
+                if (exactLinkToHighlight) {
+                    exactLinkToHighlight.classList.add('active-nav-link');
+                } else {
+                    // Drobna poprawka na wypadek, gdyby ID linków były różne (np. link-kolekcja-onas)
+                    // Spróbuj znaleźć link, który zaczyna się od prefixu
+                    const firstTry = headerNav.querySelector(`[id^="${targetIdPrefix}"]`);
+                    if(firstTry) {
+                         firstTry.classList.add('active-nav-link');
+                    }
+                }
+            }
+        }
 
-         function scrollToElement(elementId) {
-             const element = document.getElementById(elementId);
-             if (element) { setTimeout(() => { element.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100); }
-         }
+        function scrollToElement(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) { setTimeout(() => { element.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100); }
+        }
 
-         function showPageAndScroll(pageId, elementId) {
-             showPage(pageId);
-             scrollToElement(elementId);
-             // Ta linijka poniżej jest teraz zbędna, bo showPage() samo wywoła highlightNavLink
-             // const targetPageId = pageId.split('-')[0];
-             // highlightNavLink(targetPageId);
-         }
+        function showPageAndScroll(pageId, elementId) {
+            showPage(pageId);
+            scrollToElement(elementId);
+            // Ta linijka poniżej jest teraz zbędna, bo showPage() samo wywoła highlightNavLink
+            // const targetPageId = pageId.split('-')[0];
+            // highlightNavLink(targetPageId);
+        }
 
-         function openNav() { document.getElementById("side-menu").classList.add("open"); }
-         function closeNav() { document.getElementById("side-menu").classList.remove("open"); }
-         
-         /** Główna funkcja nawigacyjna - z kontrolą dostępu (ZAKTUALIZOWANA) */
-         function showPage(pageId) {
-             // === KONTROLA DOSTĘPU ADMINA ===
-             if (pageId === 'admin-page' && !isCurrentUserAdmin()) {
-                 alert('Nie masz uprawnień do tej strony. Zaloguj się jako administrator.');
-                 showPage(getIsLoggedIn() ? 'konto-page' : 'landing-page');
-                 return;
-             }
-             // === KONTROLA DOSTĘPU KLIENTA ===
-             if (pageId === 'konto-page' && isCurrentUserAdmin()) {
-                 pageId = 'admin-page';
-             }
+        function openNav() { document.getElementById("side-menu").classList.add("open"); }
+        function closeNav() { document.getElementById("side-menu").classList.remove("open"); }
+        
+        /** Główna funkcja nawigacyjna - z kontrolą dostępu (ZAKTUALIZOWANA) */
+        function showPage(pageId) {
+            // === KONTROLA DOSTĘPU ADMINA ===
+            if (pageId === 'admin-page' && !isCurrentUserAdmin()) {
+                alert('Nie masz uprawnień do tej strony. Zaloguj się jako administrator.');
+                showPage(getIsLoggedIn() ? 'konto-page' : 'landing-page');
+                return;
+            }
+            // === KONTROLA DOSTĘPU KLIENTA ===
+            if (pageId === 'konto-page' && isCurrentUserAdmin()) {
+                pageId = 'admin-page';
+            }
 
-             
+           
 
 
-             const sections = document.querySelectorAll('.page-section');
-             sections.forEach(section => { section.classList.remove('active'); });
-             
-             // === ZMIANA ===
-             // Pobieramy element sekcji, aby przekazać go do funkcji podświetlającej
-             const activeSection = document.getElementById(pageId); 
-             // === KONIEC ZMIANY ===
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(section => { section.classList.remove('active'); });
+            
+            // === ZMIANA ===
+            // Pobieramy element sekcji, aby przekazać go do funkcji podświetlającej
+            const activeSection = document.getElementById(pageId); 
+            // === KONIEC ZMIANY ===
 
-             if (activeSection) {
-                 activeSection.classList.add('active');
-                 const event = new CustomEvent('pageShow', { detail: { pageId: pageId } });
-                 document.dispatchEvent(event);
-             } else {
-                 document.getElementById('landing-page').classList.add('active');
-                 return;
-             }
-             
-             if (pageId !== 'landing-page') { 
-                 // === ZMIANA ===
-                 // Przekazujemy teraz ID strony ORAZ element aktywnej sekcji
-                 highlightNavLink(pageId, activeSection); 
-                 // === KONIEC ZMIANY ===
-             } else { 
-                 document.querySelectorAll('header nav a').forEach(link => { link.classList.remove('active-nav-link'); }); 
-             }
-             
-             window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (activeSection) {
+                activeSection.classList.add('active');
+                const event = new CustomEvent('pageShow', { detail: { pageId: pageId } });
+                document.dispatchEvent(event);
+            } else {
+                document.getElementById('landing-page').classList.add('active');
+                return;
+            }
+            
+            if (pageId !== 'landing-page') { 
+                // === ZMIANA ===
+                // Przekazujemy teraz ID strony ORAZ element aktywnej sekcji
+                highlightNavLink(pageId, activeSection); 
+                // === KONIEC ZMIANY ===
+            } else { 
+                document.querySelectorAll('header nav a').forEach(link => { link.classList.remove('active-nav-link'); }); 
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
-             // Inicjalizuj odpowiednie strony
-             if (pageId === 'kolekcja-page') {
-                 applyFilters(); 
-             }
-             if (pageId === 'konto-page') {
-                 renderKontoPage();
-             }
-             if (pageId === 'admin-page') {
-                 renderAdminPage(); 
-             }
-             // ### KROK 3: DODANIE WYWOŁANIA RENDEROWANIA KOSZYKA ###
-             if (pageId === 'koszyk-page') {
-                 renderCartPage();
-             }
-         }
+            // Inicjalizuj odpowiednie strony
+            if (pageId === 'kolekcja-page') {
+                applyFilters(); 
+            }
+            if (pageId === 'konto-page') {
+                renderKontoPage();
+            }
+            if (pageId === 'admin-page') {
+                renderAdminPage(); 
+            }
+            // ### KROK 3: DODANIE WYWOŁANIA RENDEROWANIA KOSZYKA ###
+            if (pageId === 'koszyk-page') {
+                renderCartPage();
+            }
+        }
 
          // --- LOGIKA KONT (PANEL KLIENTA) ---
          function renderKontoPage() {
@@ -1549,7 +2837,7 @@
                                  <th>Numer</th>
                                  <th>Data</th>
                                  <th>Produkt</th>
-                                 <th>Wartość</th>
+                                <th>Wartość</th>
                                  <th>Status</th>
                              </tr>
                          </thead>
@@ -1565,7 +2853,7 @@
                                  <td>${order.items}</td>
                                  <td>${(order.total || 0).toFixed(2)} PLN</td>
                                  <td><strong style="color: ${statusColor};">${order.status}</strong></td>
-                     </tr>
+                    </tr>
                          `;
                      });
                  } else {
@@ -1606,8 +2894,7 @@
          }
 
          // --- LOGIKA KOLEKCJI (FRONTEND) ---
-
-         function renderProducts(products) {
+        function renderProducts(products) {
              const grid = document.getElementById('product-grid');
              if (!grid) return; 
              
@@ -1627,34 +2914,32 @@
                  const card = document.createElement('div');
                  card.className = 'product-card';
                  
-                 // === (KROK 3.A) ZAKTUALIZOWANY KOD KARTY PRODUKTU ===
-                 // Używamy nowych klas CSS zdefiniowanych w Kroku 1
-                 card.innerHTML = `
-                     <div class="product-image-wrapper" onclick="showProductDetail('${product.id}')">
-                         <img src="${(product.images && product.images[0]) ? product.images[0] : 'https://via.placeholder.com/300x400.png?text=Brak+Zdjecia'}" 
-                              alt="${product.name}" 
-                              class="product-image">
+                 // === ZAKTUALIZOWANY KOD KARTY PRODUKTU ===
+                card.innerHTML = `
+                     <div style="height: 220px; width: 140px; margin-left: auto; margin-right: auto; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}'); background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #FFFFFF;">
                      </div>
-                     
                      <div class="brand">${product.brand}</div>
-                     <h3 onclick="showProductDetail('${product.id}')" style="cursor: pointer;">${product.name || 'Brak Nazwy'}</h3>
+                     <h3>${product.name || 'Brak Nazwy'}</h3>
+                     <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category}</p>
+                     
+                     <p style="font-size: 0.8em; color: #AAA; margin-top: 0; margin-bottom: 8px; font-family: monospace;">ID: ${product.id}</p>
+                     
                      <div class="price">${product.price} PLN</div>
-
-                     <div class="product-buttons-wrapper">
+                     <div style="display:flex; gap:8px; margin-top:10px;">
                          ${product.id ?
+                             // 1. Jeśli ID ISTNIEJE (przyciski aktywne)
                              `
-                             <button class="btn-add" onclick="addToCart('${product.id}')">Do koszyka</button>
-                             <button class="btn-details" onclick="showProductDetail('${product.id}')">Info</button>
+                             <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
+                             <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:8px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
                              ` :
+                             // 2. Jeśli ID NIE ISTNIEJE (przyciski wyłączone)
                              `
                              <button class="btn-add" style="background:#CCC; color:#666;" disabled>DO KOSZYKA</button>
-                             <button class="btn-details" style="background:transparent; color:#CCC; border:1px solid #CCC;" disabled title="Produkt chwilowo niedostępny (brak ID)">Info</button>
+                             <button class="btn-add" style="background:transparent; color:#CCC; border:1px solid #CCC; width:auto; padding:10px;" disabled title="Produkt chwilowo niedostępny (brak ID)">SZCZEGÓŁY</button>
                              `
                          }
                      </div>
-                 `;
-                 // === KONIEC ZAKTUALIZOWANEGO KODU KARTY ===
-                 
+                `;
                  grid.appendChild(card);
              });
          }
@@ -1680,10 +2965,10 @@
                  } else if (sortBy === 'price-desc') {
                      filteredProducts.sort((a, b) => b.price - a.price);
                  }
-            }
+             }
              
              renderProducts(filteredProducts);
-         }
+        }
          
          // --- NOWA LOGIKA CHATBOTA (v2 - Stanowa, Multi-intent, Supabase) ---
 
@@ -1726,7 +3011,7 @@
              history.appendChild(msgDiv);
              history.scrollTop = history.scrollHeight;
              return msgDiv; // Zwróć element, aby móc go edytować (np. "pisze...")
-         }
+        }
          
          /** Aktualizuje istniejącą wiadomość bota (np. usuwa "pisze...") */
          function updateMessage(element, newText) {
@@ -1745,7 +3030,7 @@
                  <button onclick="handleOptionClick('Jak mogę zwrócić produkt?')">Zwroty i Reklamacje</button>
                  <button onclick="handleOptionClick('Czy perfumy są oryginalne?')">Gwarancja oryginalności</button>
                  <button onclick="handleOptionClick('Kontakt z konsultantem')">Kontakt</button>
-             `;
+            `;
              optionsDiv.style.display = 'block';
          }
          
@@ -1754,7 +3039,7 @@
              const inputElement = document.getElementById('user-input');
              inputElement.value = message;
              sendChatMessage();
-         }
+        }
 
          /** Główna funkcja wysyłająca wiadomość (teraz asynchroniczna) */
          async function sendChatMessage() {
@@ -1773,7 +3058,7 @@
 
              let response;
              
-           // SPRAWDZENIE STANU ROZMOWY
+            // SPRAWDZENIE STANU ROZMOWY
              if (chatState === 'AWAITING_ORDER_NUMBER') {
                  response = await fetchOrderStatus(message);
              } else {
@@ -1836,7 +3121,7 @@
              }
              
              // --- Logika Multi-Intent ---
-             // Budujemy jedną odpowiedź z wielu intencji
+            // Budujemy jedną odpowiedź z wielu intencji
              
              let responseMessages = [];
              let nextState = 'IDLE';
@@ -1847,7 +3132,7 @@
              }
              
              // Usuwamy powitanie, jeśli występuje z innymi intencjami
-             detectedIntents = detectedIntents.filter(i => i !== 'GREETING');
+            detectedIntents = detectedIntents.filter(i => i !== 'GREETING');
 
              // Sprawdź, czy produkt jest w pytaniu
              const productMatch = getProductsFromStorage().find(p => lowerText.includes(p.brand.toLowerCase()) || lowerText.includes(p.name.toLowerCase().split('(')[0].trim().toLowerCase()));
@@ -1912,7 +3197,7 @@
                      .eq('id', orderIdFormatted) // Szukaj po ID
                      .single(); // Oczekujemy jednego wyniku
 
-                 if (error || !data) {
+                if (error || !data) {
                      console.error('Błąd Supabase:', error);
                      return { 
                          text: `Niestety, nie znalazłem w systemie zamówienia o numerze <b>${orderIdFormatted}</b>. Upewnij się, że numer jest poprawny i spróbuj ponownie.`, 
@@ -1936,7 +3221,7 @@
          }
          
          // --- Karuzela placeholderów ---
-         const popularQuestions = [
+        const popularQuestions = [
              "Wpisz: 'Cześć'",
              "Wpisz: 'Jaki jest status zamówienia?'",
              "Wpisz: 'Chcę zmienić miejsce odbioru'",
@@ -2005,7 +3290,7 @@
                      const row = document.createElement('tr');
                      row.innerHTML = `<td style="padding:6px; border-bottom:1px solid #EEE; width:35%;"><strong>${s.key}</strong></td><td style="padding:6px; border-bottom:1px solid #EEE;">${s.value}</td>`;
                      specsTable.appendChild(row);
-                 });
+                });
              } else {
                  specsTable.innerHTML = '<tr><td colspan="2" style="padding:6px; color:#666;">Brak specyfikacji</td></tr>';
              }
@@ -2133,104 +3418,104 @@
 
          /** Wywołaj po wstrzyknięciu formularza admina: podłączy listener do input#admin-images */
          function setupAdminImageInput() {
-             const input = document.getElementById('admin-images');
-             if (!input) return;
-             input.addEventListener('change', handleAdminImagesChange);
-             // jeśli już istnieją obrazy w adminImageData (np. przy edycji), wyrenderuj je
-             renderAdminImagePreviews();
+           const input = document.getElementById('admin-images');
+           if (!input) return;
+           input.addEventListener('change', handleAdminImagesChange);
+           // jeśli już istnieją obrazy w adminImageData (np. przy edycji), wyrenderuj je
+           renderAdminImagePreviews();
          }
 
          /** Obsługa wyboru plików przez admina */
          function handleAdminImagesChange(event) {
-             const files = Array.from(event.target.files || []);
-             if (files.length === 0) return;
+           const files = Array.from(event.target.files || []);
+           if (files.length === 0) return;
 
-             const maxImages = 5;
-             // jeśli dodanie plików przekroczy limit, obcinamy
-            if (adminImageData.length + files.length > maxImages) {
-                 alert(`Możesz dodać maksymalnie ${maxImages} zdjęć na produkt. Usuń niektóre lub dodaj mniej plików.`);
-            }
+           const maxImages = 5;
+           // jeśli dodanie plików przekroczy limit, obcinamy
+          if (adminImageData.length + files.length > maxImages) {
+             alert(`Możesz dodać maksymalnie ${maxImages} zdjęć na produkt. Usuń niektóre lub dodaj mniej plików.`);
+           }
 
-             // ogranicz liczbę plików do wstawienia
-             const allowedToAdd = files.slice(0, Math.max(0, maxImages - adminImageData.length));
-             allowedToAdd.forEach(file => {
-                 if (!file.type.startsWith('image/')) return;
-                 const reader = new FileReader();
-                 reader.onload = (e) => {
-                    adminImageData.push(e.target.result); // dataURL
-                    renderAdminImagePreviews();
-                 };
-                 reader.readAsDataURL(file);
-            });
+           // ogranicz liczbę plików do wstawienia
+           const allowedToAdd = files.slice(0, Math.max(0, maxImages - adminImageData.length));
+           allowedToAdd.forEach(file => {
+             if (!file.type.startsWith('image/')) return;
+             const reader = new FileReader();
+             reader.onload = (e) => {
+               adminImageData.push(e.target.result); // dataURL
+               renderAdminImagePreviews();
+             };
+             reader.readAsDataURL(file);
+          });
 
-             // reset input, żeby ten sam plik mógł być wgrany ponownie po usunięciu
-             event.target.value = '';
+           // reset input, żeby ten sam plik mógł być wgrany ponownie po usunięciu
+           event.target.value = '';
          }
 
          /** Renderuje miniatury obrazów w panelu admina z przyciskiem Usuń */
          function renderAdminImagePreviews() {
-             const container = document.getElementById('admin-image-previews');
-             if (!container) return;
-             container.innerHTML = '';
-             adminImageData.forEach((dataUrl, idx) => {
-                 const wrap = document.createElement('div');
-                 wrap.style.position = 'relative';
-                 wrap.style.width = '80px';
-                 wrap.style.height = '80px';
-                 wrap.style.flex = '0 0 80px';
-                 wrap.style.border = '1px solid #DDD';
-                 wrap.style.overflow = 'hidden';
-                 wrap.style.borderRadius = '4px';
-                 wrap.style.background = '#fff';
+           const container = document.getElementById('admin-image-previews');
+           if (!container) return;
+           container.innerHTML = '';
+           adminImageData.forEach((dataUrl, idx) => {
+             const wrap = document.createElement('div');
+             wrap.style.position = 'relative';
+             wrap.style.width = '80px';
+             wrap.style.height = '80px';
+             wrap.style.flex = '0 0 80px';
+             wrap.style.border = '1px solid #DDD';
+             wrap.style.overflow = 'hidden';
+             wrap.style.borderRadius = '4px';
+             wrap.style.background = '#fff';
 
-                 const img = document.createElement('img');
-                 img.src = dataUrl;
-                 img.style.width = '100%';
-                img.style.height = '100%';
-                 img.style.objectFit = 'cover';
-                 img.alt = 'preview';
+             const img = document.createElement('img');
+             img.src = dataUrl;
+             img.style.width = '100%';
+            img.style.height = '100%';
+             img.style.objectFit = 'cover';
+             img.alt = 'preview';
 
-                 const btn = document.createElement('button');
-                 btn.textContent = '×';
-                 btn.title = 'Usuń';
-                 btn.style.position = 'absolute';
-                 btn.style.top = '3px';
-                 btn.style.right = '3px';
-                 btn.style.background = 'rgba(0,0,0,0.6)';
-                 btn.style.color = '#fff';
-                 btn.style.border = 'none';
-                 btn.style.width = '20px';
-                 btn.style.height = '20px';
-                 btn.style.borderRadius = '50%';
-                 btn.style.cursor = 'pointer';
-                 btn.onclick = () => removeAdminImage(idx);
+             const btn = document.createElement('button');
+             btn.textContent = '×';
+             btn.title = 'Usuń';
+             btn.style.position = 'absolute';
+             btn.style.top = '3px';
+             btn.style.right = '3px';
+             btn.style.background = 'rgba(0,0,0,0.6)';
+             btn.style.color = '#fff';
+             btn.style.border = 'none';
+             btn.style.width = '20px';
+             btn.style.height = '20px';
+             btn.style.borderRadius = '50%';
+             btn.style.cursor = 'pointer';
+             btn.onclick = () => removeAdminImage(idx);
 
-                 wrap.appendChild(img);
-                 wrap.appendChild(btn);
-                 container.appendChild(wrap);
-             });
+             wrap.appendChild(img);
+             wrap.appendChild(btn);
+             container.appendChild(wrap);
+           });
 
-             // informacja o limicie
-             const info = document.createElement('div');
-             info.style.fontSize = '0.8em';
-             info.style.color = '#666';
-              info.style.alignSelf = 'center';
-             info.style.marginLeft = '6px';
-             info.textContent = `${adminImageData.length} / 5`;
-             container.appendChild(info);
+           // informacja o limicie
+           const info = document.createElement('div');
+           info.style.fontSize = '0.8em';
+           info.style.color = '#666';
+            info.style.alignSelf = 'center';
+           info.style.marginLeft = '6px';
+           info.textContent = `${adminImageData.length} / 5`;
+           container.appendChild(info);
          }
 
          /** Usuwa obraz z listy (admin) */
          function removeAdminImage(index) {
-             if (index < 0 || index >= adminImageData.length) return;
-             adminImageData.splice(index, 1);
-             renderAdminImagePreviews();
+           if (index < 0 || index >= adminImageData.length) return;
+           adminImageData.splice(index, 1);
+           renderAdminImagePreviews();
          }
 
          // --- LOGIKA CHAT, INICJALIZACJA STRONY I ZDARZEŃ ---
          
          document.addEventListener('DOMContentLoaded', async () => { // <-- POPRAWKA ASYNC
-             
+           
             
              // === NOWOŚĆ: Sprawdzenie sesji Supabase przy starcie ===
              try {
@@ -2254,7 +3539,7 @@
                      // Brak sesji w Supabase, upewnij się, że lokalna też jest czysta
                      localStorage.removeItem(LS_SESSION_KEY);
                  }
-             } catch (e) {
+            } catch (e) {
                  console.error("Błąd przywracania sesji:", e);
                  localStorage.removeItem(LS_SESSION_KEY);
              }
@@ -2274,18 +3559,18 @@
                      <div class="footer-links">
                          <h4>ODORIS</h4>
                          <a onclick="showPage('kolekcja-page');">Katalog Zapachów</a>
-                         <a onclick="showPage('onas-page');">O Naszej Misji</a>
+                        <a onclick="showPage('onas-page');">O Naszej Misji</a>
                          <a onclick="showPage('pomoc-page');">Wsparcie i FAQ</a>
                          <a onclick="showPage('konto-page');">Moje Konto Klienta</a>
                      </div>
                      <div class="footer-contact">
-                         <h4>&iquest; Masz Pytanie?</h4>
+                        <h4>&iquest; Masz Pytanie?</h4>
                          <strong class="gold-text">TELEFON:</strong> <a href="tel:532116720">532 116 720</a>
                          <strong class="gold-text">E-MAIL:</strong> <a href="mailto:odoris.pl@gmail.com">odoris.pl@gmail.com</a>
                      </div>
                      <div class="copyright">
                          <p>&copy; 2025 ODORIS. Wszelkie prawa zastrzeżone.</p>
-                </div>
+                  </div>
                  </div>
              `;
              document.querySelectorAll('footer').forEach(footer => {
@@ -2294,10 +3579,10 @@
              
              applyFilters(); // Uruchom po pobraniu danych
 
-             document.addEventListener('pageShow', (e) => {
+            document.addEventListener('pageShow', (e) => {
 
                  // --- Kod dla Chatbota na stronie Pomocy ---
-                if (e.detail.pageId === 'pomoc-page') {
+              if (e.detail.pageId === 'pomoc-page') {
                      chatState = 'IDLE'; // Resetuj stan przy każdym otwarciu
                      document.getElementById('chat-history').innerHTML = '<div class="bot-message">Witaj! Jestem Bot Wsparcia. Jak mogę Ci pomóc?</div>'; // Wiadomość powitalna
                      displayDefaultOptions(); // Pokaż przyciski
@@ -2309,14 +3594,14 @@
                              if (event.key === 'Enter') {
                                  event.preventDefault();
                                  sendChatMessage();
-                     }
+                    }
                          });
                          userInputEl.dataset.listenerAttached = 'true';
                      }
                  }
                  
                  // --- Kod dla Strony Produktu (żeby linki działały) ---
-                if (e.detail.pageId === 'product-page') {
+              if (e.detail.pageId === 'product-page') {
                      // ensure details render if navigated directly
                      if (currentDetailProductId) renderProductDetail(currentDetailProductId);
                  }
@@ -2324,7 +3609,7 @@
 
              showPage('landing-page');
 
-             document.querySelectorAll('#filter-sidebar input[type="checkbox"]').forEach(checkbox => {
+            document.querySelectorAll('#filter-sidebar input[type="checkbox"]').forEach(checkbox => {
                  checkbox.addEventListener('change', applyFilters);
              });
              const sortByElement = document.getElementById('sort-by');
@@ -2334,19 +3619,19 @@
              
              // ### KROK 3: INICJALIZACJA LICZNIKA PRZY STARCIE ###
             updateCartCounters();
-     // --- Logika akordeonu filtrów ---
-     const filterToggles = document.querySelectorAll('.filter-group-toggle');
-     filterToggles.forEach(toggle => {
+      // --- Logika akordeonu filtrów ---
+    const filterToggles = document.querySelectorAll('.filter-group-toggle');
+    filterToggles.forEach(toggle => {
          toggle.addEventListener('click', () => {
              // Znajdź rodzica .filter-group
              const group = toggle.parentElement;
              if (group && group.classList.contains('filter-group')) {
-                 // Przełącz klasę .active
+                // Przełącz klasę .active
                  group.classList.toggle('active');
              }
          });
-     });
+    });
          });
-      </script>
+     </script>
 </body>
 </html>
