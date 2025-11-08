@@ -49,23 +49,24 @@
             padding: 0 20px;
         }
 
-        /* === PRZEŁĄCZANIE WIDOKÓW === */
+       /* === PRZEŁĄCZANIE WIDOKÓW === */
         .page-section {
             display: none;
-            background-color: var(--color-background-light);
-            color: var(--color-text-dark);
+            background-color: var(--color-background-dark); /* <-- ZMIANA TŁA */
+            color: var(--color-text-light); /* <-- ZMIANA TEKSTU */
             min-height: 100vh;
         }
         .page-section.active {
             display: block;
         }
         
-        /* === Nagłówek i Aktywny Link (dla podstron) === */
+      /* === Nagłówek i Aktywny Link (dla podstron) === */
         header {
             text-align: center;
             padding: 25px 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            background-color: var(--color-background-light);
+            /* Złote obramowanie, pasujące do motywu */
+            border-bottom: 1px solid rgba(192, 160, 76, 0.3); /* <-- ZMIANA */
+            background-color: var(--color-background-dark); /* <-- ZMIANA */
             position: sticky;
             top: 0;
             z-index: 10;
@@ -78,8 +79,8 @@
             position: relative;
         }
 
-        header nav a {
-            color: var(--color-text-dark);
+       header nav a {
+            color: var(--color-text-light); /* <-- ZMIANA */
             text-decoration: none;
             font-size: 13px;
             margin: 0 12px;
@@ -151,9 +152,9 @@
             color: var(--color-text-light);
         }
         #landing-page .menu-toggle:hover { color: var(--color-accent-gold); }
-        /* Hamburger dla Podstron (Jasny widok) */
+        /* Hamburger dla Podstron (Ciemny widok) */
         header .menu-toggle {
-            color: var(--color-text-dark);
+            color: var(--color-text-light); /* <-- ZMIANA */
             margin-left: auto;
             padding-right: 15px;
         }
@@ -243,8 +244,8 @@
         .copyright { flex-basis: 100%; text-align: center; padding-top: 20px; border-top: 1px solid #333; margin-top: 20px; font-size: 0.75em; color: #666; line-height: 1.4; }
 
         /* === STYLE DLA CHATBOTA === */
-        .chatbot-container {
-            background-color: var(--color-background-light);
+       .chatbot-container {
+            background-color: #222; /* <-- ZMIANA */
             border: 1px solid var(--color-accent-gold);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             max-width: 350px;
@@ -277,8 +278,8 @@
             max-width: 80%;
             font-size: 0.9em;
         }
-        .bot-message {
-            background-color: #EEE;
+       .bot-message {
+            background-color: #333; /* <-- ZMIANA */
             align-self: flex-start;
             border-bottom-left-radius: 2px;
         }
@@ -343,8 +344,9 @@
         #filter-sidebar {
             flex: 0 0 250px;
             padding: 20px;
-            background-color: #ECECE4;
-            border-right: 1px solid #DDD;
+            background-color: #222; /* <-- ZMIANA */
+            border-right: 1px solid #333; /* <-- ZMIANA */
+        
         }
         #filter-sidebar h4 {
             color: var(--color-accent-gold);
@@ -384,9 +386,9 @@
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 25px;
         }
-        .product-card {
-            background-color: #FFFFFF;
-            border: 1px solid #E0E0E0;
+       .product-card {
+            background-color: #222; /* <-- ZMIANA */
+            border: 1px solid #333; /* <-- ZMIANA */
             padding: 20px 15px;
             text-align: center;
             transition: box-shadow 0.3s, transform 0.3s;
@@ -399,7 +401,7 @@
             font-family: var(--font-sans);
             font-size: 1.1em;
             font-weight: 700;
-            color: var(--color-text-dark);
+           color: var(--color-text-light);
             margin-top: 10px;
             margin-bottom: 5px;
         }
@@ -454,7 +456,7 @@
             margin: 40px auto;
         }
         .auth-form {
-            background-color: #F0F0F0;
+           background-color: #252525; /* <-- ZMIANA */
             padding: 40px;
             border: 1px solid rgba(0, 0, 0, 0.1);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
@@ -481,12 +483,12 @@
             color: var(--color-text-dark);
             font-size: 0.95em;
         }
-        .form-group input, .form-group select, .form-group textarea { /* DODANO TEXTAREA */
+       .form-group input, .form-group select, .form-group textarea { /* DODANO TEXTAREA */
             width: 100%;
             padding: 12px;
-            border: 1px solid #AAA;
-            background-color: white;
-            color: var(--color-text-dark);
+            border: 1px solid #555; /* <-- ZMIANA */
+            background-color: #333; /* <-- ZMIANA */
+            color: var(--color-text-light); /* <-- ZMIANA */
             font-size: 1em;
             box-sizing: border-box;
             transition: border-color 0.3s;
@@ -762,7 +764,7 @@
         }
         .text-page-content p, .text-page-content ul {
             margin-bottom: 20px;
-            color: #333;
+            color: #AAA; /* <-- ZMIANA */
         }
         .text-page-content ul {
             padding-left: 20px;
@@ -786,7 +788,7 @@
         #koszyk-formularz {
             flex: 1;
             min-width: 300px;
-            background-color: #F0F0F0;
+           background-color: #252525; /* <-- ZMIANA */
             padding: 30px;
             border: 1px solid rgba(0, 0, 0, 0.1);
             position: sticky;
@@ -988,7 +990,7 @@
         .filter-group-toggle {
             font-family: var(--font-serif);
             font-size: 1.1em !important;
-            color: var(--color-text-dark) !important;
+            color: var(--color-text-light) !important;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin: 0;
@@ -1011,8 +1013,8 @@
             transform: translateY(-50%) rotate(45deg); /* Strzałka w dół */
             width: 8px;
             height: 8px;
-            border-bottom: 2px solid var(--color-text-dark);
-            border-right: 2px solid var(--color-text-dark);
+           border-bottom: 2px solid var(--color-text-light); /* <-- ZMIANA */
+            border-right: 2px solid var(--color-text-light); /* <-- ZMIANA */
             transition: transform 0.3s, border-color 0.3s;
         }
 
