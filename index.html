@@ -416,10 +416,10 @@
             color: var(--color-accent-gold);
             margin: 10px 0;
         }
-        .product-card .btn-add {
-            display: block;
-            width: 100%;
-            padding: 8px;
+       .product-card .btn-add {
+            flex: 1; /* <-- ZMIANA */
+            text-align: center; /* <-- DODANE DLA PEWNOŚCI */
+            padding: 8px;
             background-color: var(--color-text-dark);
             color: var(--color-text-light);
             text-decoration: none;
@@ -868,10 +868,23 @@
             font-size: 1em;
             padding: 12px 30px;
         }
-        /* Centrowanie przycisków "Do koszyka" / "Szczegóły" na kartach */
-        .product-card > div:last-of-type {
-            justify-content: center;
-        }
+       /* Domyślne ukrycie przycisków i przygotowanie do animacji */
+        .product-card > div:last-of-type {
+            justify-content: center;
+            
+            
+            /* Nowe style do ukrywania */
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px); /* Lekkie wysunięcie w dół */
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+        }
+        /* Pokazanie przycisków po najechaniu na KARTĘ */
+        .product-card:hover > div:last-of-type {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0); /* Powrót do normalnej pozycji */
+        }
         /* === RESPONSIVE DESIGN (MEDIA QUERIES) === */
         @media (max-width: 1024px) {
             header nav { display: none; }
@@ -2930,7 +2943,7 @@
                              // 1. Jeśli ID ISTNIEJE (przyciski aktywne)
                              `
                              <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
-                             <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:8px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
+<button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
                              ` :
                              // 2. Jeśli ID NIE ISTNIEJE (przyciski wyłączone)
                              `
