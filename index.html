@@ -386,16 +386,16 @@
           	gap: 20px; 
           	justify-items: center; /* <-- TO JEST KLUCZOWA POPRAWKA */
         }
-        .product-card {
+       .product-card {
             background-color: #FFFFFF;
             border: 1px solid #E0E0E0;
             padding: 20px 15px;
             text-align: center;
             transition: box-shadow 0.3s, transform 0.3s;
             cursor: pointer;
-            width: 100%; /* <-- KARTA MA WYPEŁNIĆ KOMÓRKĘ */
-            max-width: 200px; /* <-- ALE NIGDY NIE SZERZEJ NIŻ 200px */
-            box-sizing: border-box; 
+            /* Usunięto: width: 100%; */
+            max-width: 200px; /* <-- Ta reguła teraz poprawnie ustawi szerokość */
+            box-sizing: border-box; 
         }
         .product-card:hover {
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
