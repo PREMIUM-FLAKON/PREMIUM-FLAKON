@@ -873,23 +873,11 @@
             font-size: 1em;
             padding: 12px 30px;
         }
-       /* Domyślne ukrycie przycisków i przygotowanie do animacji */
-        .product-card > div:last-of-type {
+      /* Kontener przycisku */
+        .product-card .product-card-actions {
             justify-content: center;
-            
-            
-            /* Nowe style do ukrywania */
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10px); /* Lekkie wysunięcie w dół */
-            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
         }
-        /* Pokazanie przycisków po najechaniu na KARTĘ */
-        .product-card:hover > div:last-of-type {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0); /* Powrót do normalnej pozycji */
-        }
+       
         /* === RESPONSIVE DESIGN (MEDIA QUERIES) === */
         @media (max-width: 1024px) {
             header nav { display: none; }
