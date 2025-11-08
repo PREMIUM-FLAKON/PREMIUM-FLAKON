@@ -379,11 +379,11 @@
             padding: 8px;
             border: 1px solid #AAA;
         }
-        #product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
-        }
+       #product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); /* <-- ZMIANA */
+            gap: 20px; /* <-- Możesz też zmniejszyć odstęp */
+        }
         .product-card {
             background-color: #FFFFFF;
             border: 1px solid #E0E0E0;
@@ -2934,7 +2934,7 @@
                  
                  // === KROK 2: Usuwamy przycisk "SZCZEGÓŁY" i dodajemy "event.stopPropagation()" do koszyka ===
                 card.innerHTML = `
-                     <div style="height: 220px; width: 140px; margin-left: auto; margin-right: auto; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}'); background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #FFFFFF;">
+                     <div style="height: 180px; width: 120px; margin-left: auto; margin-right: auto; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}'); background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #FFFFFF;">
                      </div>
                      <div class="brand">${product.brand}</div>
                      <h3>${product.name || 'Brak Nazwy'}</h3>
