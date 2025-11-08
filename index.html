@@ -192,13 +192,31 @@
         .hero-content h1 { font-size: 4em; letter-spacing: 8px; margin-bottom: 5px; font-weight: 900; }
         .hero-slogan { font-size: 1.2em; margin-bottom: 40px; font-weight: 400; letter-spacing: 3px; }
         .hero-content p { font-family: var(--font-sans); font-size: 1.2em; margin-bottom: 40px; color: rgba(255, 255, 255, 0.9); }
-        .btn-main {
-            display: inline-block; padding: 16px 60px; background-color: var(--color-accent-gold);
-            color: var(--color-background-dark); box-shadow: 0 0 15px rgba(192, 160, 76, 0.4);
-            border: 1px solid var(--color-accent-gold); text-decoration: none; text-transform: uppercase;
-            font-weight: 700; letter-spacing: 2px; transition: all 0.3s; cursor: pointer;
+       .btn-main {
+            display: inline-block;
+            padding: 16px 60px;
+            
+            /* === NOWE, ZŁOTE STYLE === */
+            background-color: #EACD76; /* Jaśniejszy złoty kolor tła */
+            color: #332A14; /* Ciemniejszy kolor tekstu dla kontrastu */
+            box-shadow: 0 4px 25px rgba(234, 205, 118, 0.6); /* Mocniejszy złoty cień */
+            border: 1px solid #D4B76A; /* Ciemniejsza złota ramka */
+            /* === KONIEC ZMIAN === */
+            
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            cursor: pointer;
         }
-        .btn-main:hover { background-color: transparent; color: var(--color-accent-gold); border: 1px solid var(--color-accent-gold); }
+
+        .btn-main:hover {
+            background-color: transparent;
+            color: #EACD76; /* Złoty tekst po najechaniu */
+            border: 1px solid #EACD76; /* Złota ramka po najechaniu */
+            box-shadow: 0 2px 10px rgba(234, 205, 118, 0.3); /* Delikatniejszy cień */
+        }
         
         .values-section, .detail-section { background-color: var(--color-background-dark); color: var(--color-text-light); }
         .values-section { padding: 100px 0; }
@@ -1073,8 +1091,12 @@
                 <h1><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
                 <p class="hero-slogan">Autentyczność. Luksus. Ekskluzywność.</p>
                 <p>Twój autoryzowany butik luksusowych perfum. <br>**100% Gwarancji Oryginalności.** **Kultowe Zapachy Świata.**</p>
-                <a onclick="showPage('kolekcja-page');" class="btn-main">Odkryj Pełną Kolekcję &rarr;</a>
-            </div>
+                
+                </div>
+        </div>
+        
+        <div style="text-align: center; position: relative; z-index: 2; margin-top: -90px; padding-bottom: 70px;">
+            <a onclick="showPage('kolekcja-page');" class="btn-main">Odkryj Pełną Kolekcję &rarr;</a>
         </div>
         
         <div class="values-section">
