@@ -379,19 +379,22 @@
             padding: 8px;
             border: 1px solid #AAA;
         }
-       #product-grid {
+      #product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); /* <-- ZMIANA */
-            gap: 20px; /* <-- Możesz też zmniejszyć odstęp */
+          	grid-template-columns: repeat(auto-fill, 190px); /* <-- ZMIANA: Stała szerokość */
+          	gap: 20px; /* Możesz dostosować odstęp */
+          	justify-content: center; /* <-- ZMIANA: Centruje całą grupę kart */
         }
         .product-card {
-            background-color: #FFFFFF;
-            border: 1px solid #E0E0E0;
-            padding: 20px 15px;
-            text-align: center;
-            transition: box-shadow 0.3s, transform 0.3s;
-            cursor: pointer;
-        }
+            background-color: #FFFFFF;
+            border: 1px solid #E0E0E0;
+            padding: 20px 15px;
+            text-align: center;
+            transition: box-shadow 0.3s, transform 0.3s;
+            cursor: pointer;
+            width: 190px; /* <-- ZMIANA: Taka sama jak w siatce */
+            box-sizing: border-box; /* <-- DODANE: Ważne dla zachowania wymiarów z paddingiem */
+        }
         .product-card:hover {
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             transform: translateY(-3px);
