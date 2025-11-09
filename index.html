@@ -473,53 +473,100 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
     gap: 30px; /* Zwiększamy odstęp */
 }
 
-/* === ZASTĄP STARE STYLE KARTY PRODUKTU === */
+/* === NOWE STYLE KARTY PRODUKTU (ZASTĄP STARE) === */
+
+/* Główny kontener karty */
 .product-card {
-    background-color: #FFFFFF; /* Karta zostaje biała */
-    color: var(--color-text-dark); /* Tekst na karcie jest ciemny */
-    padding: 20px;
+    background-color: #222; /* Ciemne tło, jak w mockupie */
+    color: var(--color-text-light); /* Jasny tekst */
     text-align: center;
-    transition: box-shadow 0.3s, transform 0.3s;
+    transition: all 0.3s ease;
     
-    /* === NAJWAŻNIEJSZE ZMIANY === */
-    border: none; /* Usuwamy starą ramkę 1px */
-    border-radius: 8px; /* Dodajemy zaokrąglenie */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Dodajemy cień */
-
-    /* Usuwamy stare marginesy, bo gap w gridzie jest lepszy */
-    margin-top: 0;
-    margin-bottom: 0;
+    border: 1px solid #333; /* Subtelna ramka, jak w mockupie */
+    border-radius: 8px; 
+    
+    /* Usuwamy stary cień i padding, bo link załatwi padding */
+    box-shadow: none;
+    padding: 0; 
+    margin: 0; /* Usunięte stare marginesy */
+    overflow: hidden; /* Aby link ładnie przyciął rogi obrazka */
 }
 
+/* Efekt hover na całą kartę */
 .product-card:hover {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Mocniejszy cień */
-    transform: translateY(-5px); /* Efekt uniesienia */
+    border-color: var(--color-accent-gold); /* Złota ramka po najechaniu */
+    transform: translateY(-5px); /* Lekkie uniesienie */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Cień dla uniesienia */
 }
 
+/* Link, który jest teraz całą kartą */
+.product-card-link {
+    display: block; /* Ważne, aby link zajął całą przestrzeń */
+    text-decoration: none; /* Usuwa podkreślenie */
+    color: inherit; /* Dziedziczy kolor tekstu z .product-card */
+    padding: 20px;
+}
+
+/* Nowy div dla obrazka */
+.product-card-image {
+    height: 220px;
+    width: 100%;
+    max-width: 160px; 
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #FFFFFF; /* Białe tło obrazka, jak na starym */
+    border-radius: 4px; /* Lekkie zaokrąglenie dla samego tła obrazka */
+}
+
+/* Kontener na tekst */
+.product-card-info {
+    /* Padding jest już na .product-card-link */
+}
+
+/* Tytuł produktu (H3) */
 .product-card h3 {
-    font-family: var(--font-sans);
-    font-size: 1.1em;
-    font-weight: 700;
-    color: var(--color-text-dark) !important; /* Upewniamy się, że jest ciemny */
-    margin-top: 10px;
-    margin-bottom: 5px;
+    font-family: var(--font-sans);
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--color-text-light) !important; /* WAŻNE: Jasny tekst */
+    margin-top: 5px;
+    margin-bottom: 10px;
+    text-transform: none; /* Bez wielkich liter, jak w mockupie */
 }
 
-/* === MARKA PRODUKTU === */
+/* Marka produktu */
 .product-card .brand {
     font-family: var(--font-serif);
     color: var(--color-accent-gold);
     font-size: 1.3em;
     font-weight: 900;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
 }
 
-/* === CENA PRODUKTU === */
+/* Cena produktu */
 .product-card .price {
     font-size: 1.4em;
     font-weight: 700;
-    color: var(--color-accent-gold);
-    margin: 10px 0;
+    color: var(--color-accent-gold); /* Złota cena, jak w mockupie */
+    margin: 10px 0 0 0; /* Odstęp od góry */
+}
+
+/* Usuwamy stare style przycisków, bo ich nie ma */
+.product-card .btn-add {
+   display: none;
+}
+
+/* Usuwamy style dla p, bo ich nie ma */
+.product-card p {
+    display: none;
 }
 
 /* === PRZYCISK DODAJ DO KOSZYKA === */
@@ -2990,30 +3037,16 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
                  
                  // === ZAKTUALIZOWANY KOD KARTY PRODUKTU ===
                 card.innerHTML = `
-                     <div style="height: 220px; width: 140px; margin-left: auto; margin-right: auto; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: #666; background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}'); background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #FFFFFF;">
-                     </div>
-                     <div class="brand">${product.brand}</div>
-                     <h3>${product.name || 'Brak Nazwy'}</h3>
-                     <p style="font-size: 0.85em; color: #666; margin-bottom: 5px;">Kategoria: ${product.category}</p>
-                     
-                     <p style="font-size: 0.8em; color: #AAA; margin-top: 0; margin-bottom: 8px; font-family: monospace;">ID: ${product.id}</p>
-                     
-                     <div class="price">${product.price} PLN</div>
-                     <div style="display:flex; gap:8px; margin-top:10px;">
-                         ${product.id ?
-                             // 1. Jeśli ID ISTNIEJE (przyciski aktywne)
-                             `
-                             <button class="btn-add" onclick="addToCart('${product.id}')">DO KOSZYKA</button>
-                             <button class="btn-add" style="background:transparent; color:var(--color-text-dark); border:1px solid #DDD; width:auto; padding:8px;" onclick="showProductDetail('${product.id}')">SZCZEGÓŁY</button>
-                             ` :
-                             // 2. Jeśli ID NIE ISTNIEJE (przyciski wyłączone)
-                             `
-                             <button class="btn-add" style="background:#CCC; color:#666;" disabled>DO KOSZYKA</button>
-                             <button class="btn-add" style="background:transparent; color:#CCC; border:1px solid #CCC; width:auto; padding:10px;" disabled title="Produkt chwilowo niedostępny (brak ID)">SZCZEGÓŁY</button>
-                             `
-                         }
-                     </div>
-                `;
+                <a href="javascript:void(0)" class="product-card-link" onclick="showProductDetail('${product.id}')">
+                    <div class="product-card-image" style="background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}')">
+                        </div>
+                    <div class="product-card-info">
+                        <div class="brand">${product.brand}</div>
+                        <h3>${product.name || 'Brak Nazwy'}</h3>
+                        <div class="price">${product.price} PLN</div>
+                    </div>
+                </a>
+                `;
                  grid.appendChild(card);
              });
          }
