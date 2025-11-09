@@ -475,6 +475,8 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
 
 /* === POPRAWNE STYLE KARTY PRODUKTU (WERSJA OSTATECZNA) === */
 
+
+
 /* Główny kontener karty */
 .product-card {
     background-color: #222; /* Ciemne tło, jak w mockupie */
@@ -523,19 +525,18 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
     background-position: center;
     background-repeat: no-repeat;
     
-    background-color: transparent; /* <--- ZMIANA 1: Tło obrazka przezroczyste */
+    background-color: transparent; /* Tło obrazka przezroczyste */
     border-radius: 4px; 
 }
 
 /* Kontener na tekst */
 .product-card-info {
-    /* <--- ZMIANA 2: Dodajemy tło gradientowe dla sekcji info */
-    background: linear-gradient(to top, #333 0%, #222 100%); /* Ciemniejsze tło z delikatnym gradientem do góry */
-    border-radius: 0 0 8px 8px; /* Zaokrąglenie tylko dolnych rogów, aby pasowało do karty */
-    padding: 20px; /* Padding dla treści tekstowej */
-    margin-top: -20px; /* <--- ZMIANA 3: Negatywny margines, aby sekcja info zachodziła na górę i tworzyła przejście */
-    position: relative; /* Potrzebne, aby z-index działał w razie potrzeby */
-    z-index: 1; /* Upewnia się, że tekst jest nad obrazkiem w miejscu nakładania */
+    background: linear-gradient(to top, #333 0%, #222 100%); /* Ciemniejsze tło z delikatnym gradientem do góry */
+    border-radius: 0 0 8px 8px; /* Zaokrąglenie tylko dolnych rogów, aby pasowało do karty */
+    padding: 20px; /* Padding dla treści tekstowej */
+    margin-top: -20px; /* Negatywny margines, aby sekcja info zachodziła na górę i tworzyła przejście */
+    position: relative; /* Potrzebne, aby z-index działał w razie potrzeby */
+    z-index: 1; /* Upewnia się, że tekst jest nad obrazkiem w miejscu nakładania */
 }
 
 
@@ -3025,40 +3026,40 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
 
          // --- LOGIKA KOLEKCJI (FRONTEND) ---
         function renderProducts(products) {
-             const grid = document.getElementById('product-grid');
-             if (!grid) return; 
-             
-             const noProducts = document.getElementById('no-products'); 
-             grid.innerHTML = ''; 
-             
-             if (products.length === 0) {
-                 if (noProducts) {
-                     noProducts.style.display = 'block';
-                     grid.appendChild(noProducts); 
-                 }
-                 return;
-             }
-             if (noProducts) noProducts.style.display = 'none';
+             const grid = document.getElementById('product-grid');
+             if (!grid) return; 
+             
+             const noProducts = document.getElementById('no-products'); 
+             grid.innerHTML = ''; 
+             
+             if (products.length === 0) {
+                 if (noProducts) {
+                     noProducts.style.display = 'block';
+                     grid.appendChild(noProducts); 
+                 }
+                 return;
+             }
+             if (noProducts) noProducts.style.display = 'none';
 
-             products.forEach(product => {
-                 const card = document.createElement('div');
-                 card.className = 'product-card';
-                 
-                 // === ZAKTUALIZOWANY KOD KARTY PRODUKTU ===
-                card.innerHTML = `
-                <a href="javascript:void(0)" class="product-card-link" onclick="showProductDetail('${product.id}')">
-                    <div class="product-card-image" style="background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}')">
-                        </div>
-                    <div class="product-card-info">
-                        <div class="brand">${product.brand}</div>
-                        <h3>${product.name || 'Brak Nazwy'}</h3>
-                        <div class="price">${product.price} PLN</div>
-                    </div>
-                </a>
+             products.forEach(product => {
+                 const card = document.createElement('div');
+                 card.className = 'product-card';
+                 
+                 // === ZAKTUALIZOWANY KOD KARTY PRODUKTU ===
+                card.innerHTML = `
+                <a href="javascript:void(0)" class="product-card-link" onclick="showProductDetail('${product.id}')">
+                    <div class="product-card-image" style="background-image: url('${(product.images && product.images[0]) ? product.images[0] : ''}')">
+                        </div>
+                    <div class="product-card-info">
+                        <div class="brand">${product.brand}</div>
+                        <h3>${product.name || 'Brak Nazwy'}</h3>
+                        <div class="price">${product.price} PLN</div>
+                    </div>
+                </a>
                 `;
-                 grid.appendChild(card);
-             });
-         }
+                 grid.appendChild(card);
+             });
+         }
          function applyFilters() {
              let filteredProducts = getProductsFromStorage();
              
