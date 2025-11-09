@@ -379,62 +379,79 @@
             padding: 8px;
             border: 1px solid #AAA;
         }
-        #product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
-        }
-        .product-card {
-            background-color: #FFFFFF;
-            border: 1px solid #E0E0E0;
-            padding: 20px 15px;
-            text-align: center;
-            transition: box-shadow 0.3s, transform 0.3s;
-        }
-        .product-card:hover {
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transform: translateY(-3px);
-        }
-        .product-card h3 {
-            font-family: var(--font-sans);
-            font-size: 1.1em;
-            font-weight: 700;
-            color: var(--color-text-dark);
-            margin-top: 10px;
-            margin-bottom: 5px;
-        }
-        .product-card .brand {
-            font-family: var(--font-serif);
-            color: var(--color-accent-gold);
-            font-size: 1.3em;
-            font-weight: 900;
-            margin-bottom: 10px;
-        }
-        .product-card .price {
-            font-size: 1.4em;
-            font-weight: 700;
-            color: var(--color-accent-gold);
-            margin: 10px 0;
-        }
-        .product-card .btn-add {
-            display: block;
-            width: 100%;
-            padding: 8px;
-            background-color: var(--color-text-dark);
-            color: var(--color-text-light);
-            text-decoration: none;
-            text-transform: uppercase;
-            font-weight: 700;
-            transition: background-color 0.3s;
-            cursor: pointer; /* NOWOŚĆ */
-            border: none; /* NOWOŚĆ */
-            font-family: var(--font-sans); /* NOWOŚĆ */
-            font-size: 0.9em; /* NOWOŚĆ */
-        }
-        .product-card .btn-add:hover {
-            background-color: var(--color-accent-gold);
-            color: var(--color-text-dark);
-        }
+        /* === SIATKA PRODUKTÓW === */
+#product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+/* === KARTA PRODUKTU === */
+.product-card {
+    background-color: #FFFFFF;
+    border: 1px solid #E0E0E0;
+    padding: 20px 15px;
+    text-align: center;
+    transition: box-shadow 0.3s, transform 0.3s;
+    color: var(--color-text-dark);
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.product-card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px);
+}
+
+/* === TYTUŁ PRODUKTU === */
+.product-card h3 {
+    font-family: var(--font-sans);
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--color-text-dark);
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+/* === MARKA PRODUKTU === */
+.product-card .brand {
+    font-family: var(--font-serif);
+    color: var(--color-accent-gold);
+    font-size: 1.3em;
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+
+/* === CENA PRODUKTU === */
+.product-card .price {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: var(--color-accent-gold);
+    margin: 10px 0;
+}
+
+/* === PRZYCISK DODAJ DO KOSZYKA === */
+.product-card .btn-add {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background-color: var(--color-text-dark);
+    color: var(--color-text-light);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 700;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    border: none;
+    font-family: var(--font-sans);
+    font-size: 0.9em;
+}
+
+.product-card .btn-add:hover {
+    background-color: var(--color-accent-gold);
+    color: var(--color-text-dark);
+}
+
 
         /* === STYLE DLA STRONY KONTA (LOGOWANIE/REJESTRACJA) === */
         #konto-page {
