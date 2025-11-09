@@ -382,7 +382,7 @@
     #product-grid {
             display: grid;
           	/* Twórz kolumny o szerokości min. 200px, ale pozwól im rosnąć */
-          	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+          	grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); 
           	gap: 20px; 
           	justify-items: center; /* <-- TO JEST KLUCZOWA POPRAWKA */
         }
@@ -394,7 +394,7 @@
             transition: box-shadow 0.3s, transform 0.3s;
             cursor: pointer;
             /* Usunięto: width: 100%; */
-            max-width: 200px; /* <-- Ta reguła teraz poprawnie ustawi szerokość */
+            max-width: 170px; /* <-- Ta reguła teraz poprawnie ustawi szerokość */
             box-sizing: border-box; 
         }
         .product-card:hover {
