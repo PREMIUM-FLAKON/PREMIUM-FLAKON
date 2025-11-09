@@ -52,8 +52,8 @@
         /* === PRZEŁĄCZANIE WIDOKÓW === */
         .page-section {
             display: none;
-            background-color: var(--color-background-light);
-            color: var(--color-text-dark);
+            background-color: var(--color-background-dark);
+            color: var(--color-text-light);
             min-height: 100vh;
         }
         .page-section.active {
@@ -340,77 +340,164 @@
             gap: 30px;
             padding-top: 40px;
         }
-        #filter-sidebar {
-            flex: 0 0 250px;
-            padding: 20px;
-            background-color: #ECECE4;
-            border-right: 1px solid #DDD;
-        }
-        #filter-sidebar h4 {
-            color: var(--color-accent-gold);
-            text-transform: uppercase;
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 1em;
-        }
-        .filter-group {
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #CCC;
-        }
-        .filter-group label {
-            display: block;
-            margin-bottom: 8px;
-            cursor: pointer;
-            font-size: 0.95em;
-        }
-        #product-list-wrapper {
-            flex-grow: 1;
-        }
-        #sort-options {
-            margin-bottom: 20px;
-            text-align: right;
-        }
-        #sort-options label {
-            font-weight: 700;
-            margin-right: 10px;
-        }
-        #sort-options select {
-            padding: 8px;
-            border: 1px solid #AAA;
-        }
-        /* === SIATKA PRODUKTÓW === */
-#product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 25px;
+        /* === NOWE STYLE DLA BANERA === */.collection-hero {
+width: 100%;
+height: 350px; /* Możesz dostosować wysokość */
+background-size: cover;
+background-position: center 30%; /* Lekkie przesunięcie w górę */
+position: relative;
+display: flex;
+align-items: center;
+justify-content: center;
+text-align: center;
+color: white;
+margin-bottom: 40px; /* Odstęp od siatki produktów */
+}.collection-hero .hero-overlay {
+/* Półprzezroczysta czarna nakładka dla czytelności */
+background-color: rgba(0, 0, 0, 0.5);
+padding: 30px 40px;
+backdrop-filter: blur(5px); /* Efekt lekkiego rozmycia tła pod spodem */
+border: 1px solid rgba(255, 255, 255, 0.1);
+}.collection-hero h1 {
+font-size: 2.8em;
+color: white;
+font-family: var(--font-serif);
+margin: 0 0 10px 0;
+font-weight: 900;
+}.collection-hero p {
+font-size: 1.1em;
+color: #EEE;
+letter-spacing: 1px;
+margin: 0;
+}
+       /* === GŁÓWNA ZMIANA: TŁO STRONY KOLEKCJI === */
+#kolekcja-page {
+    background-color: var(--color-background-dark);
+    color: var(--color-text-light);
 }
 
-/* === KARTA PRODUKTU === */
+/* === ZASTĄP STARE STYLE FILTRÓW === */
+#filter-sidebar {
+    flex: 0 0 250px;
+    padding: 25px;
+    background-color: #222; /* Ciemniejszy szary niż tło strony */
+    border: 1px solid #333;
+    border-radius: 8px; /* Zaokrąglenie rogów */
+}
+#filter-sidebar h4 {
+    color: var(--color-accent-gold);
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1em;
+}
+.filter-group {
+    /* Twój styl akordeonu .filter-group jest OK, nie ruszamy go */
+    /* Zostawiamy definicje .filter-group z linii ~738 */
+    margin-bottom: 0; /* Upewnij się, że to jest, reszta z akordeonu */
+    padding-bottom: 0;
+    border-bottom: 1px solid #333; /* ZMIANA: Ciemniejsza linia */
+}
+.filter-group label {
+    display: block;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 0.95em;
+    color: #CCC; /* ZMIANA: Jasno-szary tekst */
+    transition: color 0.2s;
+}
+.filter-group label:hover {
+    color: #FFF; /* Jaśniejszy po najechaniu */
+}
+
+/* ZMIANA: Dostosuj nagłówek akordeonu do ciemnego tła */
+.filter-group-toggle {
+    font-family: var(--font-serif);
+    font-size: 1.1em !important;
+    color: var(--color-text-light) !important; /* ZMIANA: Jasny tekst */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+    padding: 18px 0;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    transition: color 0.3s;
+}
+/* ZMIANA: Strzałka musi być jasna */
+.filter-group-toggle .arrow {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+    width: 8px;
+    height: 8px;
+    border-bottom: 2px solid var(--color-text-light); /* ZMIANA: Jasna ramka */
+    border-right: 2px solid var(--color-text-light); /* ZMIANA: Jasna ramka */
+    transition: transform 0.3s, border-color 0.3s;
+}
+
+
+#product-list-wrapper {
+    flex-grow: 1;
+}
+
+/* === ZASTĄP STARE STYLE SORTOWANIA === */
+#sort-options {
+     margin-bottom: 20px;
+     text-align: right;
+}
+#sort-options label {
+    font-weight: 700;
+    margin-right: 10px;
+    color: #AAA; /* ZMIANA: Jaśniejszy tekst */
+}
+#sort-options select {
+    padding: 8px 12px;
+    border: 1px solid #555; /* Ciemniejsza ramka */
+    background-color: #333; /* Ciemne tło */
+    color: var(--color-text-light); /* Jasny tekst */
+    border-radius: 4px;
+}
+
+/* === ZASTĄP STARE STYLE SIATKI PRODUKTÓW === */
+#product-grid {
+    display: grid;
+    /* ZMIANA: Ustawiamy 3 kolumny */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px; /* Zwiększamy odstęp */
+}
+
+/* === ZASTĄP STARE STYLE KARTY PRODUKTU === */
 .product-card {
-    background-color: #FFFFFF;
-    border: 1px solid #E0E0E0;
-    padding: 20px 15px;
+    background-color: #FFFFFF; /* Karta zostaje biała */
+    color: var(--color-text-dark); /* Tekst na karcie jest ciemny */
+    padding: 20px;
     text-align: center;
     transition: box-shadow 0.3s, transform 0.3s;
-    color: var(--color-text-dark);
-    margin-top: 10px;
-    margin-bottom: 5px;
+    
+    /* === NAJWAŻNIEJSZE ZMIANY === */
+    border: none; /* Usuwamy starą ramkę 1px */
+    border-radius: 8px; /* Dodajemy zaokrąglenie */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Dodajemy cień */
+
+    /* Usuwamy stare marginesy, bo gap w gridzie jest lepszy */
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .product-card:hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Mocniejszy cień */
+    transform: translateY(-5px); /* Efekt uniesienia */
 }
 
-/* === TYTUŁ PRODUKTU === */
 .product-card h3 {
-    font-family: var(--font-sans);
-    font-size: 1.1em;
-    font-weight: 700;
-    color: var(--color-text-dark);
-    margin-top: 10px;
-    margin-bottom: 5px;
+    font-family: var(--font-sans);
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--color-text-dark) !important; /* Upewniamy się, że jest ciemny */
+    margin-top: 10px;
+    margin-bottom: 5px;
 }
 
 /* === MARKA PRODUKTU === */
@@ -1128,27 +1215,32 @@
     </div>
 
     <div id="kolekcja-page" class="page-section">
-        <header>
-            <div class="container">
-                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
-                <nav id="nav-kolekcja-header">
-                    <a id="link-koszyk-kolekcja" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
-                    <a id="link-kolekcja" onclick="showPage('kolekcja-page');">Kolekcja</a>
-                    <a id="link-onas-kolekcja" onclick="showPage('onas-page');">O Nas</a>
-                    <a id="link-regulamin-kolekcja" onclick="showPage('regulamin-page');">Regulamin</a>
-                    <a id="link-polityka-kolekcja" onclick="showPage('polityka-page');">Polityka</a>
-                    <a id="link-zwroty-kolekcja" onclick="showPage('zwroty-page');">Zwroty</a>
-                    <a id="link-pomoc-kolekcja" onclick="showPage('pomoc-page');">Pomoc</a>
-                    <a id="link-konto-kolekcja" onclick="showPage('konto-page');">Konto</a>
-                </nav>
-                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
-            </div>
-        </header>
+    <header>
+        <div class="container">
+            <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
+            <nav id="nav-kolekcja-header">
+                <a id="link-koszyk-kolekcja" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                <a id="link-kolekcja" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                <a id="link-onas-kolekcja" onclick="showPage('onas-page');">O Nas</a>
+                <a id="link-regulamin-kolekcja" onclick="showPage('regulamin-page');">Regulamin</a>
+                <a id="link-polityka-kolekcja" onclick="showPage('polityka-page');">Polityka</a>
+                <a id="link-zwroty-kolekcja" onclick="showPage('zwroty-page');">Zwroty</a>
+                <a id="link-pomoc-kolekcja" onclick="showPage('pomoc-page');">Pomoc</a>
+                <a id="link-konto-kolekcja" onclick="showPage('konto-page');">Konto</a>
+            </nav>
+            <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+        </div>
+    </header>
 
-        <section id="kolekcja" class="collection-section container">
-            <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">EKSKLUZYWNY</span> KATALOG ZAPACHÓW</h2>
-            
-            <div class="collection-layout">
+    <section class="collection-hero" style="background-image: url('https://i.imgur.com/N6g0n1N.png');">
+         <div class="hero-overlay">
+              <h1>Odkryj Nasze Ekskluzywne Zapachy</h1>
+              <p>Subtelność, Trwałość, Luksus</p>
+         </div>
+    </section>
+    <section id="kolekcja" class="collection-section container">
+        
+        <div class="collection-layout">
                 <div id="filter-sidebar">
                     <h4>FILTRUJ WYNIKI</h4>
 
