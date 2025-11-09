@@ -477,96 +477,105 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
 
 /* Główny kontener karty */
 .product-card {
-    background-color: #222; /* Ciemne tło, jak w mockupie */
-    color: var(--color-text-light); /* Jasny tekst */
-    text-align: center;
-    transition: all 0.3s ease;
-    border-radius: 8px; 
-    padding: 0; 
-    margin: 0; 
-    overflow: hidden; /* Aby link ładnie przyciął rogi obrazka */
+    background-color: #222; /* Ciemne tło, jak w mockupie */
+    color: var(--color-text-light); /* Jasny tekst */
+    text-align: center;
+    transition: all 0.3s ease;
+    border-radius: 8px; 
+    padding: 0; 
+    margin: 0; 
+    overflow: hidden; /* Aby link ładnie przyciął rogi obrazka */
 
-    /* ZŁOTA RAMKA I POŚWIATA WIDOCZNE ZAWSZE */
-    border: 1px solid var(--color-accent-gold); /* Złota ramka */
-    box-shadow: 0 0 10px rgba(192, 160, 76, 0.4); /* Subtelna złota poświata */
+    /* ZŁOTA RAMKA I POŚWIATA WIDOCZNE ZAWSZE */
+    border: 1px solid var(--color-accent-gold); /* Złota ramka */
+    box-shadow: 0 0 10px rgba(192, 160, 76, 0.4); /* Subtelna złota poświata */
 }
 
 /* Efekt hover na całą kartę */
 .product-card:hover {
-    transform: translateY(-5px); /* Lekkie uniesienie */
-    
-    /* MOCNIEJSZA ZŁOTA POŚWIATA */
-    box-shadow: 0 5px 20px rgba(192, 160, 76, 0.7); 
+    transform: translateY(-5px); /* Lekkie uniesienie */
+    
+    /* MOCNIEJSZA ZŁOTA POŚWIATA */
+    box-shadow: 0 5px 20px rgba(192, 160, 76, 0.7); 
 }
 
 /* Link, który jest teraz całą kartą */
 .product-card-link {
-    display: block; /* Ważne, aby link zajął całą przestrzeń */
-    text-decoration: none; /* Usuwa podkreślenie */
-    color: inherit; /* Dziedziczy kolor tekstu z .product-card */
-    padding: 20px;
+    display: block; /* Ważne, aby link zajął całą przestrzeń */
+    text-decoration: none; /* Usuwa podkreślenie */
+    color: inherit; /* Dziedziczy kolor tekstu z .product-card */
+    padding: 0; /* Usunięto padding z linku, przeniesiono do sekcji obrazka i info */
 }
 
 /* Nowy div dla obrazka */
 .product-card-image {
-    height: 220px;
-    width: 100%;
-    max-width: 160px; 
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: #FFFFFF; /* Białe tło obrazka, jak na starym */
-    border-radius: 4px; /* Lekkie zaokrąglenie dla samego tła obrazka */
+    height: 220px;
+    width: 100%;
+    max-width: 160px; 
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0; /* Bez dolnego marginesu, aby dotykał sekcji info */
+    padding-top: 20px; /* Padding od góry karty */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    background-color: transparent; /* <--- ZMIANA 1: Tło obrazka przezroczyste */
+    border-radius: 4px; 
 }
 
 /* Kontener na tekst */
 .product-card-info {
-    /* Padding jest już na .product-card-link */
+    /* <--- ZMIANA 2: Dodajemy tło gradientowe dla sekcji info */
+    background: linear-gradient(to top, #333 0%, #222 100%); /* Ciemniejsze tło z delikatnym gradientem do góry */
+    border-radius: 0 0 8px 8px; /* Zaokrąglenie tylko dolnych rogów, aby pasowało do karty */
+    padding: 20px; /* Padding dla treści tekstowej */
+    margin-top: -20px; /* <--- ZMIANA 3: Negatywny margines, aby sekcja info zachodziła na górę i tworzyła przejście */
+    position: relative; /* Potrzebne, aby z-index działał w razie potrzeby */
+    z-index: 1; /* Upewnia się, że tekst jest nad obrazkiem w miejscu nakładania */
 }
+
 
 /* Tytuł produktu (H3) */
 .product-card h3 {
-    font-family: var(--font-sans);
-    font-size: 1.1em;
-    font-weight: 700;
-    color: var(--color-text-light) !important; /* WAŻNE: Jasny tekst */
-    margin-top: 5px;
-    margin-bottom: 10px;
-    text-transform: none; /* Bez wielkich liter, jak w mockupie */
+    font-family: var(--font-sans);
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--color-text-light) !important;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    text-transform: none;
 }
 
 /* Marka produktu */
 .product-card .brand {
-    font-family: var(--font-serif);
-    color: var(--color-accent-gold);
-    font-size: 1.3em;
-    font-weight: 900;
-    margin-bottom: 5px;
-    text-transform: uppercase;
+    font-family: var(--font-serif);
+    color: var(--color-accent-gold);
+    font-size: 1.3em;
+    font-weight: 900;
+    margin-bottom: 5px;
+    text-transform: uppercase;
 }
 
 /* Cena produktu */
 .product-card .price {
-    font-size: 1.4em;
-    font-weight: 700;
-    color: var(--color-accent-gold); /* Złota cena, jak w mockupie */
-    margin: 10px 0 0 0; /* Odstęp od góry */
+    font-size: 1.4em;
+    font-weight: 700;
+    color: var(--color-accent-gold);
+    margin: 10px 0 0 0;
 }
 
 /* Usuwamy stare style przycisków, bo ich nie ma */
 .product-card .btn-add {
-   display: none;
+   display: none;
 }
 
 /* Usuwamy style dla p, bo ich nie ma */
 .product-card p {
-    display: none;
+    display: none;
 }
 
 /* === PRZYCISK DODAJ DO KOSZYKA === */
