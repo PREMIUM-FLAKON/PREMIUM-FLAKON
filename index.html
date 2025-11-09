@@ -477,10 +477,14 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
 
 /* Główny kontener karty */
 .product-card {
-    background-color: #222; /* Ciemne tło, jak w mockupie */
-    color: var(--color-text-light); /* Jasny tekst */
-    text-align: center;
-    transition: all 0.3s ease;
+    background-color: #222; /* Ciemne tło, jak w mockupie */
+    color: var(--color-text-light); /* Jasny tekst */
+    text-align: center;
+    transition: all 0.3s ease;
+    
+    /* === ZMIANA TUTAJ: ZŁOTA RAMKA I POŚWIATA WIDOCZNE ZAWSZE === */
+    border: 1px solid var(--color-accent-gold); /* Złota ramka */
+    box-shadow: 0 0 10px rgba(192, 160, 76, 0.4); /* Złota poświata */
     
     border: 1px solid #333; /* Subtelna ramka, jak w mockupie */
     border-radius: 8px; 
@@ -494,9 +498,9 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
 
 /* Efekt hover na całą kartę */
 .product-card:hover {
-    border-color: var(--color-accent-gold); /* Złota ramka po najechaniu */
-    transform: translateY(-5px); /* Lekkie uniesienie */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Cień dla uniesienia */
+    /* border-color jest już złoty, więc nie trzeba go powtarzać */
+    transform: translateY(-5px); /* Lekkie uniesienie */
+    box-shadow: 0 5px 20px rgba(192, 160, 76, 0.7);
 }
 
 /* Link, który jest teraz całą kartą */
