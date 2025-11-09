@@ -541,22 +541,25 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
     text-transform: none; 
 }
 
-/* Marka produktu */
-.product-card .brand {
-    font-family: var(--font-sans);    
-    color: var(--color-text-light);   
-    font-size: 1.0em;                 
-    font-weight: 700;                 
-    margin-bottom: 2px;               
-    text-transform: uppercase;
+/* Tytuł produktu (H3) */
+.product-card h3 {
+    font-family: var(--font-sans);
+    font-size: 1.1em;
+    font-weight: 700;                /* Wracamy do pogrubienia */
+    color: var(--color-text-light) !important;
+    margin-top: 0;                   /* Zostawiamy margines 0 */
+    margin-bottom: 8px;              /* Zostawiamy mały margines */
+    text-transform: none;
+
 }
 
 /* Cena produktu */
 .product-card .price {
-    font-size: 1.4em;
+    font-family: var(--font-sans);
+    font-size: 1.4em;                /* Wracamy do dużego rozmiaru */
     font-weight: 700;
-    color: var(--color-accent-gold); 
-    margin: 10px 0 0 0; 
+    color: var(--color-accent-gold);
+    margin: 0;                       /* Zostawiamy margines 0 */
 }
 
 
