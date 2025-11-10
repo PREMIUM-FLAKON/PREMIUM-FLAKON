@@ -242,11 +242,9 @@ header .menu-toggle {
         .footer-contact strong { display: block; margin-top: 10px; font-size: 0.85em; font-weight: 700; }
         .footer-contact a { color: var(--color-text-light); text-decoration: none; font-size: 1.1em; display: inline-block; }
         .copyright { flex-basis: 100%; text-align: center; padding-top: 20px; border-top: 1px solid #333; margin-top: 20px; font-size: 0.75em; color: #666; line-height: 1.4; }
+/* === STYLE DLA CHATBOTA - WERSJA "IMAGE 1" Z CIEMNYM MOTYWEM === */
 
-      /* === NOWE STYLE DLA ELEGANCKIEGO CHATBOTA === */
-
-.chatbot-container {
-    max-width: 800px; /* Zwiększenie szerokości dla lepszej prezentacji */
+.chatbot-container-new {
     padding: 20px;
     background-color: #111; /* Ciemne tło */
     border: 1px solid rgba(192, 160, 76, 0.4);
@@ -254,13 +252,14 @@ header .menu-toggle {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
 }
 
-.chat-interface-wrapper {
+.chat-interface-wrapper-new {
     border: 1px solid #333;
     border-radius: 6px;
     overflow: hidden;
+    margin-top: 30px; /* Odstęp od opisu */
 }
 
-.chat-header {
+.chat-header-new {
     background-color: var(--color-accent-gold) !important; /* Złoty pasek */
     color: var(--color-text-dark) !important; /* Ciemny tekst */
     padding: 15px 20px !important;
@@ -269,14 +268,13 @@ header .menu-toggle {
     text-align: center !important;
 }
 
-/* Dostosowanie historii czatu */
+/* Stylizacja historii czatu */
 #chat-messages {
     background-color: #1A1A1A !important; /* Tło rozmowy */
     border-bottom: 1px solid #333;
     max-height: 250px;
     overflow-y: auto;
     padding: 15px;
-    margin-bottom: 15px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -304,38 +302,74 @@ header .menu-toggle {
     margin-left: 25%;
 }
 
-/* Style przycisków opcji (stare) */
-#chat-options a {
-    border: 1px solid var(--color-accent-gold);
-    color: var(--color-text-light);
-    background-color: transparent;
-    transition: all 0.2s;
-    font-weight: 700;
-    text-decoration: none;
-    padding: 10px;
+/* Stylizacja opcji czatu jak przyciski z "Image 1" */
+#chat-options-new {
+    display: flex;
+    flex-direction: column; /* Ułożenie w kolumnę */
+    gap: 10px; /* Odstęp między przyciskami */
+    padding: 15px;
+    background-color: #1A1A1A; /* Tło opcji */
+    border-bottom: 1px solid #333;
+}
+
+#chat-options-new a {
+    background-color: #333; /* Ciemne tło przycisku */
+    color: var(--color-text-light); /* Jasny tekst */
+    border: 1px solid var(--color-accent-gold); /* Złota ramka */
+    padding: 12px 15px;
     text-align: center;
-    border-radius: 4px;
-    display: inline-block;
-    width: 48%;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    width: 100%; /* Pełna szerokość dla układu kolumnowego */
     box-sizing: border-box;
 }
 
-#chat-options a:hover {
+#chat-options-new a:hover {
+    background-color: var(--color-accent-gold); /* Złote tło po najechaniu */
+    color: var(--color-background-dark); /* Ciemny tekst po najechaniu */
+    transform: translateY(-2px); /* Delikatne uniesienie */
+    box-shadow: 0 4px 10px rgba(192, 160, 76, 0.3);
+}
+
+/* Input text i przycisk "Wyślij" */
+#chat-input-area-new {
+    display: flex;
+    gap: 10px; /* Zwiększony odstęp dla lepszego wyglądu */
+    padding: 15px;
+    background-color: #1A1A1A;
+    border-top: 1px solid #333;
+}
+
+#chat-input-area-new input {
+    flex-grow: 1;
+    padding: 12px;
+    border: 1px solid var(--color-accent-gold);
+    background-color: #222; /* Trochę jaśniejsze tło inputu */
+    color: var(--color-text-light);
+    border-radius: 6px;
+    font-size: 1em;
+}
+
+#chat-input-area-new input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+#chat-input-area-new button {
     background-color: var(--color-accent-gold);
     color: var(--color-background-dark);
+    border: none;
+    padding: 12px 20px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s ease-in-out;
 }
 
-/* Input text */
-#chat-input-area input {
-    border-color: var(--color-accent-gold) !important;
-    color: var(--color-text-light) !important;
-    background-color: #1A1A1A !important;
-    border-radius: 4px !important;
+#chat-input-area-new button:hover {
+    background-color: #c0a04c; /* Nieco ciemniejszy odcień złota */
 }
-#chat-input-area button {
-    border-radius: 4px !important;
-}
-
         /* === STYLE DLA KOLEKCJI === */
         .collection-layout {
             display: flex;
@@ -1449,7 +1483,7 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
         <footer id="onas-stopka"></footer>
     </div>
 
-   <div id="pomoc-page" class="page-section">
+  <div id="pomoc-page" class="page-section">
     <header>
         <div class="container">
             <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
@@ -1473,21 +1507,16 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
         <div class="support-layout" style="display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start;">
             
             <div class="chatbot-column" style="flex: 1; min-width: 300px;">
-                <div class="chatbot-container">
-                    <h3 style="color: var(--color-accent-gold); text-align: center;">ASYSNTENT ODORIS</h3>
-                    <p style="text-align: center; color: var(--color-text-light); margin-bottom: 20px;">Nasz automatyczny asystent odpowie na Twoje pytania:</p>
+                <div class="chatbot-container-new"> <h3 style="color: var(--color-accent-gold); text-align: center; margin-bottom: 20px;">BOT WSPARCIA ODORIS</h3>
+                    <p style="text-align: center; color: var(--color-text-light); margin-bottom: 30px;">Nasz automatyczny asystent pomoże Ci znaleźć odpowiedzi na najczęściej zadawane pytania. Możesz też wpisać swoje pytanie poniżej:</p>
 
-                    <div class="chat-interface-wrapper">
-                        <div class="chat-header">Wirtualny Konsultant</div>
-                        
-                        <div id="chat-messages" style="max-height: 250px; overflow-y: auto; padding: 15px; margin-bottom: 15px; display: flex; flex-direction: column; background-color: #222;">
+                    <div class="chat-interface-wrapper-new"> <div class="chat-header-new">Asystent ODORIS</div> <div id="chat-messages" style="max-height: 250px; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; background-color: #222; margin-bottom: 15px;">
                             <div class="bot-message" style="background-color: var(--color-accent-gold); color: var(--color-text-dark); border-radius: 15px; padding: 10px; max-width: 80%;">Witaj! Jestem Bot Wsparcia. Jak mogę Ci pomóc?</div>
                         </div>
 
-                        <div id="chat-options" class="chat-options" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding: 10px; border-top: 1px solid #333;">
-                        </div>
+                        <div id="chat-options-new" class="chat-options-new"> </div>
                         
-                        <div id="chat-input-area" style="display: flex; gap: 5px; padding: 10px; border-top: 1px solid #333;">
+                        <div id="chat-input-area-new" style="display: flex; gap: 5px; padding: 10px; border-top: 1px solid #333;">
                             <input type="text" id="user-input" placeholder="Wpisz: Gwarancja, Dostawa, Zwroty..." data-ph-index="0" style="flex-grow: 1; padding: 10px; border: 1px solid var(--color-accent-gold); background-color: #1A1A1A; color: var(--color-text-light);">
                             <button onclick="sendChatMessage()" style="background-color: var(--color-accent-gold); color: var(--color-background-dark); border: none; padding: 10px 15px; font-weight: 700; cursor: pointer;">Wyślij</button>
                         </div>
@@ -1497,8 +1526,8 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
             
             <div id="contact-section" style="flex: 1; min-width: 300px;">
                 <div class="contact-details-box" style="background-color: #111; padding: 30px; border-radius: 8px; border: 1px solid rgba(192, 160, 76, 0.2);">
-                    <h3 style="color: var(--color-accent-gold); margin-top: 0;">SZCZEGÓŁY KONTAKTU</h3>
-                    <p style="color: var(--color-text-light);">Jeśli potrzebujesz kontaktu z człowiekiem, wybierz opcję poniżej:</p>
+                    <h3 style="color: var(--color-accent-gold); margin-top: 0; text-align: center; margin-bottom: 20px;">SZCZEGÓŁY KONTAKTU</h3>
+                    <p style="color: var(--color-text-light); text-align: center; margin-bottom: 30px;">Jeśli Bot nie odpowiedział na Twoje pytania, skontaktuj się z nami bezpośrednio:</p>
                     
                     <div class="contact-box" style="margin-top: 20px;">
                         <h4 style="color: var(--color-text-light);">Kontakt Telefoniczny</h4>
@@ -3151,18 +3180,22 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
              }
          }
          
-         /** Wyświetla domyślne opcje na przyciskach */
-         function displayDefaultOptions() {
-             const optionsDiv = document.getElementById('chat-options');
-             if (!optionsDiv) return;
-             optionsDiv.innerHTML = `
-                 <button onclick="handleOptionClick('Jaki jest status zamówienia?')">Status zamówienia</button>
-                 <button onclick="handleOptionClick('Jak mogę zwrócić produkt?')">Zwroty i Reklamacje</button>
-                 <button onclick="handleOptionClick('Czy perfumy są oryginalne?')">Gwarancja oryginalności</button>
-                 <button onclick="handleOptionClick('Kontakt z konsultantem')">Kontakt</button>
-            `;
-             optionsDiv.style.display = 'block';
-         }
+         
+        /** Wyświetla domyślne opcje na przyciskach */
+function displayDefaultOptions() {
+    // Używamy oryginalnego ID, które jest w HTML: chat-options
+    const optionsDiv = document.getElementById('chat-options'); 
+    if (!optionsDiv) return;
+
+    // Generujemy linki zamiast buttonów, żeby można było je stylować nowym CSS
+    optionsDiv.innerHTML = `
+        <a onclick="handleOptionClick('Jaki jest status zamówienia?');" class="chat-option-link">Status zamówienia</a>
+        <a onclick="handleOptionClick('Jak mogę zwrócić produkt?');" class="chat-option-link">Zwroty i Reklamacje</a>
+        <a onclick="handleOptionClick('Czy perfumy są oryginalne?');" class="chat-option-link">Gwarancja oryginalności</a>
+        <a onclick="handleOptionClick('Kontakt z konsultantem');" class="chat-option-link">Kontakt</a>
+    `;
+    optionsDiv.style.display = 'flex'; // Zmieniamy na flex, aby nowy CSS zadziałał
+}
          
          /** Obsługuje kliknięcie na przycisk opcji */
          function handleOptionClick(message) {
