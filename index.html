@@ -244,21 +244,19 @@ header .menu-toggle {
         .copyright { flex-basis: 100%; text-align: center; padding-top: 20px; border-top: 1px solid #333; margin-top: 20px; font-size: 0.75em; color: #666; line-height: 1.4; }
 
         /* === STYLE DLA CHATBOTA === */
-       .chatbot-container {
-    /* Ustawienie ciemnego tła kontenera */
-    background-color: #111;
-    border: 1px solid var(--color-accent-gold);
+      .chatbot-container {
+    background-color: #1a1a1a; /* Ciemniejsze tło kontenera */
+    border: 1px solid #444; /* Ciemniejsza ramka */
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     max-width: 350px;
     margin: 40px auto 0;
     padding: 20px;
     text-align: left;
-    color: var(--color-text-light); /* Tekst w kontenerze jest jasny */
+    color: #f0f0f0; /* Jasny tekst */
 }
 .chat-header {
-    /* Złoty pasek nagłówka */
-    background-color: var(--color-accent-gold);
-    color: var(--color-background-dark);
+    background-color: #333; /* Ciemny nagłówek */
+    color: #f0f0f0; /* Jasny tekst nagłówka */
     padding: 10px;
     margin: -20px -20px 20px -20px;
     font-family: var(--font-serif);
@@ -267,8 +265,7 @@ header .menu-toggle {
     font-size: 1.2em;
 }
 #chat-history {
-    /* Tło historii czatu jest ciemne */
-    background-color: var(--color-background-dark); 
+    background-color: #222; /* Tło historii czatu jest ciemniejsze */
     max-height: 250px;
     overflow-y: auto;
     padding-right: 10px;
@@ -284,37 +281,33 @@ header .menu-toggle {
     font-size: 0.9em;
 }
 .bot-message {
-    /* Dymek bota - JASNY/ZŁOTY AKCENT */
-    background-color: #DDD; 
-    color: var(--color-text-dark);
+    background-color: #444; /* Dymek bota - ciemny szary */
+    color: #f0f0f0; /* Jasny tekst */
     align-self: flex-start;
     border-bottom-left-radius: 2px;
 }
 .client-message {
-    /* Dymek klienta - CIEMNY */
-    background-color: #333; /* Ciemniejszy szary */
-    color: var(--color-text-light);
+    background-color: #555; /* Dymek klienta - ciemniejszy szary */
+    color: #f0f0f0; /* Jasny tekst */
     margin-left: auto;
     text-align: right;
     border-bottom-right-radius: 2px;
 }
 .chat-options button {
-    /* Przyciski opcji - Złota ramka na ciemnym tle */
     display: block;
     width: 100%;
     padding: 10px;
     margin-bottom: 8px;
-    border: 1px solid var(--color-accent-gold);
-    background-color: var(--color-background-dark); /* Ciemne tło przycisku */
-    color: var(--color-text-light); /* Jasny tekst */
+    border: 1px solid #666; /* Szara ramka */
+    background-color: #333; /* Ciemne tło przycisku */
+    color: #f0f0f0; /* Jasny tekst */
     cursor: pointer;
     transition: all 0.2s;
     font-weight: 700;
 }
 .chat-options button:hover {
-    /* Efekt hover - Złote tło */
-    background-color: var(--color-accent-gold);
-    color: var(--color-background-dark);
+    background-color: #555; /* Ciemniejszy hover */
+    color: #fff;
 }
 #chat-input-area {
     display: flex;
@@ -322,23 +315,21 @@ header .menu-toggle {
     margin-top: 15px;
 }
 #chat-input-area input {
-    /* Pole wprowadzania tekstu */
     flex-grow: 1;
     padding: 10px;
-    border: 1px solid var(--color-accent-gold); /* Złota ramka */
+    border: 1px solid #666; /* Szara ramka */
     background-color: #222; /* Ciemne tło pola */
-    color: var(--color-text-light); /* Jasny tekst */
+    color: #f0f0f0; /* Jasny tekst */
 }
 .bot-message a {
-    color: var(--color-accent-gold);
+    color: #88BBDD; /* Lekko niebieski link, żeby był widoczny */
     font-weight: 700;
     text-decoration: underline;
     cursor: pointer;
 }
 #chat-input-area button {
-    /* Przycisk wysyłki */
-    background-color: var(--color-accent-gold);
-    color: var(--color-background-dark);
+    background-color: #444; /* Ciemny przycisk wysyłki */
+    color: #f0f0f0; /* Jasny tekst */
     border: none;
     padding: 10px 15px;
     font-weight: 700;
@@ -346,7 +337,7 @@ header .menu-toggle {
     transition: background-color 0.3s;
 }
 #chat-input-area button:hover {
-    background-color: #9E8045;
+    background-color: #666;
 }
         /* === STYLE DLA KOLEKCJI === */
         .collection-layout {
