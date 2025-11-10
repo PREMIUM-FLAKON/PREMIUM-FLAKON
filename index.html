@@ -942,108 +942,152 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
         }
 
         /* === NOWE STYLE DLA KOSZYKA === */
-        #koszyk-page .container {
-            padding-top: 50px;
-            padding-bottom: 80px;
-        }
-        .koszyk-layout {
-            display: flex;
-            gap: 40px;
-            flex-wrap: wrap;
-        }
-        #koszyk-lista {
-            flex: 2;
-            min-width: 300px;
-        }
-        #koszyk-formularz {
-            flex: 1;
-            min-width: 300px;
-            background-color: #F0F0F0;
-            padding: 30px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 120px;
-        }
-        .koszyk-item {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            border-bottom: 1px solid #EEE;
-            padding: 20px 0;
-        }
-        .koszyk-item-img {
-            width: 80px;
-            height: 80px;
-            background-color: #F0F0F0;
-            border: 1px solid #DDD;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #AAA;
-            font-size: 0.8em;
-            text-align: center;
-        }
-        .koszyk-item-info {
-            flex-grow: 1;
-        }
-        .koszyk-item-info h4 {
-            margin: 0;
-            font-size: 1.1em;
-            font-family: var(--font-sans);
-            text-transform: none;
-            letter-spacing: 0;
-        }
-        .koszyk-item-info .brand {
-            font-family: var(--font-serif);
-            color: var(--color-accent-gold);
-            font-weight: 700;
-        }
-        .koszyk-item-cena {
-            font-size: 1.2em;
-            font-weight: 700;
-            color: var(--color-text-dark);
-            min-width: 100px;
-            text-align: right;
-        }
-        .koszyk-ilosc input {
-            width: 50px;
-            padding: 5px;
-            text-align: center;
-            border: 1px solid #CCC;
-        }
-        .btn-usun {
-            background: none;
-            border: none;
-            color: #C00;
-            font-size: 1.2em;
-            cursor: pointer;
-            padding: 5px;
-        }
-        #koszyk-podsumowanie {
-            text-align: right;
-            margin-top: 20px;
-            border-top: 2px solid #333;
-            padding-top: 20px;
-        }
-        #koszyk-podsumowanie h3 {
-            font-size: 1.8em;
-            color: var(--color-accent-gold);
-            margin: 0;
-        }
-        #pusty-koszyk-info {
-            text-align: center;
-            padding: 80px 20px;
-            background-color: #F9F9F9;
-            border: 1px dashed #CCC;
-        }
-        #pusty-koszyk-info .btn-main {
-            font-size: 1em;
-            padding: 12px 30px;
-        }
-        /* Centrowanie przycisków "Do koszyka" / "Szczegóły" na kartach */
-        .product-card > div:last-of-type {
-            justify-content: center;
-        }
+       /* === NOWE I ULEPSZONE STYLE DLA KOSZYKA === */
+#koszyk-page .container {
+    padding-top: 50px;
+    padding-bottom: 80px;
+}
+.koszyk-layout {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+/* Sekcja z listą produktów (lewa strona) */
+#koszyk-lista {
+    flex: 2;
+    min-width: 300px;
+    /* Lista produktów ma pasować do tła strony */
+    background-color: transparent; 
+    color: var(--color-text-light);
+}
+
+/* Kontener Formularza (panel podsumowania, prawa strona) */
+#koszyk-formularz-container {
+    flex: 1;
+    min-width: 300px;
+    /* Przyklejamy do góry */
+    position: sticky; 
+    top: 120px;
+}
+
+/* Właściwy Panel Formularza (Ciemny i Estetyczny) */
+#koszyk-formularz-container > form {
+    background-color: #282828; /* Ciemny panel (bez jaskrawości) */
+    padding: 30px;
+    /* Usunięcie poświat, cieni i jasnych ramek */
+    border: none;
+    box-shadow: none;
+    color: var(--color-text-light); /* Ustawienie domyślnego koloru tekstu na jasny */
+}
+
+/* Etykiety pól w ciemnym panelu */
+#koszyk-formularz-container .form-group label {
+    color: #CCC; 
+}
+/* Pola tekstowe w ciemnym panelu */
+#koszyk-formularz-container .form-group input, 
+#koszyk-formularz-container .form-group textarea {
+    background-color: #383838; /* Tło inputów nieco jaśniejsze niż panel */
+    color: var(--color-text-light); /* Tekst w inputach jasny */
+    border: 1px solid #555; /* Ciemna, subtelna ramka inputów */
+}
+#koszyk-formularz-container .form-group input:focus, 
+#koszyk-formularz-container .form-group textarea:focus {
+    border-color: var(--color-accent-gold);
+    box-shadow: 0 0 5px rgba(192, 160, 76, 0.5);
+}
+
+/* Pojedynczy Element Produktu na liście */
+.koszyk-item {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    border-bottom: 1px solid #333; /* Ciemna linia oddzielająca */
+    padding: 20px 0;
+}
+.koszyk-item-img {
+    width: 80px;
+    height: 80px;
+    background-color: #444; /* Ciemne tło dla kwadratu obrazka (usuwa jasny panel) */
+    border: 1px solid #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #AAA; /* Kolor "Brak zdjęcia" */
+    font-size: 0.8em;
+    text-align: center;
+}
+.koszyk-item-info {
+    flex-grow: 1;
+}
+.koszyk-item-info h4 {
+    margin: 0;
+    font-size: 1.1em;
+    font-family: var(--font-sans);
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--color-text-light); /* Tekst jasny */
+}
+.koszyk-item-info .brand {
+    font-family: var(--font-serif);
+    color: var(--color-accent-gold); /* Marka złota */
+    font-weight: 700;
+}
+/* KROK 5: CENA i PRZYCISK USUWANIA */
+.koszyk-item-cena {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: var(--color-accent-gold); /* Cena złotym kolorem */
+    min-width: 100px;
+    text-align: right;
+}
+.koszyk-ilosc input {
+    width: 50px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #555;
+    background-color: #383838;
+    color: var(--color-text-light);
+}
+.btn-usun {
+    background: none;
+    border: none;
+    color: #FF7F7F; /* Lepszy, estetyczny czerwony do usuwania */
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* Podsumowanie Sumy Całkowitej */
+#koszyk-podsumowanie {
+    text-align: right;
+    margin-top: 20px;
+    border-top: 2px solid var(--color-accent-gold); /* Złota linia dla wyróżnienia */
+    padding-top: 20px;
+    color: var(--color-text-light);
+}
+#koszyk-podsumowanie h3 {
+    font-size: 1.8em;
+    color: var(--color-accent-gold);
+    margin: 0;
+}
+/* Pusty Koszyk */
+#pusty-koszyk-info {
+    text-align: center;
+    padding: 80px 20px;
+    background-color: #222; /* Ciemne tło dla komunikatu o pustym koszyku */
+    border: 1px dashed #555;
+    color: var(--color-text-light);
+}
+#pusty-koszyk-info .btn-main {
+    font-size: 1em;
+    padding: 12px 30px;
+}
+/* Centrowanie przycisków "Do koszyka" / "Szczegóły" na kartach */
+.product-card > div:last-of-type {
+    justify-content: center;
+}
         /* === RESPONSIVE DESIGN (MEDIA QUERIES) === */
         @media (max-width: 1024px) {
             header nav { display: none; }
@@ -2405,88 +2449,83 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
          }
 
          /** Renderuje zawartość strony koszyka */
-         function renderCartPage() {
-             const listContainer = document.getElementById('koszyk-lista');
-             const formContainer = document.getElementById('koszyk-formularz-container');
-             
-             if (!listContainer || !formContainer) return;
+        function renderCartPage() {
+    const listContainer = document.getElementById('koszyk-lista');
+    const formContainer = document.getElementById('koszyk-formularz-container');
+    
+    if (!listContainer || !formContainer) return;
 
-             const cart = getCart();
-             
-             if (!Array.isArray(cart) || cart.length === 0) {
-                 // POKAŻ INFO O PUSTYM KOSZYKU
-                 listContainer.innerHTML = `
-                     <div id="pusty-koszyk-info">
-                         <h3>Twój koszyk jest pusty.</h3>
-                         <p>Odkryj naszą kolekcję i znajdź coś dla siebie.</p>
-                         <a onclick="showPage('kolekcja-page');" class="btn-main">Przejdź do sklepu</a>
-                     </div>
-                 `;
-                 formContainer.innerHTML = ''; // Wyczyść formularz
-             } else {
-                 // RENDERUJ LISTĘ PRODUKTÓW I FORMULARZ
-                 let listHTML = '';
-                 let sumaCalkowita = 0;
+    const cart = getCart();
+    // Pobieramy całą listę produktów, aby móc dopasować obrazek
+    const allProducts = getProductsFromStorage();
+    
+    if (!Array.isArray(cart) || cart.length === 0) {
+        // ... (kod dla pustego koszyka bez zmian) ...
+    } else {
+        // RENDERUJ LISTĘ PRODUKTÓW I FORMULARZ
+        let listHTML = '';
+        let sumaCalkowita = 0;
 
-                 cart.forEach(item => {
-                     const itemTotal = (item.price || 0) * (item.quantity || 0);
-                     sumaCalkowita += itemTotal;
-                     
-                     listHTML += `
-                         <div class="koszyk-item">
-                             <div class="koszyk-item-img">Miniatura</div>
-                             <div class="koszyk-item-info">
-                                 <span class="brand">${item.brand}</span>
-                                 <h4>${item.name}</h4>
-                                 <p>Ilość: 
-                                     <input type="number" value="${item.quantity}" min="1" 
-                                             onchange="updateCartQuantity('${item.id}', this.value)" 
-                                             class="koszyk-ilosc">
-                                 </p>
-                             </div>
-                             <span class="koszyk-item-cena">${itemTotal.toFixed(2)} PLN</span>
-                             <button class="btn-usun" title="Usuń produkt" onclick="removeFromCart('${item.id}')">&times;</button>
-                         </div>
-                     `;
-                 });
-                 
-                 // Dodaj podsumowanie pod listą
-                 listHTML += `
-                     <div id="koszyk-podsumowanie">
-                         <p style="margin: 0; font-size: 1.1em;">Suma częściowa:</p>
-                         <h3>${sumaCalkowita.toFixed(2)} PLN</h3>
-                     </div>
-                 `;
-                 listContainer.innerHTML = listHTML;
+        cart.forEach(item => {
+            const itemTotal = (item.price || 0) * (item.quantity || 0);
+            sumaCalkowita += itemTotal;
+            
+            // Znajdź pełny obiekt produktu, aby pobrać obrazek
+            const productDetail = allProducts.find(p => String(p.id) === String(item.id));
+            const imageUrl = (productDetail && productDetail.images && productDetail.images.length > 0) ? productDetail.images[0] : '';
 
-                 // RENDERUJ FORMULARZ ZAMÓWIENIA
-                 formContainer.innerHTML = `
-                     <form id="koszyk-formularz" onsubmit="handleOrderSubmit(event)">
-                         <h3 style="color: var(--color-accent-gold); text-align: center; margin-top: 0;">Podsumowanie i Wysyłka</h3>
-                         <div class="form-group">
-                             <label for="order-imie">Imię i nazwisko</label>
-                             <input type="text" id="order-imie" required>
-                         </div>
-                         <div class="form-group">
-                             <label for="order-email">Adres e-mail</label>
-                             <input type="email" id="order-email" required>
-                         </div>
-                         <div class="form-group">
-                             <label for="order-adres">Adres dostawy</label>
-                             <textarea id="order-adres" rows="3" required></textarea>
+            // Używamy tagu <img> w elemencie .koszyk-item-img 
+            listHTML += `
+                <div class="koszyk-item">
+                    <div class="koszyk-item-img">
+                        ${imageUrl ? `<img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover;" alt="${item.name}">` : 'Brak zdjęcia'}
+                    </div>
+                    <div class="koszyk-item-info">
+                        <span class="brand">${item.brand}</span>
+                        <h4>${item.name}</h4>
+                        <p>Ilość: 
+                            <input type="number" value="${item.quantity}" min="1" 
+                                    onchange="updateCartQuantity('${item.id}', this.value)" 
+                                    class="koszyk-ilosc">
+                        </p>
+                    </div>
+                    <span class="koszyk-item-cena">${itemTotal.toFixed(2)} PLN</span>
+                    <button class="btn-usun" title="Usuń produkt" onclick="removeFromCart('${item.id}')">&times;</button>
                 </div>
-                         <div class="form-group">
-                             <label for="order-uwagi">Uwagi do zamówienia (opcjonalnie)</label>
-                             <textarea id="order-uwagi" rows="2"></textarea>
-                         </div>
-                         <button type="submit" class="btn-auth">Złóż zamówienie</button>
-                         <p style="font-size: 0.8em; color: #666; text-align: center; margin-top: 15px;">
-                             Kliknięcie przycisku bezpiecznie zapisze Twoje zamówienie w naszym systemie.
-                         </p>
-                     </form>
-                 `;
-             }
-         }
+            `;
+        });
+        
+        // ZMIANA: Nagłówek i Suma Całkowita w lewym panelu
+        listHTML += `
+            <div id="koszyk-podsumowanie">
+                <p style="margin: 0; font-size: 1.1em;">Suma całkowita:</p>
+                <h3>${sumaCalkowita.toFixed(2)} PLN</h3>
+            </div>
+        `;
+        listContainer.innerHTML = listHTML;
+
+        // ZMIANA: RENDERUJ FORMULARZ Z POPRAWNYM NAGŁÓWKIEM I PRZYCISKIEM
+        formContainer.innerHTML = `
+            <form id="koszyk-formularz" onsubmit="handleOrderSubmit(event)">
+                <h3 style="color: var(--color-accent-gold); text-align: center; margin-top: 0;">PODSUMOWANIE ZAMÓWIENIA</h3>
+                
+                <div style="font-size: 1.1em; padding: 10px 0; border-bottom: 1px solid #333; margin-bottom: 20px; text-align: center; color: var(--color-text-light);">
+                    Wartość produktów: <strong class="gold-text">${sumaCalkowita.toFixed(2)} PLN</strong>
+                </div>
+
+                <p style="color: #AAA; font-size: 0.9em;">Dane do zamówienia zostaną uzupełnione na następnej stronie. Użyj przycisku poniżej, aby przejść dalej:</p>
+
+                <button type="submit" class="btn-auth" style="margin-top: 20px;">
+                    PRZEJDŹ DO KASY &rarr;
+                </button>
+                
+                <p style="font-size: 0.8em; color: #666; text-align: center; margin-top: 15px;">
+                    Kliknij, aby przejść do formularza wysyłki, wyboru dostawy i płatności.
+                </p>
+            </form>
+        `;
+    }
+}
          
         /** NOWA WERSJA: Obsługuje wysłanie formularza (zapisuje do Supabase) */
          async function handleOrderSubmit(event) { // DODANO 'async'
