@@ -242,134 +242,99 @@ header .menu-toggle {
         .footer-contact strong { display: block; margin-top: 10px; font-size: 0.85em; font-weight: 700; }
         .footer-contact a { color: var(--color-text-light); text-decoration: none; font-size: 1.1em; display: inline-block; }
         .copyright { flex-basis: 100%; text-align: center; padding-top: 20px; border-top: 1px solid #333; margin-top: 20px; font-size: 0.75em; color: #666; line-height: 1.4; }
-/* === STYLE DLA CHATBOTA - WERSJA "IMAGE 1" Z CIEMNYM MOTYWEM === */
 
-.chatbot-container-new {
-    padding: 20px;
-    background-color: #111; /* Ciemne tło */
-    border: 1px solid rgba(192, 160, 76, 0.4);
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-}
+        /* === STYLE DLA CHATBOTA === */
+        .chatbot-container {
+            background-color: var(--color-background-light);
+            border: 1px solid var(--color-accent-gold);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            max-width: 350px;
+            margin: 40px auto 0;
+            padding: 20px;
+            text-align: left;
+        }
+        .chat-header {
+            background-color: var(--color-accent-gold);
+            color: var(--color-background-dark);
+            padding: 10px;
+            margin: -20px -20px 20px -20px;
+            font-family: var(--font-serif);
+            font-weight: 700;
+            text-align: center;
+            font-size: 1.2em;
+        }
+        #chat-history {
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .bot-message, .client-message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+            font-size: 0.9em;
+        }
+        .bot-message {
+            background-color: #EEE;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+        .client-message {
+            background-color: var(--color-accent-gold);
+            color: var(--color-background-dark);
+            margin-left: auto;
+            text-align: right;
+            border-bottom-right-radius: 2px;
+        }
+        .chat-options button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 8px;
+            border: 1px solid var(--color-accent-gold);
+            background-color: transparent;
+            color: var(--color-text-dark);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 700;
+        }
+        .chat-options button:hover {
+            background-color: var(--color-accent-gold);
+            color: var(--color-background-dark);
+        }
+        #chat-input-area {
+            display: flex;
+            gap: 5px;
+            margin-top: 15px;
+        }
+        #chat-input-area input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #CCC;
+        }
+        .bot-message a {
+            color: var(--color-accent-gold);
+            font-weight: 700;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        #chat-input-area button {
+            background-color: var(--color-accent-gold);
+            color: var(--color-background-dark);
+            border: none;
+            padding: 10px 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #chat-input-area button:hover {
+            background-color: #9E8045;
+        }
 
-.chat-interface-wrapper-new {
-    border: 1px solid #333;
-    border-radius: 6px;
-    overflow: hidden;
-    margin-top: 30px; /* Odstęp od opisu */
-}
-
-.chat-header-new {
-    background-color: var(--color-accent-gold) !important; /* Złoty pasek */
-    color: var(--color-text-dark) !important; /* Ciemny tekst */
-    padding: 15px 20px !important;
-    font-size: 1.1em !important;
-    font-weight: 700 !important;
-    text-align: center !important;
-}
-
-/* Stylizacja historii czatu */
-#chat-messages {
-    background-color: #1A1A1A !important; /* Tło rozmowy */
-    border-bottom: 1px solid #333;
-    max-height: 250px;
-    overflow-y: auto;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-/* Dymek Bota (Złoty) */
-.bot-message {
-    background-color: var(--color-accent-gold) !important;
-    color: var(--color-text-dark) !important;
-    border-radius: 15px 15px 15px 2px !important;
-    align-self: flex-start !important;
-    padding: 10px 15px !important;
-    max-width: 75%;
-}
-
-/* Dymek Klienta (Ciemny) */
-.client-message {
-    background-color: #333 !important;
-    color: var(--color-text-light) !important;
-    border-radius: 15px 15px 2px 15px !important;
-    align-self: flex-end !important;
-    text-align: left !important;
-    padding: 10px 15px !important;
-    max-width: 75%;
-    margin-left: 25%;
-}
-
-/* Stylizacja opcji czatu jak przyciski z "Image 1" */
-#chat-options-new {
-    display: flex;
-    flex-direction: column; /* Ułożenie w kolumnę */
-    gap: 10px; /* Odstęp między przyciskami */
-    padding: 15px;
-    background-color: #1A1A1A; /* Tło opcji */
-    border-bottom: 1px solid #333;
-}
-
-#chat-options-new a {
-    background-color: #333; /* Ciemne tło przycisku */
-    color: var(--color-text-light); /* Jasny tekst */
-    border: 1px solid var(--color-accent-gold); /* Złota ramka */
-    padding: 12px 15px;
-    text-align: center;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.2s ease-in-out;
-    width: 100%; /* Pełna szerokość dla układu kolumnowego */
-    box-sizing: border-box;
-}
-
-#chat-options-new a:hover {
-    background-color: var(--color-accent-gold); /* Złote tło po najechaniu */
-    color: var(--color-background-dark); /* Ciemny tekst po najechaniu */
-    transform: translateY(-2px); /* Delikatne uniesienie */
-    box-shadow: 0 4px 10px rgba(192, 160, 76, 0.3);
-}
-
-/* Input text i przycisk "Wyślij" */
-#chat-input-area-new {
-    display: flex;
-    gap: 10px; /* Zwiększony odstęp dla lepszego wyglądu */
-    padding: 15px;
-    background-color: #1A1A1A;
-    border-top: 1px solid #333;
-}
-
-#chat-input-area-new input {
-    flex-grow: 1;
-    padding: 12px;
-    border: 1px solid var(--color-accent-gold);
-    background-color: #222; /* Trochę jaśniejsze tło inputu */
-    color: var(--color-text-light);
-    border-radius: 6px;
-    font-size: 1em;
-}
-
-#chat-input-area-new input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-}
-
-#chat-input-area-new button {
-    background-color: var(--color-accent-gold);
-    color: var(--color-background-dark);
-    border: none;
-    padding: 12px 20px;
-    font-weight: 700;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background-color 0.2s ease-in-out;
-}
-
-#chat-input-area-new button:hover {
-    background-color: #c0a04c; /* Nieco ciemniejszy odcień złota */
-}
         /* === STYLE DLA KOLEKCJI === */
         .collection-layout {
             display: flex;
@@ -1483,71 +1448,66 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
         <footer id="onas-stopka"></footer>
     </div>
 
-  <div id="pomoc-page" class="page-section">
-    <header>
-        <div class="container">
-            <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
-            <nav id="nav-pomoc-header">
-                <a id="link-koszyk-pomoc" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
-                <a id="link-kolekcja-pomoc" onclick="showPage('kolekcja-page');">Kolekcja</a>
-                <a id="link-onas-pomoc" onclick="showPage('onas-page');">O Nas</a>
-                <a id="link-regulamin-pomoc" onclick="showPage('regulamin-page');">Regulamin</a>
-                <a id="link-polityka-pomoc" onclick="showPage('polityka-page');">Polityka</a>
-                <a id="link-zwroty-pomoc" onclick="showPage('zwroty-page');">Zwroty</a>
-                <a id="link-pomoc" onclick="showPage('pomoc-page');">Pomoc</a>
-                <a id="link-konto-pomoc" onclick="showPage('konto-page');">Konto</a>
-            </nav>
-            <div class="menu-toggle" onclick="openNav()">&#9776;</div>
-        </div>
-    </header>
-    
-    <section class="container" style="padding-top: 50px; padding-bottom: 50px;">
-        <h2 style="margin-bottom: 40px; text-align: center;"><span class="gold-text">WSPARCIE</span> I POMOC</h2>
+    <div id="pomoc-page" class="page-section">
+        <header>
+            <div class="container">
+                <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
+                <nav id="nav-pomoc-header">
+                    <a id="link-koszyk-pomoc" onclick="showPage('koszyk-page');">Koszyk (<span class="cart-counter">0</span>)</a>
+                    <a id="link-kolekcja-pomoc" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                    <a id="link-onas-pomoc" onclick="showPage('onas-page');">O Nas</a>
+                    <a id="link-regulamin-pomoc" onclick="showPage('regulamin-page');">Regulamin</a>
+                    <a id="link-polityka-pomoc" onclick="showPage('polityka-page');">Polityka</a>
+                    <a id="link-zwroty-pomoc" onclick="showPage('zwroty-page');">Zwroty</a>
+                    <a id="link-pomoc" onclick="showPage('pomoc-page');">Pomoc</a>
+                    <a id="link-konto-pomoc" onclick="showPage('konto-page');">Konto</a>
+                </nav>
+                <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+            </div>
+        </header>
         
-        <div class="support-layout" style="display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start;">
-            
-            <div class="chatbot-column" style="flex: 1; min-width: 300px;">
-                <div class="chatbot-container-new"> <h3 style="color: var(--color-accent-gold); text-align: center; margin-bottom: 20px;">BOT WSPARCIA ODORIS</h3>
-                    <p style="text-align: center; color: var(--color-text-light); margin-bottom: 30px;">Nasz automatyczny asystent pomoże Ci znaleźć odpowiedzi na najczęściej zadawane pytania. Możesz też wpisać swoje pytanie poniżej:</p>
-
-                    <div class="chat-interface-wrapper-new"> <div class="chat-header-new">Asystent ODORIS</div> <div id="chat-messages" style="max-height: 250px; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; background-color: #222; margin-bottom: 15px;">
-                            <div class="bot-message" style="background-color: var(--color-accent-gold); color: var(--color-text-dark); border-radius: 15px; padding: 10px; max-width: 80%;">Witaj! Jestem Bot Wsparcia. Jak mogę Ci pomóc?</div>
+        <section class="container" style="padding-top: 50px; padding-bottom: 50px;">
+            <h2 style="margin-bottom: 40px; text-align: center;"><span class="gold-text">WSPARCIE</span> I POMOC</h2>
+            <div style="display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start;">
+                
+                <div style="flex: 1; min-width: 300px;">
+                    <h3><span class="gold-text">Bot</span> Wsparcia ODORIS</h3>
+                    <p>Nasz automatyczny asystent pomoże Ci znaleźć odpowiedzi na najczęściej zadawane pytania. Możesz też wpisać swoje pytanie poniżej:</p>
+                    <div class="chatbot-container">
+                        <div class="chat-header">Asystent ODORIS</div>
+                        <div id="chat-history">
+                            <div class="bot-message">Witaj! Jestem Bot Wsparcia. Jak mogę Ci pomóc?</div>
                         </div>
-
-                        <div id="chat-options-new" class="chat-options-new"> </div>
-                        
-                        <div id="chat-input-area-new" style="display: flex; gap: 5px; padding: 10px; border-top: 1px solid #333;">
-                            <input type="text" id="user-input" placeholder="Wpisz: Gwarancja, Dostawa, Zwroty..." data-ph-index="0" style="flex-grow: 1; padding: 10px; border: 1px solid var(--color-accent-gold); background-color: #1A1A1A; color: var(--color-text-light);">
-                            <button onclick="sendChatMessage()" style="background-color: var(--color-accent-gold); color: var(--color-background-dark); border: none; padding: 10px 15px; font-weight: 700; cursor: pointer;">Wyślij</button>
+                        <div id="chat-options" class="chat-options">
+                        </div>
+                        <div id="chat-input-area">
+                            <input type="text" id="user-input" placeholder="Wpisz: Gwarancja, Dostawa, Zwroty..." data-ph-index="0">
+                            <button onclick="sendChatMessage()">Wyślij</button>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <div id="contact-section" style="flex: 1; min-width: 300px;">
-                <div class="contact-details-box" style="background-color: #111; padding: 30px; border-radius: 8px; border: 1px solid rgba(192, 160, 76, 0.2);">
-                    <h3 style="color: var(--color-accent-gold); margin-top: 0; text-align: center; margin-bottom: 20px;">SZCZEGÓŁY KONTAKTU</h3>
-                    <p style="color: var(--color-text-light); text-align: center; margin-bottom: 30px;">Jeśli Bot nie odpowiedział na Twoje pytania, skontaktuj się z nami bezpośrednio:</p>
-                    
+                
+                <div id="contact-section" style="flex: 1; min-width: 300px;">
+                    <h3><span class="gold-text">Szczegóły</span> Kontaktu</h3>
+                    <p>Jeśli Bot nie odpowiedział na Twoje pytania, skontaktuj się z nami bezpośrednio:</p>
                     <div class="contact-box" style="margin-top: 20px;">
-                        <h4 style="color: var(--color-text-light);">Kontakt Telefoniczny</h4>
-                        <strong class="gold-text">Numer Telefonu:</strong><p><a href="tel:532116720" style="color: var(--color-text-light);">532 116 720</a></p>
+                        <h4>Kontakt Telefoniczny</h4>
+                        <strong class="gold-text">Numer Telefonu:</strong><p><a href="tel:532116720">532 116 720</a></p>
                     </div>
                     <div class="contact-box" style="margin-top: 20px;">
-                        <h4 style="color: var(--color-text-light);">Kontakt E-mail</h4>
-                        <strong class="gold-text">Adres E-mail:</strong><p><a href="mailto:odoris.pl@gmail.com" style="color: var(--color-text-light);">odoris.pl@gmail.com</a></p>
+                        <h4>Kontakt E-mail</h4>
+                        <strong class="gold-text">Adres E-mail:</strong><p><a href="mailto:odoris.pl@gmail.com">odoris.pl@gmail.com</a></p>
                     </div>
                     <div class="contact-box" style="margin-top: 20px;">
-                        <h4 style="color: var(--color-text-light);">Adres Siedziby</h4>
-                        <strong class="gold-text">Lokalizacja:</strong><p style="color: var(--color-text-light);">ul. Perfumowa 1, 11-400 Kętrzyn</p>
+                        <h4>Adres Siedziby</h4>
+                        <strong class="gold-text">Lokalizacja:</strong><p>ul. Perfumowa 1, 11-400 Kętrzyn</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-    
-    <footer id="pomoc-stopka"></footer>
-</div>
+        </section>
+        
+        <footer id="pomoc-stopka"></footer>
+    </div>
     
     <div id="konto-page" class="page-section">
         <header>
@@ -3180,22 +3140,18 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
              }
          }
          
-         
-        /** Wyświetla domyślne opcje na przyciskach */
-function displayDefaultOptions() {
-    // Używamy oryginalnego ID, które jest w HTML: chat-options
-    const optionsDiv = document.getElementById('chat-options'); 
-    if (!optionsDiv) return;
-
-    // Generujemy linki zamiast buttonów, żeby można było je stylować nowym CSS
-    optionsDiv.innerHTML = `
-        <a onclick="handleOptionClick('Jaki jest status zamówienia?');" class="chat-option-link">Status zamówienia</a>
-        <a onclick="handleOptionClick('Jak mogę zwrócić produkt?');" class="chat-option-link">Zwroty i Reklamacje</a>
-        <a onclick="handleOptionClick('Czy perfumy są oryginalne?');" class="chat-option-link">Gwarancja oryginalności</a>
-        <a onclick="handleOptionClick('Kontakt z konsultantem');" class="chat-option-link">Kontakt</a>
-    `;
-    optionsDiv.style.display = 'flex'; // Zmieniamy na flex, aby nowy CSS zadziałał
-}
+         /** Wyświetla domyślne opcje na przyciskach */
+         function displayDefaultOptions() {
+             const optionsDiv = document.getElementById('chat-options');
+             if (!optionsDiv) return;
+             optionsDiv.innerHTML = `
+                 <button onclick="handleOptionClick('Jaki jest status zamówienia?')">Status zamówienia</button>
+                 <button onclick="handleOptionClick('Jak mogę zwrócić produkt?')">Zwroty i Reklamacje</button>
+                 <button onclick="handleOptionClick('Czy perfumy są oryginalne?')">Gwarancja oryginalności</button>
+                 <button onclick="handleOptionClick('Kontakt z konsultantem')">Kontakt</button>
+            `;
+             optionsDiv.style.display = 'block';
+         }
          
          /** Obsługuje kliknięcie na przycisk opcji */
          function handleOptionClick(message) {
