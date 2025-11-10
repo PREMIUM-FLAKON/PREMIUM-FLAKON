@@ -1128,8 +1128,8 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
     }
 }
            
-
-           @media (max-width: 480px) {
+@media (max-width: 480px) {
+    /* ... (istniejące style dla .hero-content h1, .btn-main, .mini-footer, menu) ... */
     .hero-content h1 { font-size: 2em; }
     .btn-main { padding: 12px 40px; font-size: 0.9em; }
     .mini-footer { flex-direction: column; text-align: center; }
@@ -1138,31 +1138,45 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
     #side-menu.open { width: 100%; }
     #side-menu a { font-size: 16px; }
 
-    /* === NOWA ZMIANA: WYMUSZENIE 3 KOLUMN NA EKRANACH DO 480PX === */
+    /* === NOWA KOREKTA: BANNER KOLEKCJI NA TELEFON === */
+    .collection-hero {
+        height: 350px; /* ZMNIEJSZENIE WYSOKOŚCI BANNERA */
+        /* Upewnienie się, że tekst zaczyna się wyżej */
+        padding-top: 50px; 
+        margin-bottom: 20px; 
+    }
+
+    .collection-hero h1 {
+        /* ZMNIEJSZENIE CZCIONKI GŁÓWNEGO NAPISU */
+        font-size: 1.8em; 
+        letter-spacing: 2px;
+    }
+
+    .collection-hero p {
+        /* ZMNIEJSZENIE CZCIONKI PODTYTUŁU */
+        font-size: 1em; 
+        margin-top: 5px;
+    }
+    /* === KONIEC KOREKTY BANNERA === */
+
+    /* === UKŁAD 3 KOLUMNY (powtórzenie, aby działało na pewno) === */
     #product-grid {
-        /* 3 równe kolumny */
         grid-template-columns: repeat(3, 1fr) !important; 
         gap: 8px !important; 
     }
-
-    /* Minimalne dopasowanie kart, aby zmieściły się 3 w rzędzie */
     .product-card-image {
         height: 160px; 
         margin-bottom: 2px;
     }
-
     .product-card-info {
         padding: 5px 2px; 
     }
-
-    /* Zmniejszenie czcionek do absolutnego minimum */
     .product-card .brand, .product-card h3 {
-        font-size: 0.7em !important;
+        font-size: 0.75em !important;
         margin-bottom: 2px !important;
     }
-
     .product-card .price {
-        font-size: 0.8em !important;
+        font-size: 0.85em !important;
     }
 }
         /* === STYLE DLA ZWIJANYCH GRUP FILTRÓW (AKORDEON) === */
