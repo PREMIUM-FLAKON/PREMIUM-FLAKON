@@ -1963,16 +1963,18 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
 
         <h3 style="margin-top: 40px;">Wszystkie Złożone Zamówienia</h3>
         <table class="order-table">
-            <thead>
-                <tr>
-                    <th>ID Zamówienia</th>
-                    <th>Data</th>
-                    <th>Email Klienta</th>
-                    <th>Przedmioty</th>
+            <thead>
+                <tr>
+                    <th>ID Zamówienia</th>
+                    <th>Data</th>
+                    <th>Email Klienta</th>
+                    <th>Telefon</th> 
+                    <th>Dostawa</th> 
+                    <th>Płatność</th>                     
+                    <th>Status</th>
                     <th>Suma</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
+                </tr>
+            </thead>
             <tbody id="admin-orders-list-body">
             </tbody>
         </table>
@@ -2852,25 +2854,29 @@ async function handleOrderSubmit(event) {
                  return;
              }
 
+             /* NOWY BLOK W renderAdminStatsAndOrders (Linie 3000-3023): */
              // 5. ZMAPUJ NOWE DANE DO TABELI
              allOrders.forEach(order => {
                  const statusColor = order.status === 'Dostarczono' ? '#0A0' : order.status === 'Wysłano' ? '#F90' : (order.status === 'Oczekuje' ? '#C00' : '#888');
                  
-                 // Sformatuj datę (z '2025-11-06T19:55:30+00:00' na '06.11.2025')
-                 const orderDate = new Date(order.created_at).toLocaleDateString('pl-PL'); 
-                 
-                 // Sformatuj listę przedmiotów (z JSON na tekst)
+                 const orderDate = new Date(order.created_at).toLocaleDateString('pl-PL'); 
                  let itemsText = 'Brak danych';
                  if (Array.isArray(order.items) && order.items.length > 0) {
-                     itemsText = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+                     itemsText = order.items.map(item => `${item.name} (x${item.quantity})`).join('; '); // Użyj średnika dla czytelności
                  }
+                
+                // Formatowanie metody dostawy (usuń koszt z nazwy metody dla czytelności)
+                const deliveryName = (order.delivery_method || 'Brak danych').split('(')[0].trim();
+                const paymentName = (order.payment_method || 'Brak danych').split('(')[0].trim();
 
                  listBody.innerHTML += `
                      <tr>
-                         <td>${order.id.substring(0, 8)}...</td> 
+                         <td>${order.id.substring(0, 8)}...</td> 
                          <td>${orderDate}</td>
-                         <td>${order.customer_email}</td>
-                         <td>${itemsText}</td>
+                         <td>${order.customer_email}<div style="font-size:0.8em; color:#AAA; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${order.customer_name} / ${order.customer_address}">${order.customer_name}, ${order.customer_address}</div></td>
+                         <td>${order.customer_phone || 'Brak'}</td>
+                         <td>${deliveryName} (${(order.delivery_cost || 0).toFixed(2)} PLN)</td>
+                         <td>${paymentName}</td>
                          <td>${(order.total_price || 0).toFixed(2)} PLN</td>
                          <td><strong style="color: ${statusColor};">${order.status}</strong></td>
                      </tr>
