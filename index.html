@@ -1391,7 +1391,15 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
         <section class="container" style="padding-top:40px; padding-bottom:80px;">
             <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start;">
                 <div style="display:flex; flex-direction:column; gap:10px;">
-                    <div id="detail-image" style="flex:1; min-width:260px; min-height:320px; background-color:#f3f3f3; border:1px solid #ddd; background-size:cover; background-position:center;"></div>
+                  <div id="detail-image" style="flex:1; min-width:260px; min-height:320px; 
+     /* ZMIANA: Ciemne tło, złota ramka */
+     background-color:var(--color-background-dark); 
+     border:1px solid var(--color-accent-gold); 
+     background-size:cover; 
+     background-position:center;
+     /* DODANIE: Zaokrąglenie narożników */
+     border-radius: 8px;">
+</div>
                     <div id="detail-thumbnails" style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;"></div>
                 </div>
                 <div style="flex:2; min-width:260px;">
@@ -3653,25 +3661,32 @@ async function handleOrderSubmit(event) {
                  }
              }
 
-             // ---- nowa logika miniaturek ----
-             const thumbsContainer = document.getElementById('detail-thumbnails');
-             if (thumbsContainer) {
-                 thumbsContainer.innerHTML = '';
-                 if (p.images && p.images.length) {
-                     p.images.forEach((src, idx) => {
-                         const t = document.createElement('div');
-                         t.style.width = '64px';
-                         t.style.height = '64px';
-                         t.style.border = '1px solid #EEE';
-                         t.style.overflow = 'hidden';
-                         t.style.cursor = 'pointer';
-                         t.style.borderRadius = '4px';
-                         t.style.background = '#fff';
-                         t.style.display = 'flex';
-                         t.style.alignItems = 'center';
-                         t.style.justifyContent = 'center';
+            // ---- nowa logika miniaturek ----
+             const thumbsContainer = document.getElementById('detail-thumbnails');
+             if (thumbsContainer) {
+                 thumbsContainer.innerHTML = '';
+                 if (p.images && p.images.length) {
+                     p.images.forEach((src, idx) => {
+                         const t = document.createElement('div');
+                         t.style.width = '64px';
+                         t.style.height = '64px';
+                         // ZMIANA STYLI MINIATURY:
+                         t.style.border = '2px solid transparent'; // Zwiększona ramka
+                         t.style.overflow = 'hidden';
+                         t.style.cursor = 'pointer';
+                         t.style.borderRadius = '8px'; // DODANIE ZAOKRĄGLENIA
+                         t.style.background = '#222';
+                         t.style.transition = 'border-color 0.3s';
+                         t.style.display = 'flex';
+                         t.style.alignItems = 'center';
+                         t.style.justifyContent = 'center';
+                         
+                         // Aktywna ramka dla wybranego obrazu
+                         if (idx === 0) { // Oznaczenie pierwszej miniatury jako aktywnej
+                            t.style.borderColor = 'var(--color-accent-gold)';
+                         }
 
-                         const img = document.createElement('img');
+                         const img = document.createElement('img');
                          img.src = src;
                          img.style.width = '100%';
                          img.style.height = '100%';
