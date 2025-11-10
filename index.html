@@ -1070,51 +1070,101 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
             #koszyk-formularz { position: static; } /* NOWOŚĆ */
         }
 
-       @media (max-width: 768px) {
+     @media (max-width: 768px) {
     .hero-section { 
         padding: 120px 15px 80px 15px; 
-        background-position: 85% center; /* To przesunie obrazek, żeby butelka była widoczna */
+        background-position: 85% center;
+    }
+
+    /* === ZMIANA NA 3 KOLUMNY DLA 768PX I MNIEJ === */
+    #product-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 8px !important; 
+    }
+
+    .product-card-image {
+        height: 160px; /* Zmniejszenie wysokości */
+        margin-bottom: 2px;
+    }
+
+    .product-card-info {
+        padding: 10px 5px 5px 5px; /* Bardzo mały padding */
+    }
+
+    /* Zmniejszenie czcionek */
+    .product-card .brand, .product-card h3 {
+        font-size: 0.75em !important;
+        margin-bottom: 2px !important;
+    }
+
+    .product-card .price {
+        font-size: 0.85em !important;
+    }
+    /* === KONIEC ZMIANY 768PX === */
+    
+    .values-section .value-cards { flex-direction: column; gap: 20px; }
+    .values-section .card { flex-basis: 100%; padding: 20px; }
+    .detail-section .content-2col { flex-direction: column; gap: 30px; }
+    .detail-section .image-mock { display: none; }
+    .footer-links, .footer-contact { flex-basis: 100%; text-align: center; }
+    .footer-links a { display: inline-block; margin: 0 10px 5px 10px; }
+    .auth-container { flex-direction: column; gap: 30px; }
+    .auth-form { width: 100%; box-sizing: border-box; }
+    #pomoc-page .container > div { flex-direction: column; }
+    .chatbot-container { max-width: 100%; }
+    .advantage-list { flex-direction: column; gap: 20px; }
+    .advantage-item { flex: 1 1 100%; }
+    .dashboard-header { flex-direction: column; text-align: center; gap: 10px; }
+    .stats-card-container { flex-direction: column; }
+    /* === POPRAWKI MOBILNE (PRODUKTY I NAGŁÓWEK) === */
+    
+    /* 1. Zmniejszenie nagłówka na wszystkich podstronach */
+    header {
+        padding: 12px 0;
+    }
+
+    header h1 {
+        font-size: 1.9em !important;
     }
 }
-            .values-section .value-cards { flex-direction: column; gap: 20px; }
-            .values-section .card { flex-basis: 100%; padding: 20px; }
-            .detail-section .content-2col { flex-direction: column; gap: 30px; }
-            .detail-section .image-mock { display: none; }
-             .footer-links, .footer-contact { flex-basis: 100%; text-align: center; }
-            .footer-links a { display: inline-block; margin: 0 10px 5px 10px; }
-            .auth-container { flex-direction: column; gap: 30px; }
-            .auth-form { width: 100%; box-sizing: border-box; }
-             #pomoc-page .container > div { flex-direction: column; }
-             .chatbot-container { max-width: 100%; }
-             .advantage-list { flex-direction: column; gap: 20px; }
-            .advantage-item { flex: 1 1 100%; }
-            .dashboard-header { flex-direction: column; text-align: center; gap: 10px; }
-            .stats-card-container { flex-direction: column; } /* NOWOŚĆ */
-            /* === POPRAWKI MOBILNE (PRODUKTY I NAGŁÓWEK) === */
-        
-            /* 1. Zmniejszenie nagłówka na wszystkich podstronach */
-            header {
-                /* Zmniejszamy padding (wysokość) nagłówka */
-                padding: 12px 0;
-            }
-
-            header h1 {
-                /* Zmniejszamy logo/tytuł w nagłówku.
-                   Używamy !important, aby pokonać styl inline (font-size: 2.5em) z HTML */
-                font-size: 1.9em !important;
-            }
-
            
 
-            @media (max-width: 480px) {
-                .hero-content h1 { font-size: 2em; }
-                .btn-main { padding: 12px 40px; font-size: 0.9em; }
-                .mini-footer { flex-direction: column; text-align: center; }
-                .mini-footer p { margin-bottom: 10px; }
-                .mini-footer .social-icons { margin: 10px 0; }
-                #side-menu.open { width: 100%; }
-                #side-menu a { font-size: 16px; }
-            }
+           @media (max-width: 480px) {
+    .hero-content h1 { font-size: 2em; }
+    .btn-main { padding: 12px 40px; font-size: 0.9em; }
+    .mini-footer { flex-direction: column; text-align: center; }
+    .mini-footer p { margin-bottom: 10px; }
+    .mini-footer .social-icons { margin: 10px 0; }
+    #side-menu.open { width: 100%; }
+    #side-menu a { font-size: 16px; }
+
+    /* === NOWA ZMIANA: WYMUSZENIE 3 KOLUMN NA EKRANACH DO 480PX === */
+    #product-grid {
+        /* 3 równe kolumny */
+        grid-template-columns: repeat(3, 1fr) !important; 
+        gap: 8px !important; 
+    }
+
+    /* Minimalne dopasowanie kart, aby zmieściły się 3 w rzędzie */
+    .product-card-image {
+        height: 160px; 
+        margin-bottom: 2px;
+    }
+
+    .product-card-info {
+        padding: 5px 2px; 
+    }
+
+    /* Zmniejszenie czcionek do absolutnego minimum */
+    .product-card .brand, .product-card h3 {
+        font-size: 0.7em !important;
+        margin-bottom: 2px !important;
+    }
+
+    .product-card .price {
+        font-size: 0.8em !important;
+    }
+}
         /* === STYLE DLA ZWIJANYCH GRUP FILTRÓW (AKORDEON) === */
 
         /* Zastępujemy stare style dla .filter-group */
