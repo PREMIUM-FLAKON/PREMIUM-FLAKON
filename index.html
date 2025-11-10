@@ -857,11 +857,16 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
 
         /* === STYLE DLA STRONY O NAS - SEKACJA DLACZEGO MY === */
         .advantage-section {
-            background-color: #ECECE4;
-            padding: 60px 0;
-            margin-top: 40px;
-            border-top: 3px solid var(--color-accent-gold);
-        }
+    background-color: #111; /* Bardzo ciemne tło */
+    padding: 60px 0;
+    margin-top: 40px;
+    border-top: 3px solid var(--color-accent-gold);
+}
+/* Poprawka koloru tekstu w tej sekcji */
+.advantage-section .container h2,
+.advantage-section .container p {
+    color: var(--color-text-light) !important; /* Tekst informacyjny na jasny */
+}
         .advantage-list {
             display: flex;
             flex-wrap: wrap;
@@ -870,21 +875,22 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
             margin-top: 30px;
         }
         .advantage-item {
-            background-color: var(--color-background-light);
-            border: 1px solid #DDD;
+            background-color: #1A1A1A;
+           border: 1px solid rgba(192, 160, 76, 0.2);
             padding: 25px;
             flex: 1 1 calc(33% - 40px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
             min-width: 250px;
             text-align: center;
             transition: transform 0.3s;
+      color: var(--color-text-light);
         }
         .advantage-item:hover {
              transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 20px var(--color-accent-gold); /* Silniejszy złoty blask przy najechaniu */
         }
         .advantage-item h4 {
-            color: var(--color-accent-gold);
+           color: var(--color-accent-gold);
             font-size: 1.1em;
             margin-top: 0;
             margin-bottom: 10px;
