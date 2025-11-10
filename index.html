@@ -962,41 +962,7 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
     color: var(--color-text-light);
 }
 
-/* Kontener Formularza (panel podsumowania, prawa strona) */
-#koszyk-formularz-container {
-    flex: 1;
-    min-width: 300px;
-    /* Przyklejamy do góry */
-    position: sticky; 
-    top: 120px;
-}
 
-/* Właściwy Panel Formularza (Ciemny i Estetyczny) */
-#koszyk-formularz-container > form {
-    background-color: #282828; /* Ciemny panel (bez jaskrawości) */
-    padding: 30px;
-    /* Usunięcie poświat, cieni i jasnych ramek */
-    border: none;
-    box-shadow: none;
-    color: var(--color-text-light); /* Ustawienie domyślnego koloru tekstu na jasny */
-}
-
-/* Etykiety pól w ciemnym panelu */
-#koszyk-formularz-container .form-group label {
-    color: #CCC; 
-}
-/* Pola tekstowe w ciemnym panelu */
-#koszyk-formularz-container .form-group input, 
-#koszyk-formularz-container .form-group textarea {
-    background-color: #383838; /* Tło inputów nieco jaśniejsze niż panel */
-    color: var(--color-text-light); /* Tekst w inputach jasny */
-    border: 1px solid #555; /* Ciemna, subtelna ramka inputów */
-}
-#koszyk-formularz-container .form-group input:focus, 
-#koszyk-formularz-container .form-group textarea:focus {
-    border-color: var(--color-accent-gold);
-    box-shadow: 0 0 5px rgba(192, 160, 76, 0.5);
-}
 
 /* Pojedynczy Element Produktu na liście */
 .koszyk-item {
@@ -1223,9 +1189,22 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
             padding-bottom: 15px; /* Odstęp na dole po rozwinięciu */
             transition: max-height 0.5s ease-in, padding 0.5s ease-in;
         }
-    </style>
+   
 
-    
+    /* Wklej nowy kod CSS TUTAJ, na samym końcu tej sekcji: */
+
+/* === DODATKOWE STYLE DLA KASY (CHECKOUT) === */
+
+.delivery-option label, .payment-option label {
+    display: block;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+.delivery-option input[type="radio"], .payment-option input[type="radio"] {
+    width: auto !important; 
+    margin-right: 10px;
+}
     <style>
         /* Dodatkowa animacja pisania */
         .bot-message.typing::after {
@@ -1790,7 +1769,104 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
         
         <footer id="koszyk-stopka"></footer>
    </div>
+<div id="checkout-page" class="page-section">
+    <header>
+        <div class="container">
+            <h1 style="font-size: 2.5em; margin: 0; font-weight: 900;"><a onclick="showPage('landing-page');"><span class="gold-text">ODORIS</span></a></h1>
+            <nav id="nav-checkout-header">
+                <a id="link-koszyk-checkout" onclick="showPage('koszyk-page');">&larr; Powrót do koszyka</a>
+                <a id="link-kolekcja-checkout" onclick="showPage('kolekcja-page');">Kolekcja</a>
+                <a id="link-pomoc-checkout" onclick="showPage('pomoc-page');">Pomoc</a>
+            </nav>
+            <div class="menu-toggle" onclick="openNav()">&#9776;</div>
+        </div>
+    </header>
+    
+    <section class="container" style="padding-top: 50px; padding-bottom: 80px;">
+        <h2 style="margin-bottom: 40px; text-align: center;">FINALIZACJA <span class="gold-text">ZAMÓWIENIA</span></h2>
+        
+        <div class="checkout-layout" style="display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;">
+            
+            <div id="checkout-form-container" style="flex: 2; min-width: 300px;">
+                <h3 style="color: var(--color-accent-gold); margin-top: 0;">1. Dane do Wysyłki</h3>
+                <form id="checkout-form" onsubmit="handleOrderSubmit(event); return false;" class="auth-form" style="background-color: #282828; color: var(--color-text-light); box-shadow: none; width: 100%; padding: 30px;">
+                    
+                    <div class="form-group">
+                        <label for="order-imie">Imię i Nazwisko</label>
+                        <input type="text" id="order-imie" required placeholder="Jan Kowalski">
+                    </div>
+                    <div class="form-group">
+                        <label for="order-email">Adres E-mail</label>
+                        <input type="email" id="order-email" required placeholder="jan.kowalski@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="order-phone">Numer Telefonu</label>
+                        <input type="tel" id="order-phone" required placeholder="123456789">
+                    </div>
+                    <div class="form-group">
+                        <label for="order-adres">Adres (Ulica, nr domu/mieszkania, Kod pocztowy, Miasto)</label>
+                        <textarea id="order-adres" rows="3" required placeholder="ul. Przykładowa 1/1, 00-001 Miasto"></textarea>
+                    </div>
 
+                    <h3 style="color: var(--color-accent-gold); margin-top: 40px;">2. Wybór Dostawy</h3>
+                    
+                    <div class="form-group delivery-option">
+                        <label><input type="radio" name="delivery-method" value="Kurier DPD (15.00 PLN)" data-cost="15.00" required checked> Kurier DPD (15.00 PLN)</label>
+                    </div>
+                    <div class="form-group delivery-option">
+                        <label><input type="radio" name="delivery-method" value="Paczkomat InPost (12.00 PLN)" data-cost="12.00" required> Paczkomat InPost (12.00 PLN)</label>
+                        <small style="display:block; color:#999; margin-left:25px;">(Wybór automatu po kliknięciu "Złóż zamówienie")</small>
+                    </div>
+                    <div class="form-group delivery-option">
+                        <label><input type="radio" name="delivery-method" value="Odbiór Osobisty (0.00 PLN)" data-cost="0.00" required> Odbiór Osobisty - Kętrzyn (0.00 PLN)</label>
+                    </div>
+
+                    <h3 style="color: var(--color-accent-gold); margin-top: 40px;">3. Metoda Płatności</h3>
+
+                    <div class="form-group payment-option">
+                        <label><input type="radio" name="payment-method" value="Przelew bankowy" required checked> Przelew bankowy (płatność manualna)</label>
+                    </div>
+                    <div class="form-group payment-option">
+                        <label><input type="radio" name="payment-method" value="Płatność przy odbiorze (5.00 PLN)" data-cost="5.00" required> Płatność przy odbiorze (Pobranie +5.00 PLN)</label>
+                    </div>
+                    <div class="form-group payment-option">
+                        <label><input type="radio" name="payment-method" value="Płatności online (Przelewy24/BLIK)" required> Szybki przelew online (symulacja)</label>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 30px;">
+                        <label for="order-uwagi">Uwagi do zamówienia (opcjonalnie)</label>
+                        <textarea id="order-uwagi" rows="2" placeholder="Napisz, jeśli masz specjalne instrukcje..."></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 30px; text-align: center;">
+                        <label>
+                            <input type="checkbox" id="accept-regulamin" required style="width: auto; margin-right: 5px;"> 
+                            Akceptuję <a onclick="showPage('regulamin-page');" style="color: var(--color-accent-gold); cursor: pointer;">Regulamin Sklepu</a> i <a onclick="showPage('polityka-page');" style="color: var(--color-accent-gold); cursor: pointer;">Politykę Prywatności</a>.
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn-auth" style="margin-top: 30px; font-size: 1.2em;">
+                        ZŁÓŻ ZAMÓWIENIE Z OBOWIĄZKIEM ZAPŁATY
+                    </button>
+                </form>
+            </div>
+            
+            <div id="checkout-summary-container" style="flex: 1; min-width: 300px; position: sticky; top: 120px;">
+                <div style="background-color: #282828; padding: 30px; color: var(--color-text-light);">
+                    <h3 style="color: var(--color-accent-gold); margin-top: 0; text-align: center;">PODSUMOWANIE</h3>
+                    <div id="checkout-summary-items">
+                        </div>
+                    <div id="checkout-final-total" style="border-top: 2px solid var(--color-accent-gold); padding-top: 15px; margin-top: 15px;">
+                        <p style="margin: 0; font-size: 1.2em;">SUMA DO ZAPŁATY:</p>
+                        <h3 id="final-price" style="margin: 5px 0 0 0; font-size: 2em; color: var(--color-accent-gold);">0.00 PLN</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer id="checkout-stopka"></footer>
+</div>
 
     <template id="auth-template">
         <h2 style="color: var(--color-text-dark); margin-bottom: 20px; font-size: 2.2em;">Zarządzaj swoim <span class="gold-text">Kontem</span></h2>
@@ -2495,6 +2571,7 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
             `;
         });
         
+       /* NOWY BLOK DLA KOSZYKA: */
         // ZMIANA: Nagłówek i Suma Całkowita w lewym panelu
         listHTML += `
             <div id="koszyk-podsumowanie">
@@ -2504,94 +2581,192 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
         `;
         listContainer.innerHTML = listHTML;
 
-        // ZMIANA: RENDERUJ FORMULARZ Z POPRAWNYM NAGŁÓWKIEM I PRZYCISKIEM
+        // NOWY BLOK: RENDERUJ TYLKO PRZYCISK PRZEKIEROWUJĄCY DO STRONY KASY
         formContainer.innerHTML = `
-            <form id="koszyk-formularz" onsubmit="handleOrderSubmit(event)">
-                <h3 style="color: var(--color-accent-gold); text-align: center; margin-top: 0;">PODSUMOWANIE ZAMÓWIENIA</h3>
+            <form id="koszyk-formularz" onsubmit="showPage('checkout-page'); return false;">
+                <h3 style="color: var(--color-accent-gold); text-align: center; margin-top: 0;">PODSUMOWANIE KOSZYKA</h3>
                 
                 <div style="font-size: 1.1em; padding: 10px 0; border-bottom: 1px solid #333; margin-bottom: 20px; text-align: center; color: var(--color-text-light);">
                     Wartość produktów: <strong class="gold-text">${sumaCalkowita.toFixed(2)} PLN</strong>
                 </div>
 
-                <p style="color: #AAA; font-size: 0.9em;">Dane do zamówienia zostaną uzupełnione na następnej stronie. Użyj przycisku poniżej, aby przejść dalej:</p>
+                <p style="color: #AAA; font-size: 0.9em;">Przejdź do kasy, aby wybrać sposób dostawy, płatności i złożyć zamówienie:</p>
 
                 <button type="submit" class="btn-auth" style="margin-top: 20px;">
                     PRZEJDŹ DO KASY &rarr;
                 </button>
                 
                 <p style="font-size: 0.8em; color: #666; text-align: center; margin-top: 15px;">
-                    Kliknij, aby przejść do formularza wysyłki, wyboru dostawy i płatności.
+                    Cena dostawy i pobrania zostanie doliczona na stronie kasy.
                 </p>
             </form>
         `;
     }
 }
          
-        /** NOWA WERSJA: Obsługuje wysłanie formularza (zapisuje do Supabase) */
-         async function handleOrderSubmit(event) { // DODANO 'async'
-             event.preventDefault();
+       // ===============================================
+// === LOGIKA KASY (CHECKOUT) ===
+// ===============================================
 
-             // 1. Zablokuj przycisk, aby zapobiec wielokrotnemu kliknięciu
-             const submitButton = document.querySelector('#koszyk-formularz button[type="submit"]');
-             if (submitButton) {
-                 submitButton.disabled = true;
-                 submitButton.textContent = 'Przetwarzanie...';
-             }
+/** Oblicza całkowitą cenę, uwzględniając koszty dostawy i pobrania */
+function calculateFinalPrice(cartSubtotal) {
+    let deliveryCost = 0;
+    let paymentFee = 0;
+    
+    const deliveryEl = document.querySelector('input[name="delivery-method"]:checked');
+    if (deliveryEl) {
+        deliveryCost = parseFloat(deliveryEl.dataset.cost) || 0;
+    }
 
-             // 2. Zbierz dane z formularza
-             const imie = document.getElementById('order-imie').value;
-             const email = document.getElementById('order-email').value;
-             const adres = document.getElementById('order-adres').value;
-             const uwagi = document.getElementById('order-uwagi').value;
-             
-             const cart = getCart();
-             let sumaCalkowita = 0;
-             
-             cart.forEach(item => {
-                 const itemSuma = (item.price || 0) * (item.quantity || 0);
-                 sumaCalkowita += itemSuma;
-             });
+    const paymentEl = document.querySelector('input[name="payment-method"]:checked');
+    // Pobranie opłaty tylko jeśli wybrano "Płatność przy odbiorze"
+    if (paymentEl && paymentEl.value.includes('Płatność przy odbiorze')) {
+        paymentFee = parseFloat(paymentEl.dataset.cost) || 0;
+    } else {
+        paymentFee = 0; // Jeśli to szybki przelew lub bankowy, opłata to 0
+    }
+    
+    const finalTotal = cartSubtotal + deliveryCost + paymentFee;
+    
+    return { finalTotal, deliveryCost, paymentFee, deliveryMethod: deliveryEl ? deliveryEl.value : 'Kurier DPD (15.00 PLN)', paymentMethod: paymentEl ? paymentEl.value : 'Przelew bankowy' };
+}
 
-             // 3. Stwórz obiekt zamówienia pasujący do tabeli Supabase
-             const newOrder = {
-                 customer_name: imie,
-                 customer_email: email,
-                 customer_address: adres,
-                 notes: uwagi,
-                 items: cart, // Zapisz cały koszyk jako JSONB
-                 total_price: sumaCalkowita
-                 // Kolumna 'status' ustawi się automatycznie na 'Oczekuje' (przez Default Value)
-             };
+/** Renderuje podsumowanie (po prawej stronie kasy) i podłącza eventy */
+function renderCheckoutSummary() {
+    const cart = getCart();
+    const summaryItemsEl = document.getElementById('checkout-summary-items');
+    const finalPriceEl = document.getElementById('final-price');
 
-             // 4. Wyślij dane do Supabase
-             try {
-                 const { data, error } = await supabase
-                     .from('zamowienia') // Nazwa Twojej tabeli
-                     .insert([newOrder])
-                    
+    if (!summaryItemsEl || !finalPriceEl) return;
 
-                 if (error) {
-                     throw error; // Rzuć błędem, aby złapał go 'catch'
-                 }
+    let subtotal = 0;
+    let itemsHTML = '';
 
-                 // 5. Sukces!
-                 alert('Dziękujemy! Twoje zamówienie zostało pomyślnie złożone i zapisane w systemie.');
-                 
-                 saveCart([]); // Wyczyść koszyk
-                 renderCartPage(); // Odśwież widok koszyka (pokaże pusty)
-             
-             } catch (error) {
-                 // 6. Obsługa błędu
-                 console.error('Błąd podczas składania zamówienia:', error.message);
-                 alert('Wystąpił błąd podczas składania zamówienia. Spróbuj ponownie lub skontaktuj się z nami telefonicznie.');
-                 
-                 // Odblokuj przycisk w razie błędu
-                 if (submitButton) {
-                     submitButton.disabled = false;
-                     submitButton.textContent = 'Złóż zamówienie';
-                 }
-             }
-         }
+    cart.forEach(item => {
+        const itemTotal = (item.price || 0) * (item.quantity || 0);
+        subtotal += itemTotal;
+        itemsHTML += `
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9em; color: #CCC;">
+                <span>${item.name} (x${item.quantity})</span>
+                <span>${itemTotal.toFixed(2)} PLN</span>
+            </div>
+        `;
+    });
+
+    const { finalTotal, deliveryCost, paymentFee, deliveryMethod, paymentMethod } = calculateFinalPrice(subtotal);
+
+    // Główne podsumowanie
+    summaryItemsEl.innerHTML = `
+        <p style="font-weight: 700;">PRODUKTY (${cart.length}): <span style="float: right;">${subtotal.toFixed(2)} PLN</span></p>
+        ${itemsHTML}
+        <hr style="border-color: #333; margin: 10px 0;">
+        <p style="font-weight: 700;">DOSTAWA:</p>
+        <div id="delivery-cost-line" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span id="delivery-method-display" style="color: #AAA;">${deliveryMethod}</span>
+            <span id="delivery-cost-display" style="font-weight: 700;">+${deliveryCost.toFixed(2)} PLN</span>
+        </div>
+        
+        <p style="font-weight: 700;">PŁATNOŚĆ:</p>
+        <div id="payment-fee-line" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span id="payment-method-display" style="color: #AAA;">${paymentMethod}</span>
+            <span id="payment-fee-display" style="font-weight: 700;">${paymentFee > 0 ? `+${paymentFee.toFixed(2)} PLN` : '0.00 PLN'}</span>
+        </div>
+    `;
+    
+    finalPriceEl.textContent = `${finalTotal.toFixed(2)} PLN`;
+
+    // Podłączenie listenerów do radio buttonów, aby na bieżąco aktualizować podsumowanie
+    document.querySelectorAll('input[name="delivery-method"]').forEach(el => {
+        el.onchange = renderCheckoutSummary;
+    });
+    document.querySelectorAll('input[name="payment-method"]').forEach(el => {
+        el.onchange = renderCheckoutSummary;
+    });
+}
+
+/** NOWA WERSJA: Obsługuje wysłanie formularza kasy (zapisuje do Supabase) */
+async function handleOrderSubmit(event) {
+    event.preventDefault();
+
+    // 1. Walidacja pustego koszyka (powinna być zrobiona w renderCartPage, ale jako zabezpieczenie)
+    const cart = getCart();
+    if (!Array.isArray(cart) || cart.length === 0) {
+        alert('Twój koszyk jest pusty! Przejdź do kolekcji.');
+        showPage('kolekcja-page');
+        return;
+    }
+
+    // 2. Zablokuj przycisk
+    const submitButton = document.querySelector('#checkout-form button[type="submit"]');
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Trwa składanie zamówienia...';
+    }
+
+    // 3. Zbierz dane z formularza
+    const imie = document.getElementById('order-imie').value;
+    const email = document.getElementById('order-email').value;
+    const phone = document.getElementById('order-phone').value;
+    const adres = document.getElementById('order-adres').value;
+    const uwagi = document.getElementById('order-uwagi').value;
+    
+    const deliveryEl = document.querySelector('input[name="delivery-method"]:checked');
+    const deliveryMethod = deliveryEl ? deliveryEl.value : 'Kurier DPD (15.00 PLN)';
+    
+    const paymentEl = document.querySelector('input[name="payment-method"]:checked');
+    const paymentMethod = paymentEl ? paymentEl.value : 'Przelew bankowy';
+
+    // 4. Oblicz ostateczną sumę
+    let subtotal = cart.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 0), 0);
+    const { finalTotal, deliveryCost, paymentFee } = calculateFinalPrice(subtotal);
+
+    // 5. Stwórz obiekt zamówienia do Supabase
+    const newOrder = {
+        customer_name: imie,
+        customer_email: email,
+        customer_phone: phone, // Nowe pole
+        customer_address: adres,
+        delivery_method: deliveryMethod, // Nowe pole
+        payment_method: paymentMethod, // Nowe pole
+        delivery_cost: deliveryCost, // Nowe pole
+        payment_fee: paymentFee, // Nowe pole
+        notes: uwagi,
+        items: cart,
+        total_price: finalTotal
+    };
+
+    // 6. Wyślij dane do Supabase
+    try {
+        if (!supabase) throw new Error("Brak konfiguracji Supabase");
+        
+        const { data, error } = await supabase
+            .from('zamowienia')
+            .insert([newOrder])
+            .select('id'); // Pobierz ID złożonego zamówienia
+
+        if (error) throw error;
+        
+        const orderId = data[0].id;
+        
+        // 7. Sukces!
+        alert(`Dziękujemy! Twoje zamówienie (ID: ${String(orderId).substring(0, 8)}...) na kwotę ${finalTotal.toFixed(2)} PLN zostało pomyślnie złożone. Otrzymasz wiadomość e-mail.`);
+        
+        // 8. Finalizacja - Wyczyść koszyk i przejdź do strony głównej
+        saveCart([]);
+        showPage('landing-page');
+    
+    } catch (error) {
+        // 9. Obsługa błędu
+        console.error('Błąd podczas składania zamówienia:', error.message);
+        alert(`Wystąpił błąd podczas składania zamówienia: ${error.message}. Spróbuj ponownie lub skontaktuj się z nami.`);
+        
+        // Odblokuj przycisk w razie błędu
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = 'ZŁÓŻ ZAMÓWIENIE Z OBOWIĄZKIEM ZAPŁATY';
+        }
+    }
+}
 
 
          // ===============================================
@@ -2950,7 +3125,7 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // Inicjalizuj odpowiednie strony
+// Inicjalizuj odpowiednie strony
             if (pageId === 'kolekcja-page') {
                 applyFilters(); 
             }
@@ -2963,6 +3138,10 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
             // ### KROK 3: DODANIE WYWOŁANIA RENDEROWANIA KOSZYKA ###
             if (pageId === 'koszyk-page') {
                 renderCartPage();
+            }
+            // NOWOŚĆ: Dodaj wywołanie dla strony kasy
+            if (pageId === 'checkout-page') {
+                renderCheckoutSummary();
             }
         }
 
