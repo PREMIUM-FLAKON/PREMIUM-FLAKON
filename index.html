@@ -3644,7 +3644,7 @@ async function handleOrderSubmit(event) {
              if (p.specs && p.specs.length) {
                  p.specs.forEach(s => {
                      const row = document.createElement('tr');
-                     row.innerHTML = `<td style="padding:6px;  width:35%;"><strong>${s.key}</strong></td><td style="padding:6px; border-bottom:1px solid #EEE;">${s.value}</td>`;
+                     row.innerHTML = `<td style="padding:6px;  width:35%;"><strong>${s.key}</strong></td><td style="padding:6px; ">${s.value}</td>`;
                      specsTable.appendChild(row);
                 });
              } else {
