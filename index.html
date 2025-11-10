@@ -395,7 +395,7 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
     border-radius: 8px; /* Zaokrąglenie rogów */
 }
 #filter-sidebar h4 {
-   color: var(--color-text-light);
+   color: var(--color-text-light); !important;
     text-transform: uppercase;
     margin-top: 0;
     margin-bottom: 15px;
@@ -442,8 +442,8 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
     transform: translateY(-50%) rotate(45deg);
     width: 8px;
     height: 8px;
-    border-bottom: 2px solid var(--color-text-light); /* ZMIANA: Jasna ramka */
-    border-right: 2px solid var(--color-text-light); /* ZMIANA: Jasna ramka */
+    border-bottom: 2px solid var(--color-text-light) !important; 
+    border-right: 2px solid var(--color-text-light)  !important;
     transition: transform 0.3s, border-color 0.3s;
 }
 
