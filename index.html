@@ -12,7 +12,7 @@
 <style>
 /* === ZMIENNE KOLORÓW I FONTÓW === */
         :root {
-document.addEventListener('DOMContentLoaded', async--color-background-light: #F8F8F4;
+--color-background-light: #F8F8F4;
 --color-background-dark: #1A1A1A;
 --color-text-dark: #1A1A1A;
 --color-text-light: #F8F8F4;
@@ -2631,7 +2631,7 @@ const imageUrl = (productDetail && productDetail.images && productDetail.images.
 listHTML += `
     <div class="koszyk-item">
         <div class="koszyk-item-img">
-${imageUrl ? `<img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover;" alt="${item.name}">` : 'Brak zdjęcia'}
+{imageUrl ? `<img src="${imageUrl}" style="width:100%; height:100%; object-fit:cover;" alt="${item.name}">` : 'Brak zdjęcia'}
         </div>
         <div class="koszyk-item-info">
 <span class="brand">${item.brand}</span>
@@ -3357,7 +3357,7 @@ if (pageId === 'checkout-page') {
 </div>
         <div class="product-card-info">
 <div class="brand">${product.brand}</div>
-<h3>${product.name || 'Brak Nazwy'}</h3>
+<h3> {product.name || 'Brak Nazwy'}</h3>
 <div class="price">${product.price} PLN</div>
         </div>
     </a>
