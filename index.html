@@ -159,7 +159,11 @@ header .menu-toggle {
     padding-right: 15px;
 }
         header .menu-toggle:hover { color: var(--color-accent-gold); }
-
+/* Wyłącza wielkie litery (uppercase) tylko dla logo w nagłówku */
+.hero-content h1 a,
+header h1 a {
+    text-transform: none;
+}
         /* === STYLE LANDING PAGE === */
         #landing-page {
             background-color: var(--color-background-dark);
