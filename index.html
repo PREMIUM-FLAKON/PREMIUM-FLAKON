@@ -4,10 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MagiaZapachu - Perfumy Luksusowych Producentów</title>
+    
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
 <style>
-        /* === ZMIENNE KOLORÓW I FONTÓW === */
+/* === ZMIENNE KOLORÓW I FONTÓW === */
         :root {
             --color-background-light: #F8F8F4;
             --color-background-dark: #1A1A1A;
@@ -3320,7 +3323,7 @@ async function handleOrderSubmit(event) {
                              <label>Adres E-mail</label>
                              <input type="email" value="${getCurrentUser().email}" required>
                          </div>
-    _                       <button type="submit" class="btn-main" style="width: auto; padding: 10px 20px;">Zapisz Zmiany</button>
+                          <button type="submit" class="btn-main" style="width: auto; padding: 10px 20px;">Zapisz Zmiany</button>
                      </form>
                  `;
              }
