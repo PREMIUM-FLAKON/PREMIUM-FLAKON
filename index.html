@@ -2820,14 +2820,14 @@ async function handleOrderSubmit(event) {
         const { data, error } = await supabase
             .from('zamowienia')
             .insert([newOrder])
-            .select(); // Pobierz ID złożonego zamówienia
+            
 
         if (error) throw error;
         
         const orderId = data[0].id;
         
         // 7. Sukces!
-        alert(`Dziękujemy! Twoje zamówienie (ID: ${String(orderId).substring(0, 8)}...) na kwotę ${finalTotal.toFixed(2)} PLN zostało pomyślnie złożone. Otrzymasz wiadomość e-mail.`);
+       alert(`Dziękujemy! Twoje zamówienie na kwotę ${finalTotal.toFixed(2)} PLN zostało pomyślnie złożone. Otrzymasz wiadomość e-mail.`);
         
         // 8. Finalizacja - Wyczyść koszyk i przejdź do strony głównej
         saveCart([]);
