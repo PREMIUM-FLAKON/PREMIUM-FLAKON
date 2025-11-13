@@ -2820,7 +2820,7 @@ async function handleOrderSubmit(event) {
         const { data, error } = await supabase
             .from('zamowienia')
             .insert([newOrder])
-            .select('id'); // Pobierz ID złożonego zamówienia
+            .select(); // Pobierz ID złożonego zamówienia
 
         if (error) throw error;
         
