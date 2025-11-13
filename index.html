@@ -1306,7 +1306,7 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
         <a onclick="closeNav(); showPage('pomoc-page');">Wsparcie i FAQ</a>
         <a id="nav-konto-side" onclick="closeNav(); showPage('konto-page');">Konto Klienta</a>
         
-        <div style="margin-top: 50px; font-size: 0.9em; color: rgba(255, 255, 255, 0.5);"><p>Tel: 532 116 720</p><p>E-mail: magiazapachu.pl@gmail.com</p></div>
+        <div style="margin-top: 50px; font-size: 0.9em; color: rgba(255, 255, 255, 0.5);"><p>Tel: 532 116 720</p><p>E-mail: magiazapachu@magiazapachu.com.pl</p></div>
     </div>
 
     <div id="landing-page" class="page-section active">
@@ -1599,7 +1599,7 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
                     </div>
                     <div class="contact-box" style="margin-top: 20px;">
                         <h4>Kontakt E-mail</h4>
-                        <strong class="gold-text">Adres E-mail:</strong><p><a href="mailto:magiazapachu.pl@gmail.com">magiazapachu.pl@gmail.com</a></p>
+                        <strong class="gold-text">Adres E-mail:</strong><p><a href="mailto:magiazapachu@magiazapachu.com.pl">magiazapachu@magiazapachu.com.pl</a></p>
                     </div>
                     <div class="contact-box" style="margin-top: 20px;">
                         <h4>Adres Siedziby</h4>
@@ -1720,7 +1720,7 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
             <h2 style="margin-bottom: 20px; text-align: center;"><span class="gold-text">POLITYKA</span> PRYWATNOŚCI</h2>
             <p style="text-align: center; color: #666; font-size: 1.1em; max-width: 900px; margin: 0 auto 50px;">Ochrona Twoich danych jest dla nas priorytetem. Niniejsza Polityka reguluje zasady przetwarzania danych osobowych.</p>
             <h3>§ 1. Administrator Danych Osobowych</h3>
-            <p>Administratorem Twoich danych osobowych jest [Nazwa firmy, Adres Siedziby - do uzupełnienia], kontakt możliwy poprzez e-mail: magiazapachu.pl@gmail.com.</p>
+            <p>Administratorem Twoich danych osobowych jest [Nazwa firmy, Adres Siedziby - do uzupełnienia], kontakt możliwy poprzez e-mail: magiazapachu@magiazapachu.com.pl.</p>
             <h3>§ 2. Cel i Podstawy Przetwarzania Danych</h3>
             <p>Twoje dane osobowe (imię, nazwisko, adres e-mail, adres dostawy, numer telefonu) są przetwarzane w celu:</p>
             <ul>
@@ -1783,7 +1783,7 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
             <h3>§ 2. Procedura Reklamacyjna (Wady Produktu)</h3>
             <p>Reklamacje z tytułu wad produktu (np. uszkodzony atomizer, wada butelki) są rozpatrywane na podstawie przepisów o rękojmi.</p>
             <h4>2.1. Zgłoszenie Reklamacji</h4>
-           <p>W celu złożenia reklamacji prosimy o kontakt e-mailowy na adres **magiazapachu.pl@gmail.com** z załączeniem:</p>
+           <p>W celu złożenia reklamacji prosimy o kontakt e-mailowy na adres **magiazapachu@magiazapachu.com.pl** z załączeniem:</p>
             <ul>
                 <li>Dowodu zakupu (paragon lub faktura).</li>
                 <li>Dokładnego opisu wady i okoliczności jej powstania.</li>
@@ -2258,7 +2258,7 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
                  alert('Proszę wypełnić wszystkie pola.');
                  return;
              }
-             if (email.toLowerCase() === 'magiazapachu.pl@gmail.com') {
+             if (email.toLowerCase() === 'magiazapachu@magiazapachu.com.pl') {
                  alert('Ten adres e-mail jest zarezerwowany.');
                  return;
              }
@@ -2298,7 +2298,7 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
              const password = document.getElementById('login-password').value;
 
              // Logika dla Admina zostaje (bo już używa Supabase)
-             if (email.toLowerCase() === 'magiazapachu.pl@gmail.com' && password === 'admin123') {
+             if (email.toLowerCase() === 'magiazapachu@magiazapachu.com.pl' && password === 'admin123') {
                  if (!supabase) {
                      alert('Błąd: Supabase nie jest skonfigurowane. Zalogowanie Admina niemożliwe.');
                      return;
@@ -2315,7 +2315,7 @@ text-shadow: 0px 2px 5px rgba(0, 0, 0, 1), 0px 4px 25px rgba(0, 0, 0, 1);
                  }
                  
                  const currentUser = { 
-                     email: 'magiazapachu.pl@gmail.com', 
+                     email: 'magiazapachu@magiazapachu.com.pl', 
                      username: 'Administrator', 
                      isAdmin: true 
                  };
@@ -3415,7 +3415,7 @@ async function handleOrderSubmit(event) {
              ORIGINALITY_GUARANTEE: 'Wszystkie produkty są <b>100% oryginalne</b> i pochodzą bezpośrednio od autoryzowanych dystrybutorów. Gwarantujemy to naszą <a onclick="showPage(\'onas-page\');">Misją i Filozofią</a>.',
              RETURNS_COMPLAINTS: 'Pamiętaj, że ze względu na higienę, przyjmujemy zwroty w ciągu 14 dni tylko dla flakonów <b>z nienaruszoną plombą/folią fabryczną</b>. Szczegóły znajdziesz na stronie <a onclick="showPage(\'zwroty-page\');">Zwroty i Reklamacje</a>.',
              CHANGE_ADDRESS: 'Jeśli chodzi o zmianę miejsca odbioru lub adresu dostawy, jest to możliwe tylko <b>przed nadaniem paczki</b>. Proszę o pilny, bezpośredni kontakt z Biurem Obsługi Klienta pod numerem **532 116 720**.',
-             CONTACT: 'Jeśli potrzebujesz bezpośredniego kontaktu z konsultantem, zadzwoń pod numer **532 116 720** (Pon-Pt, 9:00-17:00) lub napisz na <b>MagiaZapachu.pl@gmail.com</b>.',
+             CONTACT: 'Jeśli potrzebujesz bezpośredniego kontaktu z konsultantem, zadzwoń pod numer **532 116 720** (Pon-Pt, 9:00-17:00) lub napisz na <b>magiazapachu@magiazapachu.com.pl</b>.',
              PRODUCT_INFO_GENERIC: 'Informacje o cenie i dostępności danego produktu (np. Tom Ford, Creed) znajdziesz w naszym <a onclick="showPage(\'kolekcja-page\');">katalogu Kolekcji</a>. Użyj filtrów, aby znaleźć to, czego szukasz.',
              DEFAULT: 'Przepraszam, nie jestem pewien, jak Ci pomóc w tej kwestii. Jako AI, najlepiej radzę sobie z pytaniami o: <b>status zamówienia</b>, <b>wysyłkę</b>, <b>oryginalność</b> i <b>zwroty</b>. Czy możesz przeformułować swoje pytanie?',
              THANKS: 'Cieszę się, że mogłem pomóc! Czy masz jeszcze jakieś pytania?'
@@ -3955,7 +3955,7 @@ async function handleOrderSubmit(event) {
                      // Mamy aktywną sesję w Supabase! Zalogujmy użytkownika lokalnie.
                      const user = session.user;
                      // Sprawdzamy czy to admin
-                     const isAdmin = user.email === 'magiazapachu.pl@gmail.com'; 
+                     const isAdmin = user.email === 'magiazapachu@magiazapachu.com.pl'; 
                      
                      const currentUser = {
                          email: user.email,
@@ -3996,7 +3996,7 @@ async function handleOrderSubmit(event) {
                      <div class="footer-contact">
                         <h4>&iquest; Masz Pytanie?</h4>
                          <strong class="gold-text">TELEFON:</strong> <a href="tel:532116720">532 116 720</a>
-                         <strong class="gold-text">E-MAIL:</strong> <a href="mailto:magiazapachu.pl@gmail.com">magiazapachu.pl@gmail.com</a>
+                         <strong class="gold-text">E-MAIL:</strong> <a href="mailto:magiazapachu@magiazapachu.com.pl">magiazapachu@magiazapachu.com.pl</a>
                      </div>
                      <div class="copyright">
                          <p>&copy; 2025 MagiaZapachu. Wszelkie prawa zastrzeżone.</p>
