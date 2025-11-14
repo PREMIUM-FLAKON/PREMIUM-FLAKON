@@ -2762,11 +2762,11 @@ function renderCheckoutSummary() {
     });
 }
 
-/** NOWA WERSJA: Obsługuje wysłanie formularza kasy (zapisuje do Supabase) */
+// ZASTĄP TĄ FUNKCJĄ SWOJĄ OBECNĄ FUNKCJĘ handleOrderSubmit
 async function handleOrderSubmit(event) {
     event.preventDefault();
 
-    // 1. Walidacja pustego koszyka (powinna być zrobiona w renderCartPage, ale jako zabezpieczenie)
+    // 1. Walidacja pustego koszyka (bez zmian)
     const cart = getCart();
     if (!Array.isArray(cart) || cart.length === 0) {
         alert('Twój koszyk jest pusty! Przejdź do kolekcji.');
@@ -2774,14 +2774,14 @@ async function handleOrderSubmit(event) {
         return;
     }
 
-    // 2. Zablokuj przycisk
+    // 2. Zablokuj przycisk (bez zmian)
     const submitButton = document.querySelector('#checkout-form button[type="submit"]');
     if (submitButton) {
         submitButton.disabled = true;
         submitButton.textContent = 'Trwa składanie zamówienia...';
     }
 
-    // 3. Zbierz dane z formularza
+    // 3. Zbierz dane z formularza (bez zmian)
     const imie = document.getElementById('order-imie').value;
     const email = document.getElementById('order-email').value;
     const phone = document.getElementById('order-phone').value;
@@ -2794,51 +2794,103 @@ async function handleOrderSubmit(event) {
     const paymentEl = document.querySelector('input[name="payment-method"]:checked');
     const paymentMethod = paymentEl ? paymentEl.value : 'Przelew bankowy';
 
-    // 4. Oblicz ostateczną sumę
+    // 4. Oblicz ostateczną sumę (bez zmian)
     let subtotal = cart.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 0), 0);
     const { finalTotal, deliveryCost, paymentFee } = calculateFinalPrice(subtotal);
 
-    // 5. Stwórz obiekt zamówienia do Supabase
+    // 5. Stwórz obiekt zamówienia do Supabase (bez zmian)
     const newOrder = {
         customer_name: imie,
         customer_email: email,
-        customer_phone: phone, // Nowe pole
+        customer_phone: phone,
         customer_address: adres,
-        delivery_method: deliveryMethod, // Nowe pole
-        payment_method: paymentMethod, // Nowe pole
-        delivery_cost: deliveryCost, // Nowe pole
-        payment_fee: paymentFee, // Nowe pole
+        delivery_method: deliveryMethod,
+        payment_method: paymentMethod,
+        delivery_cost: deliveryCost,
+        payment_fee: paymentFee,
         notes: uwagi,
         items: cart,
         total_price: finalTotal
     };
 
-    // 6. Wyślij dane do Supabase
+    // 6. Wyślij dane do Supabase (zapis zamówienia)
     try {
         if (!supabase) throw new Error("Brak konfiguracji Supabase");
         
         const { data, error } = await supabase
             .from('zamowienia')
             .insert([newOrder])
-            
+            .select(); 
 
         if (error) throw error;
         
+        // === ⬇️ LOGIKA WYSYŁANIA E-MAILA (Idealnie dopasowana do Twojego szablonu) ⬇️ ===
         
+        const orderId = data[0].id; 
         
-        // 7. Sukces!
-       alert(`Dziękujemy! Twoje zamówienie na kwotę ${finalTotal.toFixed(2)} PLN zostało pomyślnie złożone. Otrzymasz wiadomość e-mail.`);
+        // NOWOŚĆ: Generujemy datę w polskim formacie, której wymaga Twój szablon
+        const orderDate = new Date().toLocaleDateString('pl-PL', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+
+        // OTO OBIEKT Z PARAMETRAMI, KTÓRY PASUJE DO TWOJEGO SZABLONU
+        const emailParams = {
+            customer_name: imie,                // dla {{ params.customer_name }}
+            customer_email: email,              // dla {{ params.customer_email }}
+            customer_phone: phone,              // dla {{ params.customer_phone }}
+            order_id: orderId.substring(0, 8),  // dla {{ params.order_id }}
+            order_date: orderDate,              // dla {{ params.order_date }}
+            total_price: finalTotal.toFixed(2), // dla {{ params.total_price }} (szablon sam dodaje "PLN")
+            delivery_method: deliveryMethod,    // dla {{ params.delivery_method }}
+            payment_method: paymentMethod       // dla {{ params.payment_method }}
+        };
+
+        try {
+            // Wywołaj nasz skrypt PHP
+            const emailResponse = await fetch('./send-email.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    toEmail: email,
+                    toName: imie,
+                    
+                    // =======================================================
+                    // WAŻNE: Wstaw tutaj ID swojego szablonu Brevo
+                    // =======================================================
+                    templateId: 1, // <-- ZASTĄP TĘ LICZBĘ SWOIM ID SZABLONU
+                    
+                    params: emailParams // Wysyłamy idealnie dopasowany obiekt
+                })
+            });
+
+            if (!emailResponse.ok) {
+                const errData = await emailResponse.json();
+                console.error('Błąd wysyłania e-maila (z pliku PHP):', errData);
+            } else {
+                const emailData = await emailResponse.json();
+                console.log('E-mail z potwierdzeniem wysłany:', emailData);
+            }
+
+        } catch (emailFetchError) {
+             console.error('Krytyczny błąd wywołania skryptu e-mail (fetch):', emailFetchError);
+        }
         
-        // 8. Finalizacja - Wyczyść koszyk i przejdź do strony głównej
+        // === ⬆️ KONIEC LOGIKI E-MAIL ⬆️ ===
+
+        // 7. Sukces! (bez zmian)
+        alert(`Dziękujemy! Twoje zamówienie na kwotę ${finalTotal.toFixed(2)} PLN zostało pomyślnie złożone. Otrzymasz wiadomość e-mail z potwierdzeniem.`);
+        
+        // 8. Finalizacja (bez zmian)
         saveCart([]);
         showPage('landing-page');
     
     } catch (error) {
-        // 9. Obsługa błędu
-        console.error('Błąd podczas składania zamówienia:', error.message);
+        // 9. Obsługa błędu (bez zmian)
+        console.error('Błąd podczas składania zamówienia (Supabase):', error.message);
         alert(`Wystąpił błąd podczas składania zamówienia: ${error.message}. Spróbuj ponownie lub skontaktuj się z nami.`);
         
-        // Odblokuj przycisk w razie błędu
         if (submitButton) {
             submitButton.disabled = false;
             submitButton.textContent = 'ZŁÓŻ ZAMÓWIENIE Z OBOWIĄZKIEM ZAPŁATY';
