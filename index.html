@@ -2762,11 +2762,11 @@ function renderCheckoutSummary() {
     });
 }
 
-// ZASTĄP TĄ FUNKCJĄ SWOJĄ OBECNĄ FUNKCJĘ handleOrderSubmit
+// ZASTĄP CAŁĄ FUNKCJĘ handleOrderSubmit TĄ WERSJĄ
 async function handleOrderSubmit(event) {
     event.preventDefault();
 
-    // 1. Walidacja pustego koszyka (bez zmian)
+    // 1. Walidacja koszyka (bez zmian)
     const cart = getCart();
     if (!Array.isArray(cart) || cart.length === 0) {
         alert('Twój koszyk jest pusty! Przejdź do kolekcji.');
@@ -2781,7 +2781,7 @@ async function handleOrderSubmit(event) {
         submitButton.textContent = 'Trwa składanie zamówienia...';
     }
 
-    // 3. Zbierz dane z formularza (bez zmian)
+    // 3. Zbierz dane (bez zmian)
     const imie = document.getElementById('order-imie').value;
     const email = document.getElementById('order-email').value;
     const phone = document.getElementById('order-phone').value;
@@ -2794,11 +2794,16 @@ async function handleOrderSubmit(event) {
     const paymentEl = document.querySelector('input[name="payment-method"]:checked');
     const paymentMethod = paymentEl ? paymentEl.value : 'Przelew bankowy';
 
-    // 4. Oblicz ostateczną sumę (bez zmian)
+    // 4. Oblicz cenę (bez zmian)
     let subtotal = cart.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 0), 0);
     const { finalTotal, deliveryCost, paymentFee } = calculateFinalPrice(subtotal);
 
-    // 5. Stwórz obiekt zamówienia do Supabase (bez zmian)
+    // === ⬇️ NOWA ZMIANA: GENERUJEMY PUBLICZNE ID ZAMÓWIENIA ⬇️ ===
+    // Tworzymy ID, które klient może zobaczyć, np. "MZ-1678886400"
+    const publicOrderID = `MZ-${Math.floor(Date.now() / 1000)}`;
+    // === ⬆️ KONIEC NOWEJ ZMIANY ⬆️ ===
+
+    // 5. Stwórz obiekt zamówienia
     const newOrder = {
         customer_name: imie,
         customer_email: email,
@@ -2810,58 +2815,55 @@ async function handleOrderSubmit(event) {
         payment_fee: paymentFee,
         notes: uwagi,
         items: cart,
-        total_price: finalTotal
+        total_price: finalTotal,
+        // === ⬇️ NOWA ZMIANA: Zapisujemy nowe ID do nowej kolumny ⬇️ ===
+        public_order_id: publicOrderID 
+        // === ⬆️ KONIEC NOWEJ ZMIANY ⬆️ ===
     };
 
-    // 6. Wyślij dane do Supabase (zapis zamówienia)
+    // 6. Wyślij dane do Supabase
     try {
         if (!supabase) throw new Error("Brak konfiguracji Supabase");
         
-        const { data, error } = await supabase
+        // === ⬇️ NAJWAŻNIEJSZA ZMIANA: USUWAMY .select() ⬇️ ===
+        // To naprawi błąd RLS, który widziałeś.
+        const { error } = await supabase
             .from('zamowienia')
-            .insert([newOrder])
-            .select(); 
+            .insert([newOrder]); 
+        // Nie ma już .select() na końcu!
+        // === ⬆️ KONIEC NAJWAŻNIEJSZEJ ZMIANY ⬆️ ===
 
-        if (error) throw error;
+        if (error) throw error; // Jeśli zapis się nie udał, rzuć błąd
         
-        // === ⬇️ LOGIKA WYSYŁANIA E-MAILA (Idealnie dopasowana do Twojego szablonu) ⬇️ ===
+        // === ⬇️ LOGIKA WYSYŁANIA E-MAILA (używa naszego publicOrderID) ⬇️ ===
         
-        const orderId = data[0].id; 
-        
-        // NOWOŚĆ: Generujemy datę w polskim formacie, której wymaga Twój szablon
         const orderDate = new Date().toLocaleDateString('pl-PL', { 
             year: 'numeric', 
             month: 'long', 
             day: 'numeric' 
         });
 
-        // OTO OBIEKT Z PARAMETRAMI, KTÓRY PASUJE DO TWOJEGO SZABLONU
+        // Ten obiekt pasuje idealnie do Twojego szablonu
         const emailParams = {
-            customer_name: imie,                // dla {{ params.customer_name }}
-            customer_email: email,              // dla {{ params.customer_email }}
-            customer_phone: phone,              // dla {{ params.customer_phone }}
-            order_id: orderId.substring(0, 8),  // dla {{ params.order_id }}
-            order_date: orderDate,              // dla {{ params.order_date }}
-            total_price: finalTotal.toFixed(2), // dla {{ params.total_price }} (szablon sam dodaje "PLN")
-            delivery_method: deliveryMethod,    // dla {{ params.delivery_method }}
-            payment_method: paymentMethod       // dla {{ params.payment_method }}
+            customer_name: imie,
+            customer_email: email,
+            customer_phone: phone,
+            order_id: publicOrderID, // Używamy naszego bezpiecznego, wygenerowanego ID
+            order_date: orderDate,
+            total_price: finalTotal.toFixed(2),
+            delivery_method: deliveryMethod,
+            payment_method: paymentMethod
         };
 
         try {
-            // Wywołaj nasz skrypt PHP
             const emailResponse = await fetch('./send-email.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     toEmail: email,
                     toName: imie,
-                    
-                    // =======================================================
-                    // WAŻNE: Wstaw tutaj ID swojego szablonu Brevo
-                    // =======================================================
-                    templateId: 1, // <-- ZASTĄP TĘ LICZBĘ SWOIM ID SZABLONU
-                    
-                    params: emailParams // Wysyłamy idealnie dopasowany obiekt
+                    templateId: 1, // To jest poprawne ID (z Twojego zrzutu)
+                    params: emailParams
                 })
             });
 
@@ -2876,18 +2878,17 @@ async function handleOrderSubmit(event) {
         } catch (emailFetchError) {
              console.error('Krytyczny błąd wywołania skryptu e-mail (fetch):', emailFetchError);
         }
-        
         // === ⬆️ KONIEC LOGIKI E-MAIL ⬆️ ===
 
-        // 7. Sukces! (bez zmian)
+        // 7. Sukces
         alert(`Dziękujemy! Twoje zamówienie na kwotę ${finalTotal.toFixed(2)} PLN zostało pomyślnie złożone. Otrzymasz wiadomość e-mail z potwierdzeniem.`);
         
-        // 8. Finalizacja (bez zmian)
+        // 8. Finalizacja
         saveCart([]);
         showPage('landing-page');
     
     } catch (error) {
-        // 9. Obsługa błędu (bez zmian)
+        // 9. Obsługa błędu
         console.error('Błąd podczas składania zamówienia (Supabase):', error.message);
         alert(`Wystąpił błąd podczas składania zamówienia: ${error.message}. Spróbuj ponownie lub skontaktuj się z nami.`);
         
